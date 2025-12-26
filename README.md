@@ -215,4 +215,3 @@ make
 - Strategy pattern with raw pointers (owned by Monster class)
 
 ---
-so
