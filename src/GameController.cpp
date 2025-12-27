@@ -33,17 +33,17 @@ void GameController::initGame() {
   // Create new game state
   graph = new Graph();
 
-  // Start Pacman in center
-  pacman = new Pacman(Location(Graph::WIDTH / 2, Graph::HEIGHT / 2));
+  // Start Pacman in center (row 14, col 14)
+  pacman = new Pacman(Location(14, 14));
 
-  // Start Monsters in corners with different strategies
+  // Start Monsters in corners/house areas
   monsters.push_back(
-      new Monster(Location(0, 0), new DistanceGreedyStrategy(), "M1 (Dist)"));
-  monsters.push_back(new Monster(Location(Graph::WIDTH - 1, 0),
+      new Monster(Location(1, 1), new DistanceGreedyStrategy(), "M1 (Dist)"));
+  monsters.push_back(new Monster(Location(26, 1),
                                  new HeuristicGreedyStrategy(), "M2 (Heur)"));
-  monsters.push_back(new Monster(Location(0, Graph::HEIGHT - 1),
+  monsters.push_back(new Monster(Location(1, 29),
                                  new DirectionalGreedyStrategy(), "M3 (Dir)"));
-  monsters.push_back(new Monster(Location(Graph::WIDTH - 1, Graph::HEIGHT - 1),
+  monsters.push_back(new Monster(Location(26, 29),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
 
   running = false;
@@ -94,6 +94,11 @@ void GameController::movePacman() {
     nextY = Graph::HEIGHT - 1;
   if (nextY >= Graph::HEIGHT)
     nextY = 0;
+
+  // Check if Wall
+  if (Graph::isWall(nextX, nextY)) {
+      return; // Stop.
+  }
 
   pacman->setLocation(Location(nextX, nextY));
 }
