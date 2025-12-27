@@ -172,9 +172,9 @@ Greedy algorithms are ideal for this Pacman implementation because:
 | Approach | Time Complexity | Monster Behavior | Suitable? |
 |----------|----------------|------------------|-----------|
 | **Greedy** | O(neighbors) ≈ O(1) | Aggressive pursuers | Perfect |
-| A* Pathfinding | O(n log n) | Perfect pursuit | Too hard, not fun |
+| A* Pathfinding | O(n log n) | Perfect pursuit | Too hard |
 | Random | O(1) | Unpredictable | Too easy |
-| Dynamic Programming | O(n²) | Optimal strategy | Overkill, too slow |
+| Dynamic Programming | O(n²) | Optimal strategy | Too slow |
 
 
 ## Known Limitations
