@@ -6,7 +6,7 @@
 // Monster 4: Aggressive Greedy - predicts Pacman's future position
 class AggressiveGreedyStrategy : public GreedyStrategy {
 public:
-    Location findNextMove(Graph* graph, Entity* monster, Entity* target) override;
+  Location findNextMove(Graph *graph, Entity *monster, Entity *target) override;
 };
 
-#endif 
+#endif

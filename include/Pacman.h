@@ -5,7 +5,7 @@
 
 class Pacman : public Entity {
 public:
-    Pacman(const Location& loc);
+  Pacman(const Location &loc);
 };
 
 #endif
