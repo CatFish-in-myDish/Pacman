@@ -8,50 +8,45 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Find Qt5
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-# Enable automoc for Qt meta-object compilation
 set(CMAKE_AUTOMOC ON)
 
-# Source files
 set(SOURCES
-    cpp-src/main.cpp
-    cpp-src/Location.cpp
-    cpp-src/Node.cpp
-    cpp-src/Graph.cpp
-    cpp-src/Entity.cpp
-    cpp-src/Pacman.cpp
-    cpp-src/Monster.cpp
-    cpp-src/DistanceGreedyStrategy.cpp
-    cpp-src/HeuristicGreedyStrategy.cpp
-    cpp-src/DirectionalGreedyStrategy.cpp
-    cpp-src/AggressiveGreedyStrategy.cpp
-    cpp-src/GameController.cpp
-    cpp-src/GameWidget.cpp
-    cpp-src/MainWindow.cpp
+    src/main.cpp
+    src/cpp/Location.cpp
+    src/cpp/Node.cpp
+    src/cpp/Graph.cpp
+    src/cpp/Entity.cpp
+    src/cpp/Pacman.cpp
+    src/cpp/Monster.cpp
+    src/cpp/DistanceGreedyStrategy.cpp
+    src/cpp/HeuristicGreedyStrategy.cpp
+    src/cpp/DirectionalGreedyStrategy.cpp
+    src/cpp/AggressiveGreedyStrategy.cpp
+    src/cpp/GameController.cpp
+    src/cpp/GameWidget.cpp
+    src/cpp/MainWindow.cpp
 )
 
-# Header files
 set(HEADERS
-    cpp-src/Location.h
-    cpp-src/Node.h
-    cpp-src/Graph.h
-    cpp-src/Entity.h
-    cpp-src/Pacman.h
-    cpp-src/Monster.h
-    cpp-src/GreedyStrategy.h
-    cpp-src/DistanceGreedyStrategy.h
-    cpp-src/HeuristicGreedyStrategy.h
-    cpp-src/DirectionalGreedyStrategy.h
-    cpp-src/AggressiveGreedyStrategy.h
-    cpp-src/GameController.h
-    cpp-src/GameWidget.h
-    cpp-src/MainWindow.h
+    src/include/Location.h
+    src/include/Node.h
+    src/include/Graph.h
+    src/include/Entity.h
+    src/include/Pacman.h
+    src/include/Monster.h
+    src/include/GreedyStrategy.h
+    src/include/DistanceGreedyStrategy.h
+    src/include/HeuristicGreedyStrategy.h
+    src/include/DirectionalGreedyStrategy.h
+    src/include/AggressiveGreedyStrategy.h
+    src/include/GameController.h
+    src/include/GameWidget.h
+    src/include/MainWindow.h
 )
 
-# Create executable
 add_executable(PacmanGame ${SOURCES} ${HEADERS})
 
-# Link Qt5
 target_link_libraries(PacmanGame Qt5::Widgets)
 
 # Include directories
-target_include_directories(PacmanGame PRIVATE cpp-src)
+target_include_directories(PacmanGame PRIVATE src)
