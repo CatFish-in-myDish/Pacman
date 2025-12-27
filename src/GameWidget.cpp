@@ -46,6 +46,17 @@ void GameWidget::paintEvent(QPaintEvent *event) {
       }
   }
 
+  // 2.5 Draw Pellets (small white dots)
+  painter.setBrush(Qt::white);
+  painter.setPen(Qt::NoPen);
+  const auto &pellets = controller->getPellets();
+  int pelletRadius = TILE_SIZE / 8;
+  for (const Location &loc : pellets) {
+      int cx = loc.x * TILE_SIZE + TILE_SIZE / 2;
+      int cy = loc.y * TILE_SIZE + TILE_SIZE / 2;
+      painter.drawEllipse(cx - pelletRadius, cy - pelletRadius, pelletRadius * 2, pelletRadius * 2);
+  }
+
   // 3. Draw Pacman
   Pacman *p = controller->getPacman();
   Location pLoc = p->getLocation();
@@ -135,6 +146,31 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int pupilSize = eyeSize / 2;
     painter.drawEllipse(mx + 4 + 2, eyeY + 2, pupilSize, pupilSize);
     painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize + 2, eyeY + 2, pupilSize, pupilSize);
+  }
+
+  // HUD: Score & Round
+  painter.setPen(Qt::white);
+  painter.setFont(QFont("Arial", 14, QFont::Bold));
+  QString scoreText = QString("Score: %1").arg(controller->getScore());
+  painter.drawText(8, 20, scoreText);
+  QString roundText = QString("Round: %1").arg(controller->getRound());
+  painter.drawText(120, 20, roundText);
+
+  // Win / Game Over overlay
+  if (controller->isGameWon()) {
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(0, 0, 0, 160));
+    painter.drawRect(0, 0, WIDTH, HEIGHT);
+    painter.setPen(Qt::green);
+    painter.setFont(QFont("Arial", 48, QFont::Bold));
+    painter.drawText(rect(), Qt::AlignCenter, QString("YOU WIN!"));
+  } else if (controller->isGameOver()) {
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(0, 0, 0, 160));
+    painter.drawRect(0, 0, WIDTH, HEIGHT);
+    painter.setPen(Qt::red);
+    painter.setFont(QFont("Arial", 48, QFont::Bold));
+    painter.drawText(rect(), Qt::AlignCenter, QString("GAME OVER"));
   }
 }
 

@@ -10,7 +10,11 @@ GameController::GameController() {
   running = false;
   gameOver = false;
   survivedTime = 0.0;
-  initGame();
+  score = 0;
+  gameWon = false;
+  round = 1;
+  winTime = std::chrono::steady_clock::now();
+  initGame(true);
 }
 
 GameController::~GameController() {
@@ -21,7 +25,7 @@ GameController::~GameController() {
   }
 }
 
-void GameController::initGame() {
+void GameController::initGame(bool resetScore) {
   // Clean up existing game state
   delete graph;
   delete pacman;
@@ -32,6 +36,16 @@ void GameController::initGame() {
 
   // Create new game state
   graph = new Graph();
+
+  // Initialize pellets on all path tiles
+  pellets.clear();
+  for (int x = 0; x < Graph::WIDTH; ++x) {
+    for (int y = 0; y < Graph::HEIGHT; ++y) {
+      if (!Graph::isWall(x, y)) {
+        pellets.insert(Location(x, y));
+      }
+    }
+  }
 
   // Start Pacman in center (row 14, col 14)
   pacman = new Pacman(Location(14, 14));
@@ -46,10 +60,25 @@ void GameController::initGame() {
   monsters.push_back(new Monster(Location(26, 29),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
 
+  // Remove pellets that are under initial entities (Pacman and Monsters)
+  pellets.erase(pacman->getLocation());
+  for (Monster *m : monsters) {
+    pellets.erase(m->getLocation());
+  }
+
+  // Reset or advance score/round/win state
+  if (resetScore) {
+    score = 0;
+    round = 1;
+  } else {
+    ++round;
+  }
+  gameWon = false;
+
   running = false;
   gameOver = false;
   survivedTime = 0.0;
-}
+}  
 
 void GameController::startGame() {
   running = true;
@@ -57,6 +86,18 @@ void GameController::startGame() {
 }
 
 void GameController::update() {
+  // If game is paused because of win, allow auto-advance after 2 seconds
+  if (gameWon) {
+    auto now = std::chrono::steady_clock::now();
+    auto dt = std::chrono::duration<double>(now - winTime).count();
+    if (dt > 2.0) {
+      // Start next round automatically
+      initGame(false);
+      startGame();
+    }
+    return;
+  }
+
   if (!running || gameOver) {
     return;
   }
@@ -101,6 +142,19 @@ void GameController::movePacman() {
   }
 
   pacman->setLocation(Location(nextX, nextY));
+
+  // Eat pellet if present at new location
+  Location newLoc = pacman->getLocation();
+  if (pellets.erase(newLoc) > 0) {
+    // Pellet consumed - increment score
+    score += 10;
+    // Win if no pellets remain
+    if (pellets.empty()) {
+      gameWon = true;
+      running = false;
+      winTime = std::chrono::steady_clock::now();
+    }
+  }
 }
 
 void GameController::moveMonsters() {
@@ -121,7 +175,13 @@ void GameController::checkCollisions() {
 
 void GameController::handleInput(const QString &key) {
   if (gameOver && key == "R") {
-    initGame();
+    initGame(true);
+    startGame();
+    return;
+  }
+
+  if (gameWon && key == "R") {
+    initGame(false);
     startGame();
     return;
   }
@@ -147,6 +207,14 @@ Pacman *GameController::getPacman() const { return pacman; }
 const std::vector<Monster *> &GameController::getMonsters() const {
   return monsters;
 }
+
+const std::unordered_set<Location> &GameController::getPellets() const { return pellets; }
+
+int GameController::getScore() const { return score; }
+
+bool GameController::isGameWon() const { return gameWon; }
+
+int GameController::getRound() const { return round; }
 
 bool GameController::isGameOver() const { return gameOver; }
 
