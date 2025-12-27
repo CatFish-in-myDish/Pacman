@@ -14,15 +14,10 @@ Location AggressiveGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
   Location predictedLoc = targetLoc;
 
   if (targetDir.x != 0 || targetDir.y != 0) {
-    // Apply direction twice with wrapping
-    int predX = (targetLoc.x + targetDir.x * 2) % Graph::WIDTH;
-    int predY = (targetLoc.y + targetDir.y * 2) % Graph::HEIGHT;
-
-    // Handle negative modulo
-    if (predX < 0)
-      predX += Graph::WIDTH;
-    if (predY < 0)
-      predY += Graph::HEIGHT;
+    // Apply direction twice with proper wrapping for negative values
+    // Using (a % n + n) % n formula to handle negative modulo correctly
+    int predX = ((targetLoc.x + targetDir.x * 2) % Graph::WIDTH + Graph::WIDTH) % Graph::WIDTH;
+    int predY = ((targetLoc.y + targetDir.y * 2) % Graph::HEIGHT + Graph::HEIGHT) % Graph::HEIGHT;
 
     predictedLoc = Location(predX, predY);
   }
