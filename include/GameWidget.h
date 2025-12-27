@@ -9,7 +9,7 @@ class GameWidget : public QWidget {
   Q_OBJECT
 
 private:
-  static const int TILE_SIZE = 15;
+  static const int TILE_SIZE = 25;
   static const int WIDTH = Graph::WIDTH * TILE_SIZE;
   static const int HEIGHT = Graph::HEIGHT * TILE_SIZE;
 
