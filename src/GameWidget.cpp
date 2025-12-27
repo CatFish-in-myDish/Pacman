@@ -12,10 +12,11 @@ GameWidget::GameWidget(QWidget *parent) : QWidget(parent) {
   setFixedSize(WIDTH, HEIGHT);
   setFocusPolicy(Qt::StrongFocus);
 
-  // Set up game timer (150ms = ~6.7 updates/second)
+  // Set up game timer (250ms = 4 updates/second)
+  // Slower speed makes monsters easier to evade
   gameTimer = new QTimer(this);
   connect(gameTimer, &QTimer::timeout, this, &GameWidget::gameLoop);
-  gameTimer->start(150);
+  gameTimer->start(250);
 }
 
 GameWidget::~GameWidget() { delete controller; }
@@ -37,7 +38,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   // 2. Draw Maze (Walls)
   painter.setBrush(QColor(33, 33, 222)); // Wall Blue
   painter.setPen(Qt::NoPen);
-  
+
   for (int x = 0; x < Graph::WIDTH; x++) {
       for (int y = 0; y < Graph::HEIGHT; y++) {
           if (Graph::isWall(x, y)) {
@@ -46,11 +47,22 @@ void GameWidget::paintEvent(QPaintEvent *event) {
       }
   }
 
+  // 2.5 Draw Pellets (small white dots)
+  painter.setBrush(Qt::white);
+  painter.setPen(Qt::NoPen);
+  const auto &pellets = controller->getPellets();
+  int pelletRadius = TILE_SIZE / 8;
+  for (const Location &loc : pellets) {
+      int cx = loc.x * TILE_SIZE + TILE_SIZE / 2;
+      int cy = loc.y * TILE_SIZE + TILE_SIZE / 2;
+      painter.drawEllipse(cx - pelletRadius, cy - pelletRadius, pelletRadius * 2, pelletRadius * 2);
+  }
+
   // 3. Draw Pacman
   Pacman *p = controller->getPacman();
   Location pLoc = p->getLocation();
   Location pDir = p->getLastDirection();
-  
+
   // Animation logic: Mouth opens/closes every ~300ms
   // Use current time or a simple static counter if available, or just system clock
   // Since we don't have a frame counter, we can use the system clock
@@ -63,7 +75,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
   int px = pLoc.x * TILE_SIZE;
   int py = pLoc.y * TILE_SIZE;
-  
+
   // Rotation Logic
   int startAngle = 0;
   if (pDir.x == 1) startAngle = 0;
@@ -72,17 +84,17 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   else if (pDir.y == 1) startAngle = 270;
 
   // drawPie uses 1/16th of a degree
-  // We want the mouth to center on the direction. 
+  // We want the mouth to center on the direction.
   // e.g. Right (0): Mouth from 30 to 330 (Viewed as 30 start, -300 span? Or 30 start + 300 span)
   // Qt Angles: 3 o'clock is 0. Positive is CCW.
   // Mouth Opening 30 means +/- 15 degrees from center? Or 30 degrees total wedge?
   // Let's say Total Wedge is 'mouthOpen * 2'.
   // Start = DirectionAngle + mouthOpen
   // Span = 360 - 2 * mouthOpen
-  
+
   int qtStartAngle = (startAngle + (int)mouthOpen) * 16;
   int qtSpanAngle = (360 - 2 * (int)mouthOpen) * 16;
-  
+
   painter.drawPie(px, py, TILE_SIZE, TILE_SIZE, qtStartAngle, qtSpanAngle);
 
 
@@ -103,24 +115,24 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
     // Draw Ghost Body (Circle top, Rect bottom, Wavy feet)
     QPainterPath path;
-    
+
     // Head (Top Half Circle)
     path.moveTo(mx, my + TILE_SIZE / 2);
     path.arcTo(mx, my, TILE_SIZE, TILE_SIZE, 180, 180);
-    
+
     // Feet (Wavy)
     // 3 small bumps
     double footW = TILE_SIZE / 3.0;
     // Right side down
     path.lineTo(mx + TILE_SIZE, my + TILE_SIZE);
-    
+
     // Bottom bumps (Right to Left)
     path.lineTo(mx + 2 * footW, my + TILE_SIZE - 4);
     path.lineTo(mx + 1 * footW, my + TILE_SIZE);
     path.lineTo(mx, my + TILE_SIZE - 4);
-    
+
     path.closeSubpath();
-    
+
     painter.drawPath(path);
 
     // Eyes (White) - Fixed looking leftish for now
@@ -135,6 +147,31 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int pupilSize = eyeSize / 2;
     painter.drawEllipse(mx + 4 + 2, eyeY + 2, pupilSize, pupilSize);
     painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize + 2, eyeY + 2, pupilSize, pupilSize);
+  }
+
+  // HUD: Score & Round
+  painter.setPen(Qt::white);
+  painter.setFont(QFont("Arial", 14, QFont::Bold));
+  QString scoreText = QString("Score: %1").arg(controller->getScore());
+  painter.drawText(8, 20, scoreText);
+  QString roundText = QString("Round: %1").arg(controller->getRound());
+  painter.drawText(120, 20, roundText);
+
+  // Win / Game Over overlay
+  if (controller->isGameWon()) {
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(0, 0, 0, 160));
+    painter.drawRect(0, 0, WIDTH, HEIGHT);
+    painter.setPen(Qt::green);
+    painter.setFont(QFont("Arial", 48, QFont::Bold));
+    painter.drawText(rect(), Qt::AlignCenter, QString("YOU WIN!"));
+  } else if (controller->isGameOver()) {
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(0, 0, 0, 160));
+    painter.drawRect(0, 0, WIDTH, HEIGHT);
+    painter.setPen(Qt::red);
+    painter.setFont(QFont("Arial", 48, QFont::Bold));
+    painter.drawText(rect(), Qt::AlignCenter, QString("GAME OVER"));
   }
 }
 
