@@ -72,19 +72,19 @@ The project follows a modular **Object-Oriented Design**:
 
 ## 5. Greedy Algorithms Explained
 
-### Monster 1: Pure Distance Greedy
+### Blinky: Pure Distance Greedy
 - **Logic**: Calculates exact Euclidean distance ($\sqrt{\Delta x^2 + \Delta y^2}$) from neighbors to Pacman.
 - **Why Greedy**: Locally optimal choice (shortest immediate step) without looking n-steps ahead.
 
-### Monster 2: Heuristic Greedy
+### Pinky: Heuristic Greedy
 - **Logic**: Uses Manhattan distance ($|\Delta x| + |\Delta y|$).
 - **Why Greedy**: Standard heuristic often used in A* pathfinding, but here used greedily for immediate move.
 
-### Monster 3: Directional Greedy
+### Inky: Directional Greedy
 - **Logic**: Determines the "primary axis" of separation (e.g., if X distance is larger, prioritize moving horizontally).
 - **Why Greedy**: Tries to "close the gap" on the widest dimension first.
 
-### Monster 4: Aggressive Greedy
+### Clyde: Aggressive Greedy
 - **Logic**: LOOKS AHEAD. Predicts Pacman's position 2 steps in the future based on Pacman's current direction. Targets that predicted spot.
 - **Why Greedy**: Greedily minimizes distance to the *predicted* location.
 
