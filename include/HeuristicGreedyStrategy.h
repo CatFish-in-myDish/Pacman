@@ -6,7 +6,7 @@
 // Monster 2: Heuristic Greedy - uses Manhattan distance
 class HeuristicGreedyStrategy : public GreedyStrategy {
 public:
-    Location findNextMove(Graph* graph, Entity* monster, Entity* target) override;
+  Location findNextMove(Graph *graph, Entity *monster, Entity *target) override;
 };
 
-#endif // HEURISTICGREEDYSTRATEGY_H
+#endif
