@@ -17,7 +17,6 @@ set(SOURCES
     src/GameWidget.cpp
     src/Graph.cpp
     src/HeuristicGreedyStrategy.cpp
-    src/Location.cpp
     src/main.cpp
     src/MainWindow.cpp
     src/Monster.cpp
