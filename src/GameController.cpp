@@ -115,35 +115,43 @@ void GameController::update() {
   }
 
   // Dynamic Ghost Aggression: Assign roles based on distance
+  // If Lightning is active, force SCATTER on all ghosts
   if (pacman) {
-    std::vector<Monster *> sortedMonsters = monsters;
-    Location pacLoc = pacman->getLocation();
-
-    std::sort(sortedMonsters.begin(), sortedMonsters.end(),
-              [pacLoc](Monster *a, Monster *b) {
-                auto distSq = [pacLoc](Location loc) {
-                  int dx = loc.x - pacLoc.x;
-                  int dy = loc.y - pacLoc.y;
-                  // Toroidal wrapping distance
-                  if (std::abs(dx) > Graph::WIDTH / 2) dx = Graph::WIDTH - std::abs(dx);
-                  if (std::abs(dy) > Graph::HEIGHT / 2) dy = Graph::HEIGHT - std::abs(dy);
-                  return dx * dx + dy * dy;
-                };
-                return distSq(a->getLocation()) < distSq(b->getLocation());
-              });
-
-    if (!sortedMonsters.empty()) {
-      // Closest -> Chase
-      sortedMonsters[0]->setMode(Monster::CHASE);
-
-      // Farthest -> Ambush (if more than 1 ghost)
-      if (sortedMonsters.size() > 1) {
-        sortedMonsters.back()->setMode(Monster::AMBUSH);
+    if (lightningActive) {
+      for (Monster *m : monsters) {
+        m->setMode(Monster::SCATTER);
       }
+    } else {
+      // Normal behavior: Dynamic Role Assignment
+      std::vector<Monster *> sortedMonsters = monsters;
+      Location pacLoc = pacman->getLocation();
 
-      // Others -> Scatter
-      for (size_t i = 1; i < sortedMonsters.size() - 1; ++i) {
-        sortedMonsters[i]->setMode(Monster::SCATTER);
+      std::sort(sortedMonsters.begin(), sortedMonsters.end(),
+                [pacLoc](Monster *a, Monster *b) {
+                  auto distSq = [pacLoc](Location loc) {
+                    int dx = loc.x - pacLoc.x;
+                    int dy = loc.y - pacLoc.y;
+                    // Toroidal wrapping distance
+                    if (std::abs(dx) > Graph::WIDTH / 2) dx = Graph::WIDTH - std::abs(dx);
+                    if (std::abs(dy) > Graph::HEIGHT / 2) dy = Graph::HEIGHT - std::abs(dy);
+                    return dx * dx + dy * dy;
+                  };
+                  return distSq(a->getLocation()) < distSq(b->getLocation());
+                });
+
+      if (!sortedMonsters.empty()) {
+        // Closest -> Chase
+        sortedMonsters[0]->setMode(Monster::CHASE);
+
+        // Farthest -> Ambush (if more than 1 ghost)
+        if (sortedMonsters.size() > 1) {
+          sortedMonsters.back()->setMode(Monster::AMBUSH);
+        }
+
+        // Others -> Scatter
+        for (size_t i = 1; i < sortedMonsters.size() - 1; ++i) {
+          sortedMonsters[i]->setMode(Monster::SCATTER);
+        }
       }
     }
   }
@@ -307,7 +315,7 @@ void GameController::handleInput(const QString &key) {
               closest.second->applySlow(20);
 
               lightningActive = true;
-              lightningTimer = 4; // Show for 4 ticks (approx 1 sec)
+              lightningTimer = 8; // Show for 8 ticks (approx 2 sec)
               lightningStart = closest.first->getLocation();
               lightningEnd = closest.second->getLocation();
           }
