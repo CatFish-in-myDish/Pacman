@@ -6,17 +6,20 @@
 #include "../include/HeuristicGreedyStrategy.h"
 #include <algorithm>
 #include <cmath>
+#include <QDebug>
 #include <limits>
 
 GameController::GameController() {
   graph = nullptr;
   pacman = nullptr;
+  ghostTerritory = nullptr;
   running = false;
   gameOver = false;
   survivedTime = 0.0;
   score = 0;
   gameWon = false;
   round = 1;
+  pacmanWasInsideTerritory = false;
   winTime = std::chrono::steady_clock::now();
   lightningActive = false;
   lightningTimer = 0;
@@ -26,6 +29,7 @@ GameController::GameController() {
 GameController::~GameController() {
   delete graph;
   delete pacman;
+  delete ghostTerritory;
   for (Monster *monster : monsters) {
     delete monster;
   }
@@ -35,6 +39,7 @@ void GameController::initGame(bool resetScore) {
   // Clean up existing game state
   delete graph;
   delete pacman;
+  delete ghostTerritory;
   for (Monster *monster : monsters) {
     delete monster;
   }
@@ -42,6 +47,8 @@ void GameController::initGame(bool resetScore) {
 
   // Create new game state
   graph = new Graph();
+  ghostTerritory = new GhostTerritory();
+  pacmanWasInsideTerritory = false;
 
   // Initialize pellets on all path tiles
   pellets.clear();
@@ -141,6 +148,46 @@ void GameController::update() {
     }
   }
 
+  // ── Ghost Territory: recompute convex hull and apply speed modifiers ──
+  if (pacman && monsters.size() >= 3) {
+    std::vector<Location> ghostPositions;
+    ghostPositions.reserve(monsters.size());
+    for (Monster *m : monsters) {
+      ghostPositions.push_back(m->getLocation());
+    }
+    ghostTerritory->update(ghostPositions, pacman->getLocation());
+
+    bool inside = ghostTerritory->isPacmanInside();
+
+    // Log state change
+    if (inside != pacmanWasInsideTerritory) {
+      if (inside) {
+        qDebug() << "[GhostTerritory] Pacman ENTERED ghost territory! "
+                    "Ghosts→1.2x, Pacman→1.25x";
+      } else {
+        qDebug() << "[GhostTerritory] Pacman LEFT ghost territory. "
+                    "All speeds→1.0x";
+      }
+      pacmanWasInsideTerritory = inside;
+    }
+
+    // Apply speed multipliers
+    double ghostMul = inside ? 1.2 : 1.0;
+    double pacMul   = inside ? 1.25 : 1.0;
+    for (Monster *m : monsters) {
+      m->setTerritoryMultiplier(ghostMul);
+    }
+    pacman->setSpeed(pacMul);
+  } else {
+    // Fewer than 3 ghosts → no territory effect
+    for (Monster *m : monsters) {
+      m->setTerritoryMultiplier(1.0);
+    }
+    if (pacman) {
+      pacman->setSpeed(1.0);
+    }
+  }
+
   if (lightningActive) {
       lightningTimer--;
       if (lightningTimer <= 0) {
@@ -168,37 +215,43 @@ void GameController::movePacman() {
     return;
   }
 
-  Location current = pacman->getLocation();
-  int nextX = current.x + dir.x;
-  int nextY = current.y + dir.y;
+  pacman->addMoveAccumulator(pacman->getSpeed());
 
-  // Handle toroidal wrapping
-  if (nextX < 0)
-    nextX = Graph::WIDTH - 1;
-  if (nextX >= Graph::WIDTH)
-    nextX = 0;
-  if (nextY < 0)
-    nextY = Graph::HEIGHT - 1;
-  if (nextY >= Graph::HEIGHT)
-    nextY = 0;
+  while (pacman->getMoveAccumulator() >= 1.0) {
+    Location current = pacman->getLocation();
+    int nextX = current.x + dir.x;
+    int nextY = current.y + dir.y;
 
-  // Check if Wall
-  if (Graph::isWall(nextX, nextY)) {
-    return; // Stop.
-  }
+    // Handle toroidal wrapping
+    if (nextX < 0)
+      nextX = Graph::WIDTH - 1;
+    if (nextX >= Graph::WIDTH)
+      nextX = 0;
+    if (nextY < 0)
+      nextY = Graph::HEIGHT - 1;
+    if (nextY >= Graph::HEIGHT)
+      nextY = 0;
 
-  pacman->setLocation(Location(nextX, nextY));
+    // Check if Wall
+    if (Graph::isWall(nextX, nextY)) {
+      pacman->resetMoveStep();
+      break;
+    }
 
-  // Eat pellet if present at new location
-  Location newLoc = pacman->getLocation();
-  if (pellets.erase(newLoc) > 0) {
-    // Pellet consumed - increment score
-    score += 10;
-    // Win if no pellets remain
-    if (pellets.empty()) {
-      gameWon = true;
-      running = false;
-      winTime = std::chrono::steady_clock::now();
+    pacman->setLocation(Location(nextX, nextY));
+    pacman->resetMoveStep();
+
+    // Eat pellet if present at new location
+    Location newLoc = pacman->getLocation();
+    if (pellets.erase(newLoc) > 0) {
+      // Pellet consumed - increment score
+      score += 10;
+      // Win if no pellets remain
+      if (pellets.empty()) {
+        gameWon = true;
+        running = false;
+        winTime = std::chrono::steady_clock::now();
+      }
     }
   }
 }

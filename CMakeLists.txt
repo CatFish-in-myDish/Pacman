@@ -16,6 +16,7 @@ set(SOURCES
     src/Entity.cpp
     src/GameController.cpp
     src/GameWidget.cpp
+    src/GhostTerritory.cpp
     src/Graph.cpp
     src/HeuristicGreedyStrategy.cpp
     src/main.cpp
@@ -34,6 +35,7 @@ set(HEADERS
     include/Entity.h
     include/GameController.h
     include/GameWidget.h
+    include/GhostTerritory.h
     include/Graph.h
     include/GreedyStrategy.h
     include/HeuristicGreedyStrategy.h

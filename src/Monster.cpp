@@ -6,11 +6,13 @@
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
                  const std::string &monsterName)
+    : Entity(loc), strategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0), territoryMultiplier(1.0) {}
     : Entity(loc), strategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0) {}
 
 Monster::~Monster() { delete strategy; }
 
 void Monster::move(Graph *graph, Entity *target) {
+  moveAccumulator += speed * territoryMultiplier;
   if (slowTicks > 0) {
     slowTicks--;
     if (slowTicks % 2 != 0) {
@@ -37,7 +39,7 @@ void Monster::setMode(Mode mode) {
   if (currentMode == mode) {
     return;
   }
-  
+
   GreedyStrategy* newStrategy = nullptr;
 
   switch (mode) {
@@ -63,3 +65,7 @@ void Monster::setMode(Mode mode) {
 }
 
 Monster::Mode Monster::getMode() const { return currentMode; }
+
+void Monster::setTerritoryMultiplier(double m) { territoryMultiplier = m; }
+
+double Monster::getTerritoryMultiplier() const { return territoryMultiplier; }
