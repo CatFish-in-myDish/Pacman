@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cmath>
 #include <QDebug>
+#include <limits>
+
 GameController::GameController() {
   graph = nullptr;
   pacman = nullptr;
@@ -19,6 +21,8 @@ GameController::GameController() {
   round = 1;
   pacmanWasInsideTerritory = false;
   winTime = std::chrono::steady_clock::now();
+  lightningActive = false;
+  lightningTimer = 0;
   initGame(true);
 }
 
@@ -87,7 +91,10 @@ void GameController::initGame(bool resetScore) {
   running = false;
   gameOver = false;
   survivedTime = 0.0;
-}
+  lightningActive = false;
+  lightningTimer = 0;
+}  
+
 
 void GameController::startGame() {
   running = true;
@@ -181,6 +188,12 @@ void GameController::update() {
     }
   }
 
+  if (lightningActive) {
+      lightningTimer--;
+      if (lightningTimer <= 0) {
+          lightningActive = false;
+      }
+  }
 
   // Move Pacman
   movePacman();
@@ -285,6 +298,20 @@ void GameController::handleInput(const QString &key) {
     pacman->setLastDirection(Location(-1, 0));
   } else if (key == "RIGHT") {
     pacman->setLastDirection(Location(1, 0));
+  } else if (key == "Z") {
+      if (score >= 100 && monsters.size() >= 2) {
+          std::pair<Monster*, Monster*> closest = findClosestPair(monsters);
+          if (closest.first && closest.second) {
+              score -= 100; // Cost
+              closest.first->applySlow(20); // Slow for 20 ticks
+              closest.second->applySlow(20);
+              
+              lightningActive = true;
+              lightningTimer = 4; // Show for 4 ticks (approx 1 sec)
+              lightningStart = closest.first->getLocation();
+              lightningEnd = closest.second->getLocation();
+          }
+      }
   }
 }
 
@@ -307,3 +334,95 @@ int GameController::getRound() const { return round; }
 bool GameController::isGameOver() const { return gameOver; }
 
 double GameController::getSurvivedTime() const { return survivedTime; }
+double getDistance(const Location& l1, const Location& l2) {
+    long long dx = l1.x - l2.x;
+    long long dy = l1.y - l2.y;
+    return std::sqrt(dx*dx + dy*dy);
+}
+
+// Compare functions for sorting
+bool compareX(Monster* a, Monster* b) {
+    return a->getLocation().x < b->getLocation().x;
+}
+
+bool compareY(Monster* a, Monster* b) {
+    return a->getLocation().y < b->getLocation().y;
+}
+
+std::pair<Monster*, Monster*> bruteForce(std::vector<Monster*>& monsters, int n) {
+    double min_dist = std::numeric_limits<double>::max();
+    std::pair<Monster*, Monster*> min_pair = {nullptr, nullptr};
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            double d = getDistance(monsters[i]->getLocation(), monsters[j]->getLocation());
+            if (d < min_dist) {
+                min_dist = d;
+                min_pair = {monsters[i], monsters[j]};
+            }
+        }
+    }
+    return min_pair;
+}
+
+std::pair<Monster*, Monster*> stripClosest(std::vector<Monster*>& strip, double d, std::pair<Monster*, Monster*> best_pair) {
+    double min_dist = d;
+    std::pair<Monster*, Monster*> min_pair = best_pair;
+
+    std::sort(strip.begin(), strip.end(), compareY);
+
+    for (size_t i = 0; i < strip.size(); ++i) {
+        for (size_t j = i + 1; j < strip.size() && (strip[j]->getLocation().y - strip[i]->getLocation().y) < min_dist; ++j) {
+            double dist = getDistance(strip[i]->getLocation(), strip[j]->getLocation());
+            if (dist < min_dist) {
+                min_dist = dist;
+                min_pair = {strip[i], strip[j]};
+            }
+        }
+    }
+    return min_pair;
+}
+
+std::pair<Monster*, Monster*> closestUtil(std::vector<Monster*>& monsters, int n) {
+    if (n <= 3) {
+        return bruteForce(monsters, n);
+    }
+
+    int mid = n / 2;
+    Monster* midPoint = monsters[mid];
+
+    std::vector<Monster*> leftPart(monsters.begin(), monsters.begin() + mid);
+    std::vector<Monster*> rightPart(monsters.begin() + mid, monsters.end());
+
+    std::pair<Monster*, Monster*> dl = closestUtil(leftPart, mid);
+    std::pair<Monster*, Monster*> dr = closestUtil(rightPart, n - mid);
+
+    double d1 = std::numeric_limits<double>::max();
+    double d2 = std::numeric_limits<double>::max();
+
+    if (dl.first && dl.second) d1 = getDistance(dl.first->getLocation(), dl.second->getLocation());
+    if (dr.first && dr.second) d2 = getDistance(dr.first->getLocation(), dr.second->getLocation());
+
+    double d = std::min(d1, d2);
+    std::pair<Monster*, Monster*> min_pair = (d1 < d2) ? dl : dr;
+    if (!dl.first) min_pair = dr;
+    else if (!dr.first) min_pair = dl;
+
+    std::vector<Monster*> strip;
+    for (int i = 0; i < n; i++) {
+        if (std::abs(monsters[i]->getLocation().x - midPoint->getLocation().x) < d) {
+            strip.push_back(monsters[i]);
+        }
+    }
+
+    return stripClosest(strip, d, min_pair);
+}
+
+std::pair<Monster*, Monster*> GameController::findClosestPair(const std::vector<Monster*>& monsters) {
+    if (monsters.size() < 2) return {nullptr, nullptr};
+
+    std::vector<Monster*> sortedMonsters = monsters;
+    std::sort(sortedMonsters.begin(), sortedMonsters.end(), compareX);
+
+    return closestUtil(sortedMonsters, sortedMonsters.size());
+}

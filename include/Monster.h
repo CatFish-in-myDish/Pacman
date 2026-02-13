@@ -21,6 +21,9 @@ public:
   void move(Graph *graph, Entity *target);
   std::string getName() const;
 
+  void applySlow(int ticks);
+  bool isSlowed() const;
+
   void setMode(Mode mode);
   Mode getMode() const;
 
@@ -34,6 +37,7 @@ private:
   double speed;
   double moveAccumulator;
   double territoryMultiplier;
+  int slowTicks;
 
 };
 #endif
