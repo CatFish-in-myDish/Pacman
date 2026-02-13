@@ -10,6 +10,7 @@ set(CMAKE_AUTOMOC ON)
 
 set(SOURCES
     src/AggressiveGreedyStrategy.cpp
+    src/AStarStrategy.cpp
     src/DirectionalGreedyStrategy.cpp
     src/DistanceGreedyStrategy.cpp
     src/Entity.cpp
@@ -22,10 +23,12 @@ set(SOURCES
     src/Monster.cpp
     src/Node.cpp
     src/Pacman.cpp
+    src/ScatterStrategy.cpp
 )
 
 set(HEADERS
     include/AggressiveGreedyStrategy.h
+    include/AStarStrategy.h
     include/DirectionalGreedyStrategy.h
     include/DistanceGreedyStrategy.h
     include/Entity.h
@@ -39,6 +42,7 @@ set(HEADERS
     include/Monster.h
     include/Node.h
     include/Pacman.h
+    include/ScatterStrategy.h
 )
 
 add_executable(PacmanGame ${SOURCES} ${HEADERS})

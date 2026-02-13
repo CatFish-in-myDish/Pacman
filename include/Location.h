@@ -16,6 +16,12 @@ struct Location {
   }
 
   bool operator!=(const Location &other) const { return !(*this == other); }
+
+  bool operator<(const Location &other) const {
+    if (x != other.x)
+      return x < other.x;
+    return y < other.y;
+  }
 };
 
 // Hash function for Location to use in unordered_map

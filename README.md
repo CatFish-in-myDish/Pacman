@@ -1,6 +1,6 @@
 # Graph-Based Pacman Survival Game
 
-A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-based pathfinding algorithms. The game features four distinct CPU-controlled monsters, each using a different Greedy algorithm to chase Pacman through a classic Pacman maze.
+A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-based pathfinding algorithms. The game features four distinct CPU-controlled monsters — one using **A\* pathfinding** for optimal pursuit and three using different Greedy algorithms — chasing Pacman through a classic Pacman maze.
 
 ## Game Overview
 
@@ -16,11 +16,14 @@ A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-ba
 
 Each monster uses a distinct greedy algorithm to pursue Pacman:
 
-### 1. **Distance Greedy (Red Monster - M1)**
-- **Algorithm**: Pure Euclidean distance minimization
-- **Strategy**: Chooses the neighbor position that minimizes straight-line distance to Pacman
-- **Behavior**: Most direct path, fastest approach in open areas
-- **Formula**: `d = √(dx² + dy²)`
+### 1. **A\* Pathfinding (Red Monster - M1)** ⭐ *Upgraded from Greedy*
+- **Algorithm**: A\* (A-Star) search with Manhattan distance heuristic
+- **Strategy**: Computes the guaranteed shortest path from monster to Pacman using a min-heap priority queue
+- **Behavior**: Always takes the optimal route — never gets stuck in U-shaped walls or dead ends
+- **Cost Function**: `F = G + H` where G = actual path cost, H = Manhattan distance heuristic
+- **Complexity**: O(b^d) with optimal pathfinding, compared to O(1) greedy
+- **Data Structure**: Min-heap priority queue + closed set for explored nodes
+- **Improvement**: Replaces the previous Euclidean distance greedy strategy that could get trapped by walls
 
 ### 2. **Heuristic Greedy (Pink Monster - M2)**
 - **Algorithm**: Manhattan distance heuristic
@@ -42,12 +45,12 @@ Each monster uses a distinct greedy algorithm to pursue Pacman:
 
 ### Algorithm Comparison
 
-| Monster | Color  | Distance Type | Prediction | Maze Navigation |
-|---------|--------|---------------|------------|-----------------|
-| M1      | Red    | Euclidean     | No         | Direct          |
-| M2      | Pink   | Manhattan     | No         | Grid-aligned    |
-| M3      | Cyan   | Axis-weighted | No         | Axis-priority   |
-| M4      | Orange | Euclidean     | Yes (2-step)| Intercepting   |
+| Monster | Color  | Algorithm      | Distance Type | Prediction | Maze Navigation |
+|---------|--------|----------------|---------------|------------|-----------------|
+| M1      | Red    | **A\* Search** | Manhattan (H) | No         | **Optimal path**|
+| M2      | Pink   | Greedy         | Manhattan     | No         | Grid-aligned    |
+| M3      | Cyan   | Greedy         | Axis-weighted | No         | Axis-priority   |
+| M4      | Orange | Greedy         | Euclidean     | Yes (2-step)| Intercepting   |
 
 ## 🔧 Technical Details
 
@@ -147,7 +150,7 @@ mkdir -p build && cd build && cmake .. && make && ./PacmanGame
 
 - **Pacman**: Yellow circle with animated mouth
 - **Monsters**: Classic ghost shape with wavy feet
-  - Red (M1): Distance Greedy
+  - Red (M1): A\* Pathfinding (optimal path)
   - Pink (M2): Heuristic Greedy
   - Cyan (M3): Directional Greedy
   - Orange (M4): Aggressive Greedy
@@ -169,12 +172,12 @@ Greedy algorithms are ideal for this Pacman implementation because:
 
 ### Greedy vs. Other Approaches
 
-| Approach | Time Complexity | Monster Behavior | Suitable? |
-|----------|----------------|------------------|-----------|
-| **Greedy** | O(neighbors) ≈ O(1) | Aggressive pursuers | Perfect |
-| A* Pathfinding | O(n log n) | Perfect pursuit | Too hard |
-| Random | O(1) | Unpredictable | Too easy |
-| Dynamic Programming | O(n²) | Optimal strategy | Too slow |
+| Approach | Time Complexity | Monster Behavior | Used? |
+|----------|----------------|--|------|
+| **A\* Pathfinding** | O(b^d) | Optimal shortest path | ✅ M1 (Red) |
+| **Greedy** | O(neighbors) ≈ O(1) | Aggressive local pursuit | ✅ M2, M3, M4 |
+| Random | O(1) | Unpredictable | ❌ Too easy |
+| Dynamic Programming | O(n²) | Optimal strategy | ❌ Too slow |
 
 
 ## Known Limitations
