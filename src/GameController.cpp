@@ -93,7 +93,7 @@ void GameController::initGame(bool resetScore) {
   survivedTime = 0.0;
   lightningActive = false;
   lightningTimer = 0;
-}  
+}
 
 
 void GameController::startGame() {
@@ -163,7 +163,7 @@ void GameController::update() {
     if (inside != pacmanWasInsideTerritory) {
       if (inside) {
         qDebug() << "[GhostTerritory] Pacman ENTERED ghost territory! "
-                    "Ghosts→1.2x, Pacman→1.25x";
+                    "Ghosts→0.9x, Pacman→1.1x";
       } else {
         qDebug() << "[GhostTerritory] Pacman LEFT ghost territory. "
                     "All speeds→1.0x";
@@ -172,8 +172,8 @@ void GameController::update() {
     }
 
     // Apply speed multipliers
-    double ghostMul = inside ? 1.2 : 1.0;
-    double pacMul   = inside ? 1.25 : 1.0;
+    double ghostMul = inside ? 0.9 : 1.0;
+    double pacMul   = inside ? 1.1 : 1.0;
     for (Monster *m : monsters) {
       m->setTerritoryMultiplier(ghostMul);
     }
@@ -305,7 +305,7 @@ void GameController::handleInput(const QString &key) {
               score -= 100; // Cost
               closest.first->applySlow(20); // Slow for 20 ticks
               closest.second->applySlow(20);
-              
+
               lightningActive = true;
               lightningTimer = 4; // Show for 4 ticks (approx 1 sec)
               lightningStart = closest.first->getLocation();
