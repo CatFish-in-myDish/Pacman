@@ -1,4 +1,5 @@
 #include "../include/GameController.h"
+#include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
@@ -52,9 +53,9 @@ void GameController::initGame(bool resetScore) {
 
   // Start Monsters in corners/house areas
   monsters.push_back(
-      new Monster(Location(1, 1), new DistanceGreedyStrategy(), "M1 (Dist)"));
-  monsters.push_back(new Monster(Location(26, 1),
-                                 new HeuristicGreedyStrategy(), "M2 (Heur)"));
+      new Monster(Location(1, 1), new AStarStrategy(), "M1 (A*)"));
+  monsters.push_back(
+      new Monster(Location(26, 1), new HeuristicGreedyStrategy(), "M2 (Heur)"));
   monsters.push_back(new Monster(Location(1, 29),
                                  new DirectionalGreedyStrategy(), "M3 (Dir)"));
   monsters.push_back(new Monster(Location(26, 29),
@@ -78,7 +79,7 @@ void GameController::initGame(bool resetScore) {
   running = false;
   gameOver = false;
   survivedTime = 0.0;
-}  
+}
 
 void GameController::startGame() {
   running = true;
@@ -138,7 +139,7 @@ void GameController::movePacman() {
 
   // Check if Wall
   if (Graph::isWall(nextX, nextY)) {
-      return; // Stop.
+    return; // Stop.
   }
 
   pacman->setLocation(Location(nextX, nextY));
@@ -208,7 +209,9 @@ const std::vector<Monster *> &GameController::getMonsters() const {
   return monsters;
 }
 
-const std::unordered_set<Location> &GameController::getPellets() const { return pellets; }
+const std::unordered_set<Location> &GameController::getPellets() const {
+  return pellets;
+}
 
 int GameController::getScore() const { return score; }
 
