@@ -87,7 +87,7 @@ void GameController::initGame(bool resetScore) {
   lightningActive = false;
   lightningTimer = 0;
 }  
-}
+
 
 void GameController::startGame() {
   running = true;
@@ -246,10 +246,10 @@ void GameController::handleInput(const QString &key) {
   } else if (key == "RIGHT") {
     pacman->setLastDirection(Location(1, 0));
   } else if (key == "Z") {
-      if (score >= 500 && monsters.size() >= 2) {
+      if (score >= 100 && monsters.size() >= 2) {
           std::pair<Monster*, Monster*> closest = findClosestPair(monsters);
           if (closest.first && closest.second) {
-              score -= 500; // Cost
+              score -= 100; // Cost
               closest.first->applySlow(20); // Slow for 20 ticks
               closest.second->applySlow(20);
               

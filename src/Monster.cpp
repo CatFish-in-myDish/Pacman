@@ -6,8 +6,7 @@
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
                  const std::string &monsterName)
-    : Entity(loc), strategy(strat), name(monsterName), slowTicks(0) {}
-    : Entity(loc), strategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0) {}
+    : Entity(loc), strategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0) {}
 
 Monster::~Monster() { delete strategy; }
 

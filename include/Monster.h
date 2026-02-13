@@ -24,10 +24,6 @@ public:
   void applySlow(int ticks);
   bool isSlowed() const;
 
-private:
-  int slowTicks;
-};
-
   void setMode(Mode mode);
   Mode getMode() const;
 
@@ -37,6 +33,7 @@ private:
   Mode currentMode;
   double speed;
   double moveAccumulator;
+  int slowTicks;
 
 };
 #endif
