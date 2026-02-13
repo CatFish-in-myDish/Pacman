@@ -3,7 +3,8 @@
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
-
+#include <algorithm>
+#include <cmath>
 GameController::GameController() {
   graph = nullptr;
   pacman = nullptr;
@@ -98,9 +99,40 @@ void GameController::update() {
     return;
   }
 
-  if (!running || gameOver) {
-    return;
+  // Dynamic Ghost Aggression: Assign roles based on distance
+  if (pacman) {
+    std::vector<Monster *> sortedMonsters = monsters;
+    Location pacLoc = pacman->getLocation();
+
+    std::sort(sortedMonsters.begin(), sortedMonsters.end(),
+              [pacLoc](Monster *a, Monster *b) {
+                auto distSq = [pacLoc](Location loc) {
+                  int dx = loc.x - pacLoc.x;
+                  int dy = loc.y - pacLoc.y;
+                  // Toroidal wrapping distance
+                  if (std::abs(dx) > Graph::WIDTH / 2) dx = Graph::WIDTH - std::abs(dx);
+                  if (std::abs(dy) > Graph::HEIGHT / 2) dy = Graph::HEIGHT - std::abs(dy);
+                  return dx * dx + dy * dy;
+                };
+                return distSq(a->getLocation()) < distSq(b->getLocation());
+              });
+
+    if (!sortedMonsters.empty()) {
+      // Closest -> Chase
+      sortedMonsters[0]->setMode(Monster::CHASE);
+
+      // Farthest -> Ambush (if more than 1 ghost)
+      if (sortedMonsters.size() > 1) {
+        sortedMonsters.back()->setMode(Monster::AMBUSH);
+      }
+
+      // Others -> Scatter
+      for (size_t i = 1; i < sortedMonsters.size() - 1; ++i) {
+        sortedMonsters[i]->setMode(Monster::SCATTER);
+      }
+    }
   }
+
 
   // Move Pacman
   movePacman();

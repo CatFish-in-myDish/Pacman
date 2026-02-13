@@ -22,6 +22,7 @@ set(SOURCES
     src/Monster.cpp
     src/Node.cpp
     src/Pacman.cpp
+    src/ScatterStrategy.cpp
 )
 
 set(HEADERS
@@ -39,6 +40,7 @@ set(HEADERS
     include/Monster.h
     include/Node.h
     include/Pacman.h
+    include/ScatterStrategy.h
 )
 
 add_executable(PacmanGame ${SOURCES} ${HEADERS})

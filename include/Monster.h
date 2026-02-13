@@ -7,17 +7,29 @@
 #include <string>
 
 class Monster : public Entity {
-private:
-  GreedyStrategy *strategy;
-  std::string name;
-
 public:
+  enum Mode {
+    CHASE,
+    AMBUSH,
+    SCATTER
+  };
+
   Monster(const Location &loc, GreedyStrategy *strat,
           const std::string &monsterName);
   ~Monster();
 
   void move(Graph *graph, Entity *target);
   std::string getName() const;
-};
 
+  void setMode(Mode mode);
+  Mode getMode() const;
+
+private:
+  GreedyStrategy *strategy;
+  std::string name;
+  Mode currentMode;
+  double speed;
+  double moveAccumulator;
+
+};
 #endif
