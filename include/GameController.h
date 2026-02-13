@@ -24,6 +24,14 @@ private:
   bool gameWon;
   bool gameOver;
 
+  // Chain Lightning State
+  bool lightningActive;
+  int lightningTimer;
+  Location lightningStart;
+  Location lightningEnd;
+  
+  std::pair<Monster*, Monster*> findClosestPair(const std::vector<Monster*>& monsters);
+
   void movePacman();
   void moveMonsters();
   void checkCollisions();
@@ -46,6 +54,9 @@ public:
   bool isGameWon() const;
   bool isGameOver() const;
   double getSurvivedTime() const;
+
+  bool isLightningActive() const { return lightningActive; }
+  std::pair<Location, Location> getLightningArc() const { return {lightningStart, lightningEnd}; }
 };
 
 #endif

@@ -135,6 +135,14 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
     painter.drawPath(path);
 
+    // Visual indicator for SLOWED state
+    if (monster->isSlowed()) {
+        painter.setPen(QPen(Qt::white, 2));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawEllipse(mx - 2, my - 2, TILE_SIZE + 4, TILE_SIZE + 4);
+        painter.setPen(Qt::NoPen);
+    }
+
     // Eyes (White) - Fixed looking leftish for now
     painter.setBrush(Qt::white);
     int eyeSize = TILE_SIZE / 3;
@@ -147,6 +155,24 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int pupilSize = eyeSize / 2;
     painter.drawEllipse(mx + 4 + 2, eyeY + 2, pupilSize, pupilSize);
     painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize + 2, eyeY + 2, pupilSize, pupilSize);
+  }
+
+  // 5. Draw Lightning Bolt
+  if (controller->isLightningActive()) {
+      auto arc = controller->getLightningArc();
+      int x1 = arc.first.x * TILE_SIZE + TILE_SIZE / 2;
+      int y1 = arc.first.y * TILE_SIZE + TILE_SIZE / 2;
+      int x2 = arc.second.x * TILE_SIZE + TILE_SIZE / 2;
+      int y2 = arc.second.y * TILE_SIZE + TILE_SIZE / 2;
+
+      QPen boltPen(QColor(100, 200, 255), 4);
+      boltPen.setJoinStyle(Qt::RoundJoin);
+      painter.setPen(boltPen);
+      painter.drawLine(x1, y1, x2, y2);
+      
+      // Inner core
+      painter.setPen(QPen(Qt::white, 2));
+      painter.drawLine(x1, y1, x2, y2);
   }
 
   // HUD: Score & Round
@@ -193,6 +219,9 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
     break;
   case Qt::Key_R:
     key = "R";
+    break;
+  case Qt::Key_Z:
+    key = "Z";
     break;
   default:
     return;

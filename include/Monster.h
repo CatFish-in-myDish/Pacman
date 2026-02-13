@@ -18,6 +18,12 @@ public:
 
   void move(Graph *graph, Entity *target);
   std::string getName() const;
+
+  void applySlow(int ticks);
+  bool isSlowed() const;
+
+private:
+  int slowTicks;
 };
 
 #endif
