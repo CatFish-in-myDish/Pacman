@@ -2,6 +2,7 @@
 #define GAMECONTROLLER_H
 
 #include "Graph.h"
+#include "GhostTerritory.h"
 #include "Monster.h"
 #include "Pacman.h"
 #include <QString>
@@ -23,6 +24,8 @@ private:
   std::chrono::steady_clock::time_point winTime;
   bool gameWon;
   bool gameOver;
+  GhostTerritory *ghostTerritory;
+  bool pacmanWasInsideTerritory; // for debug logging state changes
 
   void movePacman();
   void moveMonsters();

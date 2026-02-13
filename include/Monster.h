@@ -24,12 +24,16 @@ public:
   void setMode(Mode mode);
   Mode getMode() const;
 
+  void setTerritoryMultiplier(double m);
+  double getTerritoryMultiplier() const;
+
 private:
   GreedyStrategy *strategy;
   std::string name;
   Mode currentMode;
   double speed;
   double moveAccumulator;
+  double territoryMultiplier;
 
 };
 #endif

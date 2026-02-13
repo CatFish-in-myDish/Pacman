@@ -6,6 +6,16 @@
 class Pacman : public Entity {
 public:
   Pacman(const Location &loc);
+
+  void setSpeed(double s);
+  double getSpeed() const;
+  double getMoveAccumulator() const;
+  void addMoveAccumulator(double v);
+  void resetMoveStep();
+
+private:
+  double speed;
+  double moveAccumulator;
 };
 
 #endif
