@@ -169,7 +169,7 @@ void GameController::update() {
     if (inside != pacmanWasInsideTerritory) {
       if (inside) {
         qDebug() << "[GhostTerritory] Pacman ENTERED ghost territory! "
-                    "Ghosts→0.9x, Pacman→1.1x";
+                    "Ghosts→0.95x, Pacman→1.15x";
       } else {
         qDebug() << "[GhostTerritory] Pacman LEFT ghost territory. "
                     "All speeds→1.0x";
@@ -178,8 +178,8 @@ void GameController::update() {
     }
 
     // Apply speed multipliers
-    double ghostMul = inside ? 0.9 : 1.0;
-    double pacMul   = inside ? 1.1 : 1.0;
+    double ghostMul = inside ? 0.95 : 1.0;
+    double pacMul   = inside ? 1.15 : 1.0;
     for (Monster *m : monsters) {
       m->setTerritoryMultiplier(ghostMul);
     }

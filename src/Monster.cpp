@@ -55,12 +55,12 @@ void Monster::setMode(Mode mode) {
     case CHASE:
       // Keep original algorithm, just increase speed
       strategy = originalStrategy;
-      speed = 1.5;
+      speed = 1.35;
       break;
     case AMBUSH:
       // Keep original algorithm, medium speed
       strategy = originalStrategy;
-      speed = 1.25;
+      speed = 1.15;
       break;
     case SCATTER:
       // Only mode that replaces strategy (used during lightning)
