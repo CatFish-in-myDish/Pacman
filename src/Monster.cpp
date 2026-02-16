@@ -1,4 +1,5 @@
 #include "../include/Monster.h"
+#include <algorithm>
 
 #include "../include/AggressiveGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
@@ -6,12 +7,20 @@
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
                  const std::string &monsterName)
-    : Entity(loc), strategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0), territoryMultiplier(1.0) {}
+    : Entity(loc), strategy(strat), originalStrategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0), territoryMultiplier(1.0) {}
 
-Monster::~Monster() { delete strategy; }
+Monster::~Monster() {
+  if (strategy != originalStrategy) {
+    delete strategy;
+  }
+  delete originalStrategy;
+}
 
 void Monster::move(Graph *graph, Entity *target) {
-  moveAccumulator += speed * territoryMultiplier;
+  // Cap effective speed at 1.5
+  double effectiveSpeed = std::min(speed * territoryMultiplier, 1.5);
+  moveAccumulator += effectiveSpeed;
+
   if (slowTicks > 0) {
     slowTicks--;
     if (slowTicks % 2 != 0) {
@@ -19,9 +28,6 @@ void Monster::move(Graph *graph, Entity *target) {
     }
   }
 
-  Location nextLoc = strategy->findNextMove(graph, this, target);
-  setLocation(nextLoc);
-  moveAccumulator += speed;
   while (moveAccumulator >= 1.0) {
     Location nextLoc = strategy->findNextMove(graph, this, target);
     setLocation(nextLoc);
@@ -39,28 +45,31 @@ void Monster::setMode(Mode mode) {
     return;
   }
 
-  GreedyStrategy* newStrategy = nullptr;
+  // Clean up temporary scatter strategy if we were in SCATTER
+  if (strategy != originalStrategy) {
+    delete strategy;
+    strategy = originalStrategy;
+  }
 
   switch (mode) {
     case CHASE:
-      newStrategy = new DistanceGreedyStrategy();
+      // Keep original algorithm, just increase speed
+      strategy = originalStrategy;
       speed = 1.5;
       break;
     case AMBUSH:
-      newStrategy = new AggressiveGreedyStrategy();
+      // Keep original algorithm, medium speed
+      strategy = originalStrategy;
       speed = 1.25;
       break;
     case SCATTER:
-      newStrategy = new ScatterStrategy();
+      // Only mode that replaces strategy (used during lightning)
+      strategy = new ScatterStrategy();
       speed = 1.0;
       break;
   }
 
-  if (newStrategy) {
-    delete strategy;
-    strategy = newStrategy;
-    currentMode = mode;
-  }
+  currentMode = mode;
 }
 
 Monster::Mode Monster::getMode() const { return currentMode; }

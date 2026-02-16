@@ -32,6 +32,7 @@ public:
 
 private:
   GreedyStrategy *strategy;
+  GreedyStrategy *originalStrategy;
   std::string name;
   Mode currentMode;
   double speed;

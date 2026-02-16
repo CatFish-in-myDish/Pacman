@@ -140,17 +140,15 @@ void GameController::update() {
                 });
 
       if (!sortedMonsters.empty()) {
-        // Closest -> Chase
-        sortedMonsters[0]->setMode(Monster::CHASE);
-
-        // Farthest -> Ambush (if more than 1 ghost)
-        if (sortedMonsters.size() > 1) {
-          sortedMonsters.back()->setMode(Monster::AMBUSH);
-        }
-
-        // Others -> Scatter
-        for (size_t i = 1; i < sortedMonsters.size() - 1; ++i) {
-          sortedMonsters[i]->setMode(Monster::SCATTER);
+        // Closest half → Chase (fast, using original algorithm)
+        // Farthest half → Ambush (medium speed, using original algorithm)
+        size_t half = sortedMonsters.size() / 2;
+        for (size_t i = 0; i < sortedMonsters.size(); ++i) {
+          if (i < half) {
+            sortedMonsters[i]->setMode(Monster::CHASE);
+          } else {
+            sortedMonsters[i]->setMode(Monster::AMBUSH);
+          }
         }
       }
     }
