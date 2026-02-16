@@ -50,7 +50,7 @@ void GameController::initGame(bool resetScore) {
   ghostTerritory = new GhostTerritory();
   pacmanWasInsideTerritory = false;
 
-  // Initialize pellets on all path tiles
+  // Initialise pellets on all path tiles
   pellets.clear();
   for (int x = 0; x < Graph::WIDTH; ++x) {
     for (int y = 0; y < Graph::HEIGHT; ++y) {

@@ -1,6 +1,6 @@
 #include "../include/Graph.h"
 
-Graph::Graph() { initializeGrid(); }
+Graph::Graph() { initialiseGrid(); }
 
 Graph::~Graph() {
   // Clean up all dynamically allocated nodes
@@ -76,7 +76,7 @@ static const int MAP[Graph::HEIGHT][Graph::WIDTH] = {
     {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}};
 
-void Graph::initializeGrid() {
+void Graph::initialiseGrid() {
   // 1. Create nodes for PATHS only
   for (int x = 0; x < WIDTH; x++) {
     for (int y = 0; y < HEIGHT; y++) {

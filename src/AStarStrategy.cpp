@@ -50,7 +50,7 @@ Location AStarStrategy::findNextMove(Graph *graph, Entity *monster,
   // closedSet: nodes already fully evaluated
   std::unordered_set<Location> closedSet;
 
-  // Initialize start node
+  // Initialise start node
   gCost[startLoc] = 0;
   int startH = heuristic(startLoc, goalLoc);
   openSet.push({startH, startLoc});

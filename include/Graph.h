@@ -13,7 +13,7 @@ public:
 private:
   std::unordered_map<Location, Node *> nodes;
 
-  void initializeGrid();
+  void initialiseGrid();
   void addNeighbor(Node *current, int nx, int ny);
 
 public:
