@@ -1,6 +1,7 @@
 #include "../include/Pacman.h"
 
-Pacman::Pacman(const Location &loc) : Entity(loc), speed(1.0), moveAccumulator(0.0) {}
+Pacman::Pacman(const Location &loc)
+    : Entity(loc), speed(1.0), moveAccumulator(0.0) {}
 
 void Pacman::setSpeed(double s) { speed = s; }
 

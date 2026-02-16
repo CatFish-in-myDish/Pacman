@@ -7,7 +7,7 @@ GhostTerritory::GhostTerritory() : pacmanInside(false) {}
 
 // ─── Cross product of vectors (O→A) × (O→B) ────────────────────────────────
 long long GhostTerritory::cross(const Location &O, const Location &A,
-                                 const Location &B) {
+                                const Location &B) {
   return (long long)(A.x - O.x) * (B.y - O.y) -
          (long long)(A.y - O.y) * (B.x - O.x);
 }
@@ -29,16 +29,14 @@ GhostTerritory::quickHull(const std::vector<Location> &points) {
   }
 
   // Find leftmost and rightmost points
-  auto minIt =
-      std::min_element(unique.begin(), unique.end(),
-                       [](const Location &a, const Location &b) {
-                         return (a.x < b.x) || (a.x == b.x && a.y < b.y);
-                       });
-  auto maxIt =
-      std::max_element(unique.begin(), unique.end(),
-                       [](const Location &a, const Location &b) {
-                         return (a.x < b.x) || (a.x == b.x && a.y < b.y);
-                       });
+  auto minIt = std::min_element(
+      unique.begin(), unique.end(), [](const Location &a, const Location &b) {
+        return (a.x < b.x) || (a.x == b.x && a.y < b.y);
+      });
+  auto maxIt = std::max_element(
+      unique.begin(), unique.end(), [](const Location &a, const Location &b) {
+        return (a.x < b.x) || (a.x == b.x && a.y < b.y);
+      });
 
   Location A = *minIt;
   Location B = *maxIt;
@@ -77,8 +75,8 @@ GhostTerritory::quickHull(const std::vector<Location> &points) {
 
 // ─── Recursive QuickHull helper ─────────────────────────────────────────────
 void GhostTerritory::quickHullRecurse(const std::vector<Location> &points,
-                                       const Location &A, const Location &B,
-                                       std::vector<Location> &hullOut) {
+                                      const Location &A, const Location &B,
+                                      std::vector<Location> &hullOut) {
   if (points.empty()) {
     return;
   }
@@ -120,8 +118,8 @@ void GhostTerritory::quickHullRecurse(const std::vector<Location> &points,
 }
 
 // ─── Point-in-convex-polygon (cross-product method) ─────────────────────────
-bool GhostTerritory::isInsideConvexPolygon(
-    const std::vector<Location> &polygon, const Location &point) {
+bool GhostTerritory::isInsideConvexPolygon(const std::vector<Location> &polygon,
+                                           const Location &point) {
   int n = static_cast<int>(polygon.size());
   if (n < 3) {
     return false;
@@ -152,7 +150,7 @@ bool GhostTerritory::isInsideConvexPolygon(
 
 // ─── Public API ─────────────────────────────────────────────────────────────
 void GhostTerritory::update(const std::vector<Location> &ghostPositions,
-                             const Location &pacmanPos) {
+                            const Location &pacmanPos) {
   hull = quickHull(ghostPositions);
 
   if (hull.size() < 3) {

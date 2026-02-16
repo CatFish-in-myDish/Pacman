@@ -5,11 +5,12 @@
 #include <limits>
 
 Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster,
-                                        Entity *target) {
+                                       Entity *target) {
   // TODO: Implement specific scatter condition/logic here.
-  // For now, we target the top-left corner (0,0) as a placeholder scatter point.
-  Location targetLoc(0, 0); 
-  
+  // For now, we target the top-left corner (0,0) as a placeholder scatter
+  // point.
+  Location targetLoc(0, 0);
+
   Location currentLoc = monster->getLocation();
   Node *currentNode = graph->getNode(currentLoc);
   const auto &neighbors = currentNode->getNeighbors();

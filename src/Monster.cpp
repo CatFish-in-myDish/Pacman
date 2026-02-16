@@ -7,7 +7,9 @@
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
                  const std::string &monsterName)
-    : Entity(loc), strategy(strat), originalStrategy(strat), name(monsterName), currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0), territoryMultiplier(1.0) {}
+    : Entity(loc), strategy(strat), originalStrategy(strat), name(monsterName),
+      currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0),
+      territoryMultiplier(1.0) {}
 
 Monster::~Monster() {
   if (strategy != originalStrategy) {
@@ -52,21 +54,21 @@ void Monster::setMode(Mode mode) {
   }
 
   switch (mode) {
-    case CHASE:
-      // Keep original algorithm, just increase speed
-      strategy = originalStrategy;
-      speed = 1.35;
-      break;
-    case AMBUSH:
-      // Keep original algorithm, medium speed
-      strategy = originalStrategy;
-      speed = 1.15;
-      break;
-    case SCATTER:
-      // Only mode that replaces strategy (used during lightning)
-      strategy = new ScatterStrategy();
-      speed = 1.0;
-      break;
+  case CHASE:
+    // Keep original algorithm, just increase speed
+    strategy = originalStrategy;
+    speed = 1.35;
+    break;
+  case AMBUSH:
+    // Keep original algorithm, medium speed
+    strategy = originalStrategy;
+    speed = 1.15;
+    break;
+  case SCATTER:
+    // Only mode that replaces strategy (used during lightning)
+    strategy = new ScatterStrategy();
+    speed = 1.0;
+    break;
   }
 
   currentMode = mode;

@@ -53,7 +53,8 @@ Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
     }
 
     // Score calculation: heavily weight the major axis distance
-    // This makes the monster prioritize closing the gap on the larger difference
+    // This makes the monster prioritize closing the gap on the larger
+    // difference
     double score;
     if (preferHorizontal) {
       score = std::abs(nDx) * 1000 + std::abs(nDy); // Prioritize X axis
