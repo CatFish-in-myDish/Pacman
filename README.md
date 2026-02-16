@@ -1,189 +1,237 @@
-# Graph-Based Pacman Survival Game
+<p align="center">
+  <h1 align="center">🎮 Graph-Based Pacman Survival Game</h1>
+  <p align="center">
+    <strong>A classic Pacman reimagining powered by graph theory, advanced AI pathfinding, and computational geometry</strong>
+  </p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=cplusplus&logoColor=white" alt="C++17"/>
+    <img src="https://img.shields.io/badge/Qt-5-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="Qt5"/>
+    <img src="https://img.shields.io/badge/CMake-3.10+-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake"/>
+    <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge" alt="Platform"/>
+    <img src="https://img.shields.io/badge/license-AGPL--3.0-blue?style=for-the-badge" alt="License"/>
+  </p>
+</p>
 
-A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-based pathfinding algorithms. The game features four distinct CPU-controlled monsters — one using **A\* pathfinding** for optimal pursuit and three using different Greedy algorithms — chasing Pacman through a classic Pacman maze.
+> **Navigate a haunted maze, outsmart four uniquely intelligent ghosts, and unleash chain lightning — all on a graph-powered game engine built from scratch in C++17.**
 
-## Game Overview
+## ✨ Feature Highlights
 
-**Objective**: Survive as long as possible while being chased by four intelligent monsters!
+- 🧠 **5 Distinct AI Strategies** — A\* Pathfinding, Manhattan Heuristic, Axis-Weighted Directional, Predictive Pursuit, and Euclidean Greedy
+- ⚡ **Chain Lightning Ability** — Spend score to slow ghosts using a closest-pair divide & conquer algorithm
+- 🔺 **Ghost Territory System** — QuickHull convex hull detects encirclement and dynamically adjusts speeds
+- 👻 **Dynamic Role Assignment** — Ghosts switch between Chase, Ambush, and Scatter modes every tick
+- 🏆 **Multi-Round Progression** — Clear all pellets to advance rounds with cumulative scoring
+- 🎨 **Faithful Retro Rendering** — Animated Pacman mouth, classic ghost sprites, and HUD overlays via Qt5
+- 🗺️ **Classic 28×31 Maze** — Hardcoded authentic Pacman layout with tunnel wrapping
 
-- **Grid Size**: Classic 28×31 Pacman maze with tunnel wrapping on row 14
-- **Controls**: Arrow keys to move Pacman
-- **Goal**: Maximize survival time by evading the monsters
-- **Game Over**: When any monster catches Pacman
+## 🕹️ Game Overview
 
+### Objective
 
-## Greedy Algorithms
+Eat **every pellet** on the 28×31 maze while avoiding four ghosts, each driven by a unique AI algorithm. Use the **Chain Lightning** ability strategically to slow down pursuing ghosts and survive long enough to clear the board.
 
-Each monster uses a distinct greedy algorithm to pursue Pacman:
+### How to Play
 
-### 1. **A\* Pathfinding (Red Monster - M1)** ⭐ *Upgraded from Greedy*
-- **Algorithm**: A\* (A-Star) search with Manhattan distance heuristic
-- **Strategy**: Computes the guaranteed shortest path from monster to Pacman using a min-heap priority queue
-- **Behavior**: Always takes the optimal route — never gets stuck in U-shaped walls or dead ends
-- **Cost Function**: `F = G + H` where G = actual path cost, H = Manhattan distance heuristic
-- **Complexity**: O(b^d) with optimal pathfinding, compared to O(1) greedy
-- **Data Structure**: Min-heap priority queue + closed set for explored nodes
-- **Improvement**: Replaces the previous Euclidean distance greedy strategy that could get trapped by walls
+1. **Launch** the game — you'll see the maze with pellets on every walkable tile
+2. **Press any arrow key** to start — Pacman begins moving and ghosts activate
+3. **Eat pellets** (+10 points each) to build your score
+4. **Avoid ghosts** — contact with any ghost ends the game
+5. **Use Chain Lightning** (press `Z`) when your score ≥ 100 to slow the two closest ghosts
+6. **Clear all pellets** to win the round and advance to the next
 
-### 2. **Heuristic Greedy (Pink Monster - M2)**
-- **Algorithm**: Manhattan distance heuristic
-- **Strategy**: Minimizes grid-based distance (sum of axis distances)
-- **Behavior**: Better at navigating maze corners, slightly different pathing than M1
-- **Formula**: `d = |dx| + |dy|`
+### 🎛️ Controls
 
-### 3. **Directional Greedy (Cyan Monster - M3)**
-- **Algorithm**: Major axis prioritization
-- **Strategy**: Identifies the axis with larger distance gap and prioritizes closing that gap first
-- **Behavior**: More predictable movement patterns, tends to align on one axis before switching
-- **Logic**: If `|dx| > |dy|`, prioritize horizontal movement; otherwise prioritize vertical
+| Key | Action |
+|-----|--------|
+| `↑` `↓` `←` `→` | Move Pacman (also starts the game on first press) |
+| `Z` | Chain Lightning — costs 100 score, slows 2 closest ghosts |
+| `R` | Restart — full reset after Game Over, next round after Win |
 
-### 4. **Aggressive Greedy (Orange Monster - M4)**
-- **Algorithm**: Predictive positioning
-- **Strategy**: Predicts Pacman's future position (2 steps ahead) based on current direction, then moves toward predicted location
-- **Behavior**: Anticipates player movement, can cut off escape routes
-- **Advanced**: Uses velocity-based prediction for interception
+### Game States
 
-### Algorithm Comparison
+| State | Trigger | Display |
+|-------|---------|---------|
+| **Playing** | First arrow key press | Active maze with HUD |
+| **You Win!** | All pellets eaten | Green overlay (48pt), auto-advances in 2s |
+| **Game Over** | Ghost catches Pacman | Red overlay (48pt), press `R` to restart |
 
-| Monster | Color  | Algorithm      | Distance Type | Prediction | Maze Navigation |
-|---------|--------|----------------|---------------|------------|-----------------|
-| M1      | Red    | **A\* Search** | Manhattan (H) | No         | **Optimal path**|
-| M2      | Pink   | Greedy         | Manhattan     | No         | Grid-aligned    |
-| M3      | Cyan   | Greedy         | Axis-weighted | No         | Axis-priority   |
-| M4      | Orange | Greedy         | Euclidean     | Yes (2-step)| Intercepting   |
+## 👻 Ghost AI Deep Dive
 
-## 🔧 Technical Details
+Each of the four ghosts employs a **unique pathfinding strategy**, creating diverse and challenging pursuit patterns. Ghost behavior is further modified by a **dynamic role assignment system** that re-evaluates every game tick.
 
-### Graph Representation
-- **Nodes**: Each walkable cell in the maze is a graph node
-- **Edges**: Nodes are connected to their valid neighbors (up, down, left, right)
-- **Tunnel**: Row 14 has special tunnel edges connecting left and right sides
-- **Data Structure**: `unordered_map<Location, Node*>` for O(1) node lookup
+### The Four Ghosts
 
-### Movement System
-- **Update Rate**: 4 updates per second (250ms interval)
-- **Toroidal Wrapping**: Only on tunnel row (row 14), not entire grid
-- **Collision Detection**: Position-based, checked every frame
-- **Input Handling**: Direction persists until changed (classic Pacman style)
+| Ghost | Color | Start Position | Strategy | Personality |
+|-------|-------|----------------|----------|-------------|
+| **M1** | 🔴 Red | (1, 1) | A\* Pathfinding | Optimal pursuer — always finds the shortest path |
+| **M2** | 🩷 Pink | (26, 1) | Heuristic Greedy | Manhattan-guided — efficient axis-aligned chaser |
+| **M3** | 🩵 Cyan | (1, 29) | Directional Greedy | Axis-dominant — predictable but fast corridor hunter |
+| **M4** | 🟠 Orange | (26, 29) | Aggressive Greedy | Predictive — targets where Pacman *will* be |
 
-### Object-Oriented Design
-- **Entity**: Abstract base class for all movable objects (Pacman, Monsters)
-- **Strategy Pattern**: Greedy algorithms implemented as interchangeable strategies
-- **Separation of Concerns**: Game logic (Controller) separated from rendering (Widget)
+### Strategy Breakdown
 
-## Requirements
+#### 🔴 A\* Pathfinding (Red Ghost)
 
-- **C++ Compiler**: Supporting C++17 or later
-- **CMake**: Version 3.10 or higher
-- **Qt5**: Widgets module
-- **OS**: Linux, macOS, or Windows
+The gold standard of pathfinding. Guarantees the **shortest path** on every move.
 
-## Building and Running
-
-### Install Dependencies
-
-**Ubuntu/Debian:**
-```bash
-sudo apt-get install build-essential cmake qt5-default libqt5widgets5
+```cpp
+// Min-heap priority queue with F = G + H cost function
+// Manhattan distance heuristic (admissible for 4-connected grid)
+Location AStarStrategy::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
-**Fedora:**
-```bash
-sudo dnf install gcc-c++ cmake qt5-qtbase-devel
+- Uses `std::priority_queue` with `std::greater` (min-heap)
+- Accounts for **toroidal wrapping** in heuristic calculation
+- Maintains `gCost` map, `parent` map, and `closedSet`
+- Returns the **first step** of the optimal path via backtracking
+
+#### 🩷 Heuristic Greedy (Pink Ghost)
+
+Evaluates all neighbors and picks the one with **minimum Manhattan distance** to Pacman.
+
+```cpp
+// Manhattan distance: d = |dx| + |dy| (with toroidal wrapping)
+Location HeuristicGreedyStrategy::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
-**macOS (using Homebrew):**
-```bash
-brew install cmake qt@5
+- Simple yet effective for corridor-heavy mazes
+- Handles toroidal wrapping for accurate distance calculation
+
+#### 🩵 Directional Greedy (Cyan Ghost)
+
+Prioritses closing distance along the **major axis** first, creating predictable axis-aligned movement.
+
+```cpp
+// Weighted scoring: major_axis_distance × 1000 + minor_axis_distance
+Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
-### Build Instructions
+- Identifies major axis (larger of |dx| vs |dy|)
+- 1000× multiplier ensures dominant axis is resolved first
+- Produces highly predictable but effective corridor pursuit
 
-1. **Clone or navigate to the project directory:**
-```bash
-cd pacman
+#### 🟠 Aggressive Greedy (Orange Ghost)
+
+The most dangerous ghost — it targets **where Pacman will be**, not where he is.
+
+```cpp
+// Predicts Pacman's position 2 steps ahead
+// predicted = ((pos + dir*2) % SIZE + SIZE) % SIZE
+Location AggressiveGreedyStrategy::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
-2. **Create build directory:**
-```bash
-mkdir build
-cd build
+- Projects Pacman's position 2 ticks into the future based on current direction
+- Uses modular arithmetic for wrapping: `((x + dir*2) % WIDTH + WIDTH) % WIDTH`
+- Selects neighbor closest (Euclidean) to the **predicted** position
+
+#### 🏠 Scatter Strategy (All Ghosts — during Lightning)
+
+During chain lightning, all ghosts retreat toward corner `(0, 0)`.
+
+```cpp
+Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
-3. **Generate build files with CMake:**
-```bash
-cmake ..
+- Uses Euclidean distance to scatter target
+- Overrides normal strategy during lightning events
+
+### Strategy Comparison
+
+| Strategy | Optimality | Complexity | Predictability | Danger Level |
+|----------|-----------|------------|----------------|--------------|
+| A\* Pathfinding | ✅ Optimal | O(V log V) | Low | ⭐⭐⭐⭐⭐ |
+| Heuristic Greedy | ❌ Local | O(k) | Medium | ⭐⭐⭐ |
+| Directional Greedy | ❌ Local | O(k) | High | ⭐⭐ |
+| Aggressive Greedy | ❌ Local | O(k) | Low | ⭐⭐⭐⭐ |
+| Distance Greedy | ❌ Local | O(k) | Medium | ⭐⭐⭐ |
+| Scatter | N/A | O(k) | High | ⭐ |
+
+> *k = number of neighbors (≤ 4 in a grid maze)*
+
+## ⚡ Advanced Game Mechanics
+
+### Chain Lightning
+
+A powerful offensive ability that punishes clustered ghosts.
+
+| Property | Value |
+|----------|-------|
+| **Activation** | Press `Z` |
+| **Cost** | 100 score points |
+| **Target Selection** | Closest pair of ghosts (divide & conquer algorithm) |
+| **Effect** | Slows 2 targeted ghosts for 20 ticks (skip every other move) |
+| **Mode Override** | Forces **all** ghosts into SCATTER mode |
+| **Visual** | Blue-white lightning bolt connecting affected ghosts |
+| **Duration** | Lightning visual lasts 8 ticks (~2 seconds) |
+
+### 🔺 Ghost Territory System (Convex Hull)
+
+The game computes a **convex hull** around all ghost positions every frame using the **QuickHull** algorithm.
+
+**When Pacman is inside the ghost hull:**
+
+| Entity | Speed Modifier |
+|--------|---------------|
+| Ghosts | Slowed to **0.95×** |
+| Pacman | Boosted to **1.15×** |
+
+**Algorithm Details:**
+- QuickHull divide & conquer: find leftmost/rightmost → partition upper/lower → recurse
+- Cross-product test for point sidedness: `(A→B) × (A→P)`
+- Point-in-convex-polygon via consistent cross-product winding
+- Requires ≥ 3 unique, non-collinear ghost positions for a valid hull
+- **Complexity:** O(N log N) average
+
+### 👻 Dynamic Role Assignment
+
+Ghost roles are re-evaluated **every game tick** based on proximity to Pacman:
+
+```
+Sort ghosts by squared distance to Pacman (toroidal)
+├── Closest 50%  → CHASE mode  (speed: 1.35×)
+└── Farthest 50% → AMBUSH mode (speed: 1.15×)
 ```
 
-4. **Compile the project:**
-```bash
-make
-```
+During chain lightning, all ghosts switch to **SCATTER mode** (speed: 1.0×).
 
-5. **Run the game:**
-```bash
-./PacmanGame
-```
+| Mode | Speed | Behavior |
+|------|-------|----------|
+| **CHASE** | 1.35× | Uses original AI strategy, aggressively pursues |
+| **AMBUSH** | 1.15× | Uses original AI strategy, moderate pursuit |
+| **SCATTER** | 1.0× | Overrides to ScatterStrategy, flees to corner |
 
-### Quick Build (One-liner)
-```bash
-mkdir -p build && cd build && cmake .. && make && ./PacmanGame
-```
+> **Speed Cap:** Effective speed is hard-capped at **1.5×** — `std::min(speed * territoryMultiplier, 1.5)`
 
-## How to Play
+## 📊 Algorithms & Complexity
 
-1. **Start the game**: The game window will open showing the maze
-2. **Begin playing**: Press any arrow key to start the timer and begin movement
-3. **Move Pacman**: Use arrow keys (↑ ↓ ← →) to navigate
-4. **Survive**: Avoid all four monsters for as long as possible
-5. **Game Over**: When caught, your survival time is displayed
-6. **Restart**: Press `R` to restart after game over
+| Algorithm | Used For | Time Complexity | Space Complexity |
+|-----------|----------|----------------|-----------------|
+| **A\* Pathfinding** | Red ghost pathfinding | O(V log V) | O(V) |
+| **Manhattan Distance** | Heuristic greedy evaluation | O(1) | O(1) |
+| **Euclidean Distance** | Distance/Aggressive greedy, territory | O(1) | O(1) |
+| **QuickHull** | Ghost territory convex hull | O(N log N) avg | O(N) |
+| **Point-in-Polygon** | Testing if Pacman is inside hull | O(N) | O(1) |
+| **Closest Pair of Points** | Chain lightning target selection | O(N log N) | O(N) |
+| **Graph BFS/Adjacency** | Maze representation & traversal | O(V + E) | O(V + E) |
 
-### Controls
-- `↑` - Move Up
-- `↓` - Move Down
-- `←` - Move Left
-- `→` - Move Right
-- `R` - Restart game (after game over)
+> *V = walkable tiles (~368), E = edges (~4V), N = number of ghosts (4)*
 
-## Visual Design
+## 🧩 Data Structures
 
-- **Pacman**: Yellow circle with animated mouth
-- **Monsters**: Classic ghost shape with wavy feet
-  - Red (M1): A\* Pathfinding (optimal path)
-  - Pink (M2): Heuristic Greedy
-  - Cyan (M3): Directional Greedy
-  - Orange (M4): Aggressive Greedy
-- **Walls**: Blue blocks forming the classic Pacman maze
-- **Background**: Black
-- **Status Bar**: Shows survival time at the top
+| Structure | Type | Purpose |
+|-----------|------|---------|
+| **Maze Graph** | `unordered_map<Location, Node*>` | O(1) node lookup by coordinate |
+| **Node Adjacency** | `vector<Node*>` | Neighbor list per walkable tile |
+| **Pellet Set** | `unordered_set<Location>` | Fast membership check for pellet collection |
+| **A\* Open Set** | `priority_queue` (min-heap) | Frontier management for A\* search |
+| **A\* Cost Maps** | `unordered_map<Location, double>` | g-cost and parent tracking |
+| **Convex Hull** | `vector<Location>` | Ghost territory polygon vertices |
+| **Location Hash** | `std::hash<Location>` specialisation | XOR-shift hash for unordered containers |
 
-## Algorithm Justification
+## 📄 License
 
-### Why Greedy Algorithms?
+This project is licensed under the **AGPL-3.0 License** — see the [LICENSE](LICENSE) file for details.
 
-Greedy algorithms are ideal for this Pacman implementation because:
-
-1. **Real-time Performance**: O(n) complexity where n = number of neighbors (max 4), ensuring smooth gameplay
-2. **Believable AI**: Creates engaging, somewhat-predictable monster behavior that feels fair to players
-3. **Variety**: Different greedy heuristics create distinct monster personalities
-4. **Local Optimization**: Choosing the locally best move at each step without global pathfinding overhead
-5. **No Backtracking Needed**: Monsters continuously pursue; they don't need to reconsider past decisions
-
-### Greedy vs. Other Approaches
-
-| Approach | Time Complexity | Monster Behavior | Used? |
-|----------|----------------|--|------|
-| **A\* Pathfinding** | O(b^d) | Optimal shortest path | ✅ M1 (Red) |
-| **Greedy** | O(neighbors) ≈ O(1) | Aggressive local pursuit | ✅ M2, M3, M4 |
-| Random | O(1) | Unpredictable | ❌ Too easy |
-| Dynamic Programming | O(n²) | Optimal strategy | ❌ Too slow |
-
-
-## Known Limitations
-
-1. **No pellets/scoring**: Survival time is the only metric (not classic Pacman gameplay)
-2. **No power pellets**: Monsters cannot be eaten
-3. **Fixed difficulty**: Monsters don't speed up over time
-4. **Static maze**: No level progression
-5. **Partial toroidal wrapping**: Only tunnel on row 14, not full wraparound
+<p align="center">
+  <sub>Built with 💛 in C++17 • Powered by Qt5 • Haunted by Graph Algorithms</sub>
+</p>
