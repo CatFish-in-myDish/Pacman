@@ -1,18 +1,9 @@
 <p align="center">
-  <h1 align="center">🎮 Graph-Based Pacman Survival Game</h1>
+  <h1 align="center">Graph-Based Pacman Survival Game</h1>
   <p align="center">
-    <strong>A classic Pacman reimagining powered by graph theory, advanced AI pathfinding, and computational geometry</strong>
-  </p>
-  <p align="center">
-    <img src="https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=cplusplus&logoColor=white" alt="C++17"/>
-    <img src="https://img.shields.io/badge/Qt-5-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="Qt5"/>
-    <img src="https://img.shields.io/badge/CMake-3.10+-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake"/>
-    <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge" alt="Platform"/>
-    <img src="https://img.shields.io/badge/license-AGPL--3.0-blue?style=for-the-badge" alt="License"/>
+    <strong>A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-based pathfinding algorithms and computational geometry</strong>
   </p>
 </p>
-
-> **Navigate a haunted maze, outsmart four uniquely intelligent ghosts, and unleash chain lightning — all on a graph-powered game engine built from scratch in C++17.**
 
 ## Feature Highlights
 
