@@ -1,3 +1,13 @@
+/**
+ * Represents a ghost/monster entity in the game.
+ *
+ * This class handles monster movement, strategy switching (Chase, Ambush, Scatter),
+ * speed management, and special effects like being slowed or territory buffs.
+ *
+ * Time Complexity:
+ * - move(): O(1) assuming the strategy's findNextMove is efficient.
+ * - setMode(): O(1).
+ */
 #include "../include/Monster.h"
 #include <algorithm>
 

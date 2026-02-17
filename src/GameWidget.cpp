@@ -1,3 +1,10 @@
+/**
+ * Handles the rendering of the game state using Qt's QPainter.
+ *
+ * This class draws the maze, Pacman, monsters, pellets, and other visual elements.
+ * It also handles keyboard input for controlling Pacman.
+ *
+ */
 #include "../include/GameWidget.h"
 #include <QFont>
 #include <QKeyEvent>
@@ -169,7 +176,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
       boltPen.setJoinStyle(Qt::RoundJoin);
       painter.setPen(boltPen);
       painter.drawLine(x1, y1, x2, y2);
-      
+
       // Inner core
       painter.setPen(QPen(Qt::white, 2));
       painter.drawLine(x1, y1, x2, y2);

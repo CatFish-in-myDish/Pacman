@@ -1,3 +1,13 @@
+/**
+ * Represents the game map as a graph of interconnected nodes.
+ *
+ * This class initializes the grid map, creating nodes for pathable tiles and connecting
+ * them to their neighbors. It supports toroidal wrapping (tunnels) and wall checking.
+ *
+ * Time Complexity:
+ * - initializeGrid(): O(W * H), where W and H are the dimensions of the map.
+ * - getNode(), isWall(): O(1).
+ */
 #include "../include/Graph.h"
 
 Graph::Graph() { initializeGrid(); }
@@ -10,7 +20,7 @@ Graph::~Graph() {
   nodes.clear();
 }
 
-// 1 = Path, 0 = Wall, 2 = Ghost House Gate (Treat as wall for now, or path?) 
+// 1 = Path, 0 = Wall, 2 = Ghost House Gate (Treat as wall for now, or path?)
 // Classic Pacman Maze 28x31
 static const int MAP[Graph::HEIGHT][Graph::WIDTH] = {
     {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
@@ -27,7 +37,7 @@ static const int MAP[Graph::HEIGHT][Graph::WIDTH] = {
     {0,1,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,1,0},
     {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
     {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
-    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, 
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
     {0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0},
     {0,1,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,1,0},
@@ -64,12 +74,12 @@ void Graph::initializeGrid() {
     int y = current->getLocation().y;
 
     // Normal neighbors
-    addNeighbor(current, x, y - 1); 
-    addNeighbor(current, x, y + 1); 
-    addNeighbor(current, x - 1, y); 
+    addNeighbor(current, x, y - 1);
+    addNeighbor(current, x, y + 1);
+    addNeighbor(current, x - 1, y);
     addNeighbor(current, x + 1, y);
   }
-  
+
   // 3. Connect Tunnels (Row 14)
   Node* leftTunnel = getNode(0, 14);
   Node* rightTunnel = getNode(WIDTH - 1, 14);

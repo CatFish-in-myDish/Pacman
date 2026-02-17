@@ -1,3 +1,34 @@
+/**
+ * Controls and manages the overall flow of the Pacman game.
+ * This file implements the Game Controller module, which acts as the
+ * central coordination unit of the system. It ensures smooth interaction
+ * between Pacman, ghosts, the maze, scoring system, and game states.
+ *
+ * The main responsibilities of this module include:
+ *   Initializing the maze and all game entities (Pacman and ghosts).
+ *   Running the main game loop and handling frame-by-frame updates.
+ *   Processing player input and updating Pacman’s movement.
+ *   Triggering ghost movement strategies (e.g., A* pathfinding).
+ *   Detecting collisions (Pacman vs ghosts, Pacman vs pellets).
+ *   Updating score and checking win/lose conditions.
+ *
+ * The game follows a structured update cycle:
+ *   1. Read input.
+ *   2. Update entity positions.
+ *   3. Apply AI strategies.
+ *   4. Check collisions and update score.
+ *   5. Render updated state.
+ *
+ * Game states such as Start, Running, Pause, and Game Over
+ * are managed centrally to maintain consistent gameplay behavior.
+ *
+ * Time Complexity:
+ *   The controller runs once per frame and updates all entities.
+ *   If there are G ghosts and V grid cells, the per-frame complexity
+ *   is approximately O(G + V) (excluding individual AI complexity).
+ *   Overall performance is optimized for real-time execution.
+ */
+
 #include "../include/GameController.h"
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"

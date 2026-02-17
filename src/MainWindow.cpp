@@ -1,3 +1,10 @@
+/**
+ * The main application window containing the game widget and status display.
+ *
+ * Sets up the window layout, status bar, and periodic status updates.
+ *
+ * Time Complexity: O(1) for setup and updates.
+ */
 #include "../include/MainWindow.h"
 #include <QTimer>
 #include <QVBoxLayout>
