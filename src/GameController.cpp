@@ -35,6 +35,7 @@
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
+#include "../include/SortUtils.h"
 #include <algorithm>
 #include <cmath>
 #include <QDebug>
@@ -157,7 +158,7 @@ void GameController::update() {
       std::vector<Monster *> sortedMonsters = monsters;
       Location pacLoc = pacman->getLocation();
 
-      std::sort(sortedMonsters.begin(), sortedMonsters.end(),
+      SortUtils::quickSort(sortedMonsters,
                 [pacLoc](Monster *a, Monster *b) {
                   auto distSq = [pacLoc](Location loc) {
                     int dx = loc.x - pacLoc.x;
@@ -406,7 +407,7 @@ std::pair<Monster*, Monster*> stripClosest(std::vector<Monster*>& strip, double 
     double min_dist = d;
     std::pair<Monster*, Monster*> min_pair = best_pair;
 
-    std::sort(strip.begin(), strip.end(), compareY);
+    SortUtils::quickSort(strip, compareY);
 
     for (size_t i = 0; i < strip.size(); ++i) {
         for (size_t j = i + 1; j < strip.size() && (strip[j]->getLocation().y - strip[i]->getLocation().y) < min_dist; ++j) {
@@ -459,7 +460,7 @@ std::pair<Monster*, Monster*> GameController::findClosestPair(const std::vector<
     if (monsters.size() < 2) return {nullptr, nullptr};
 
     std::vector<Monster*> sortedMonsters = monsters;
-    std::sort(sortedMonsters.begin(), sortedMonsters.end(), compareX);
+    SortUtils::quickSort(sortedMonsters, compareX);
 
     return closestUtil(sortedMonsters, sortedMonsters.size());
 }

@@ -25,6 +25,7 @@ set(SOURCES
     src/Node.cpp
     src/Pacman.cpp
     src/ScatterStrategy.cpp
+    src/SortUtils.cpp
 )
 
 set(HEADERS
