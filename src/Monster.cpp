@@ -1,8 +1,8 @@
 #include "../include/Monster.h"
 #include <algorithm>
 
+#include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
-#include "../include/DistanceGreedyStrategy.h"
 #include "../include/ScatterStrategy.h"
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
@@ -53,8 +53,8 @@ void Monster::setMode(Mode mode) {
 
   switch (mode) {
     case CHASE:
-      // Nearest monsters: use DistanceGreedyStrategy (direct pursuit)
-      strategy = new DistanceGreedyStrategy();
+      // Nearest monsters: use AstarStrategy  (direct pursuit)
+      strategy = new AStarStrategy();
       speed = 1.5;
       break;
     case AMBUSH:
