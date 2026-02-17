@@ -45,7 +45,7 @@ void Monster::setMode(Mode mode) {
     return;
   }
 
-  // Clean up temporary scatter strategy if we were in SCATTER
+  // Clean up temporary strategy if it's not the original
   if (strategy != originalStrategy) {
     delete strategy;
     strategy = originalStrategy;
@@ -53,17 +53,17 @@ void Monster::setMode(Mode mode) {
 
   switch (mode) {
     case CHASE:
-      // Keep original algorithm, just increase speed
-      strategy = originalStrategy;
-      speed = 1.35;
+      // Nearest monsters: use DistanceGreedyStrategy (direct pursuit)
+      strategy = new DistanceGreedyStrategy();
+      speed = 1.5;
       break;
     case AMBUSH:
-      // Keep original algorithm, medium speed
-      strategy = originalStrategy;
-      speed = 1.15;
+      // Farthest monsters: use AggressiveGreedyStrategy (predictive intercept)
+      strategy = new AggressiveGreedyStrategy();
+      speed = 1.25;
       break;
     case SCATTER:
-      // Only mode that replaces strategy (used during lightning)
+      // Used during lightning
       strategy = new ScatterStrategy();
       speed = 1.0;
       break;
