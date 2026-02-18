@@ -171,14 +171,16 @@ void GameController::update() {
                 });
 
       if (!sortedMonsters.empty()) {
-        // Closest half → Chase (fast, using original algorithm)
-        // Farthest half → Ambush (medium speed, using original algorithm)
-        size_t half = sortedMonsters.size() / 2;
+        // Closest → Chase (fast, direct pursuit)
+        // Farthest → Ambush (medium speed, predictive intercept)
+        // Middle → Chase (default standard behavior)
         for (size_t i = 0; i < sortedMonsters.size(); ++i) {
-          if (i < half) {
+          if (i == 0) {
             sortedMonsters[i]->setMode(Monster::CHASE);
-          } else {
+          } else if (i == sortedMonsters.size() - 1) {
             sortedMonsters[i]->setMode(Monster::AMBUSH);
+          } else {
+            sortedMonsters[i]->setMode(Monster::CHASE);
           }
         }
       }
