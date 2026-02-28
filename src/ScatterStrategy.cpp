@@ -35,8 +35,9 @@
 #include <limits>
 
 Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster,
-                                        Entity *target) {
-  // For now, we target the top-left corner (0,0) as a placeholder scatter point.
+                                       Entity *target) {
+  // For now, we target the top-left corner (0,0) as a placeholder scatter
+  // point.
   Location targetLoc(0, 0);
 
   Location currentLoc = monster->getLocation();

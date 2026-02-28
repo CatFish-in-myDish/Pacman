@@ -1,11 +1,13 @@
 /**
- * Implements a greedy strategy that prioritizes movement along the major axis of distance.
+ * Implements a greedy strategy that prioritizes movement along the major axis
+ * of distance.
  *
- * This strategy calculates the difference in X and Y coordinates to the target and prioritizes
- * moving along the axis with the larger difference. It assigns scores to neighbors based on this
- * priority to choose the best move.
+ * This strategy calculates the difference in X and Y coordinates to the target
+ * and prioritizes moving along the axis with the larger difference. It assigns
+ * scores to neighbors based on this priority to choose the best move.
  *
- * Time Complexity: O(1) per move, as it evaluates a constant number of neighbors.
+ * Time Complexity: O(1) per move, as it evaluates a constant number of
+ * neighbors.
  */
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/Entity.h"
