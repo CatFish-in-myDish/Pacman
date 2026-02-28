@@ -1,3 +1,10 @@
+/**
+ * Handles the rendering of the game state using Qt's QPainter.
+ *
+ * This class draws the maze, Pacman, monsters, pellets, and other visual elements.
+ * It also handles keyboard input for controlling Pacman.
+ *
+ */
 #include "../include/GameWidget.h"
 #include <QFont>
 #include <QKeyEvent>
@@ -172,20 +179,20 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
   // 5. Draw Lightning Bolt
   if (controller->isLightningActive()) {
-    auto arc = controller->getLightningArc();
-    int x1 = arc.first.x * TILE_SIZE + TILE_SIZE / 2;
-    int y1 = arc.first.y * TILE_SIZE + TILE_SIZE / 2;
-    int x2 = arc.second.x * TILE_SIZE + TILE_SIZE / 2;
-    int y2 = arc.second.y * TILE_SIZE + TILE_SIZE / 2;
+      auto arc = controller->getLightningArc();
+      int x1 = arc.first.x * TILE_SIZE + TILE_SIZE / 2;
+      int y1 = arc.first.y * TILE_SIZE + TILE_SIZE / 2;
+      int x2 = arc.second.x * TILE_SIZE + TILE_SIZE / 2;
+      int y2 = arc.second.y * TILE_SIZE + TILE_SIZE / 2;
 
-    QPen boltPen(QColor(100, 200, 255), 4);
-    boltPen.setJoinStyle(Qt::RoundJoin);
-    painter.setPen(boltPen);
-    painter.drawLine(x1, y1, x2, y2);
+      QPen boltPen(QColor(100, 200, 255), 4);
+      boltPen.setJoinStyle(Qt::RoundJoin);
+      painter.setPen(boltPen);
+      painter.drawLine(x1, y1, x2, y2);
 
-    // Inner core
-    painter.setPen(QPen(Qt::white, 2));
-    painter.drawLine(x1, y1, x2, y2);
+      // Inner core
+      painter.setPen(QPen(Qt::white, 2));
+      painter.drawLine(x1, y1, x2, y2);
   }
 
   // HUD: Score & Round

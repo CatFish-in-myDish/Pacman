@@ -1,30 +1,20 @@
 <p align="center">
-  <h1 align="center">🎮 Graph-Based Pacman Survival Game</h1>
+  <h1 align="center">Graph-Based Pacman Survival Game</h1>
   <p align="center">
-    <strong>A classic Pacman reimagining powered by graph theory, advanced AI pathfinding, and computational geometry</strong>
-  </p>
-  <p align="center">
-    <img src="https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge&logo=cplusplus&logoColor=white" alt="C++17"/>
-    <img src="https://img.shields.io/badge/Qt-5-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="Qt5"/>
-    <img src="https://img.shields.io/badge/CMake-3.10+-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake"/>
-    <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=for-the-badge" alt="Platform"/>
-    <img src="https://img.shields.io/badge/license-AGPL--3.0-blue?style=for-the-badge" alt="License"/>
+    <strong>A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-based pathfinding algorithms and computational geometry</strong>
   </p>
 </p>
 
-> **Navigate a haunted maze, outsmart four uniquely intelligent ghosts, and unleash chain lightning — all on a graph-powered game engine built from scratch in C++17.**
+## Feature Highlights
+
+- **5 Distinct AI Strategies** — A\* Pathfinding, Manhattan Heuristic, Axis-Weighted Directional, Predictive Pursuit, and Euclidean Greedy
+- **Chain Lightning Ability** — Spend score to slow ghosts using a closest-pair divide & conquer algorithm
+- **Ghost Territory System** — QuickHull convex hull detects encirclement and dynamically adjusts speeds
+- **Dynamic Role Assignment** — Ghosts switch between Chase, Ambush, and Scatter modes every tick
+- **Multi-Round Progression** — Clear all pellets to advance rounds with cumulative scoring
+- **Classic 28×31 Maze** — Pacman layout with tunnel wrapping
 
 ## ✨ Feature Highlights
-
-- 🧠 **5 Distinct AI Strategies** — A\* Pathfinding, Manhattan Heuristic, Axis-Weighted Directional, Predictive Pursuit, and Euclidean Greedy
-- ⚡ **Chain Lightning Ability** — Spend score to slow ghosts using a closest-pair divide & conquer algorithm
-- 🔺 **Ghost Territory System** — QuickHull convex hull detects encirclement and dynamically adjusts speeds
-- 👻 **Dynamic Role Assignment** — Ghosts switch between Chase, Ambush, and Scatter modes every tick
-- 🏆 **Multi-Round Progression** — Clear all pellets to advance rounds with cumulative scoring
-- 🎨 **Faithful Retro Rendering** — Animated Pacman mouth, classic ghost sprites, and HUD overlays via Qt5
-- 🗺️ **Classic 28×31 Maze** — Hardcoded authentic Pacman layout with tunnel wrapping
-
-## 🕹️ Game Overview
 
 ### Objective
 
@@ -39,7 +29,7 @@ Eat **every pellet** on the 28×31 maze while avoiding four ghosts, each driven 
 5. **Use Chain Lightning** (press `Z`) when your score ≥ 100 to slow the two closest ghosts
 6. **Clear all pellets** to win the round and advance to the next
 
-### 🎛️ Controls
+### Controls
 
 | Key | Action |
 |-----|--------|
@@ -55,22 +45,22 @@ Eat **every pellet** on the 28×31 maze while avoiding four ghosts, each driven 
 | **You Win!** | All pellets eaten | Green overlay (48pt), auto-advances in 2s |
 | **Game Over** | Ghost catches Pacman | Red overlay (48pt), press `R` to restart |
 
-## 👻 Ghost AI Deep Dive
+## Ghost Algorithm Deep Dive
 
 Each of the four ghosts employs a **unique pathfinding strategy**, creating diverse and challenging pursuit patterns. Ghost behavior is further modified by a **dynamic role assignment system** that re-evaluates every game tick.
 
 ### The Four Ghosts
 
-| Ghost | Color | Start Position | Strategy | Personality |
-|-------|-------|----------------|----------|-------------|
-| **M1** | 🔴 Red | (1, 1) | A\* Pathfinding | Optimal pursuer — always finds the shortest path |
-| **M2** | 🩷 Pink | (26, 1) | Heuristic Greedy | Manhattan-guided — efficient axis-aligned chaser |
-| **M3** | 🩵 Cyan | (1, 29) | Directional Greedy | Axis-dominant — predictable but fast corridor hunter |
-| **M4** | 🟠 Orange | (26, 29) | Aggressive Greedy | Predictive — targets where Pacman *will* be |
+| Ghost | Color | Strategy | Personality |
+|-------|-------|----------|-------------|
+| **M1** | Red | A\* Pathfinding | Optimal pursuer — always finds the shortest path |
+| **M2** | Pink | Heuristic Greedy | Manhattan-guided — efficient axis-aligned chaser |
+| **M3** | Cyan | Directional Greedy | Axis-dominant — predictable but fast corridor hunter |
+| **M4** | Orange | Aggressive Greedy | Predictive — targets where Pacman *will* be |
 
 ### Strategy Breakdown
 
-#### 🔴 A\* Pathfinding (Red Ghost)
+#### A\* Pathfinding (Red Ghost)
 
 The gold standard of pathfinding. Guarantees the **shortest path** on every move.
 
@@ -85,7 +75,7 @@ Location AStarStrategy::findNextMove(Graph *graph, Entity *monster, Entity *targ
 - Maintains `gCost` map, `parent` map, and `closedSet`
 - Returns the **first step** of the optimal path via backtracking
 
-#### 🩷 Heuristic Greedy (Pink Ghost)
+#### Heuristic Greedy (Pink Ghost)
 
 Evaluates all neighbors and picks the one with **minimum Manhattan distance** to Pacman.
 
@@ -97,7 +87,7 @@ Location HeuristicGreedyStrategy::findNextMove(Graph *graph, Entity *monster, En
 - Simple yet effective for corridor-heavy mazes
 - Handles toroidal wrapping for accurate distance calculation
 
-#### 🩵 Directional Greedy (Cyan Ghost)
+#### Directional Greedy (Cyan Ghost)
 
 Prioritses closing distance along the **major axis** first, creating predictable axis-aligned movement.
 
@@ -110,7 +100,7 @@ Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster, 
 - 1000× multiplier ensures dominant axis is resolved first
 - Produces highly predictable but effective corridor pursuit
 
-#### 🟠 Aggressive Greedy (Orange Ghost)
+#### Aggressive Greedy (Orange Ghost)
 
 The most dangerous ghost — it targets **where Pacman will be**, not where he is.
 
@@ -124,7 +114,7 @@ Location AggressiveGreedyStrategy::findNextMove(Graph *graph, Entity *monster, E
 - Uses modular arithmetic for wrapping: `((x + dir*2) % WIDTH + WIDTH) % WIDTH`
 - Selects neighbor closest (Euclidean) to the **predicted** position
 
-#### 🏠 Scatter Strategy (All Ghosts — during Lightning)
+#### Scatter Strategy (Nearest 2 Ghosts — during Lightning)
 
 During chain lightning, all ghosts retreat toward corner `(0, 0)`.
 
@@ -148,7 +138,7 @@ Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster, Entity *ta
 
 > *k = number of neighbors (≤ 4 in a grid maze)*
 
-## ⚡ Advanced Game Mechanics
+## Advanced Game Mechanics
 
 ### Chain Lightning
 
@@ -164,7 +154,7 @@ A powerful offensive ability that punishes clustered ghosts.
 | **Visual** | Blue-white lightning bolt connecting affected ghosts |
 | **Duration** | Lightning visual lasts 8 ticks (~2 seconds) |
 
-### 🔺 Ghost Territory System (Convex Hull)
+### Ghost Territory System (Convex Hull)
 
 The game computes a **convex hull** around all ghost positions every frame using the **QuickHull** algorithm.
 
@@ -182,7 +172,7 @@ The game computes a **convex hull** around all ghost positions every frame using
 - Requires ≥ 3 unique, non-collinear ghost positions for a valid hull
 - **Complexity:** O(N log N) average
 
-### 👻 Dynamic Role Assignment
+### Dynamic Role Assignment
 
 Ghost roles are re-evaluated **every game tick** based on proximity to Pacman:
 
@@ -202,7 +192,7 @@ During chain lightning, all ghosts switch to **SCATTER mode** (speed: 1.0×).
 
 > **Speed Cap:** Effective speed is hard-capped at **1.5×** — `std::min(speed * territoryMultiplier, 1.5)`
 
-## 📊 Algorithms & Complexity
+## Algorithms & Complexity
 
 | Algorithm | Used For | Time Complexity | Space Complexity |
 |-----------|----------|----------------|-----------------|
@@ -216,7 +206,7 @@ During chain lightning, all ghosts switch to **SCATTER mode** (speed: 1.0×).
 
 > *V = walkable tiles (~368), E = edges (~4V), N = number of ghosts (4)*
 
-## 🧩 Data Structures
+## Data Structures
 
 | Structure | Type | Purpose |
 |-----------|------|---------|
@@ -228,10 +218,6 @@ During chain lightning, all ghosts switch to **SCATTER mode** (speed: 1.0×).
 | **Convex Hull** | `vector<Location>` | Ghost territory polygon vertices |
 | **Location Hash** | `std::hash<Location>` specialisation | XOR-shift hash for unordered containers |
 
-## 📄 License
+## License
 
 This project is licensed under the **AGPL-3.0 License** — see the [LICENSE](LICENSE) file for details.
-
-<p align="center">
-  <sub>Built with 💛 in C++17 • Powered by Qt5 • Haunted by Graph Algorithms</sub>
-</p>

@@ -1,3 +1,34 @@
+/**
+ * Controls and manages the overall flow of the Pacman game.
+ * This file implements the Game Controller module, which acts as the
+ * central coordination unit of the system. It ensures smooth interaction
+ * between Pacman, ghosts, the maze, scoring system, and game states.
+ *
+ * The main responsibilities of this module include:
+ *   Initializing the maze and all game entities (Pacman and ghosts).
+ *   Running the main game loop and handling frame-by-frame updates.
+ *   Processing player input and updating Pacman’s movement.
+ *   Triggering ghost movement strategies (e.g., A* pathfinding).
+ *   Detecting collisions (Pacman vs ghosts, Pacman vs pellets).
+ *   Updating score and checking win/lose conditions.
+ *
+ * The game follows a structured update cycle:
+ *   1. Read input.
+ *   2. Update entity positions.
+ *   3. Apply AI strategies.
+ *   4. Check collisions and update score.
+ *   5. Render updated state.
+ *
+ * Game states such as Start, Running, Pause, and Game Over
+ * are managed centrally to maintain consistent gameplay behavior.
+ *
+ * Time Complexity:
+ *   The controller runs once per frame and updates all entities.
+ *   If there are G ghosts and V grid cells, the per-frame complexity
+ *   is approximately O(G + V) (excluding individual AI complexity).
+ *   Overall performance is optimized for real-time execution.
+ */
+
 #include "../include/GameController.h"
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
@@ -141,14 +172,16 @@ void GameController::update() {
                 });
 
       if (!sortedMonsters.empty()) {
-        // Closest half → Chase (fast, using original algorithm)
-        // Farthest half → Ambush (medium speed, using original algorithm)
-        size_t half = sortedMonsters.size() / 2;
+        // Closest → Chase (fast, direct pursuit)
+        // Farthest → Ambush (medium speed, predictive intercept)
+        // Middle → Chase (default standard behavior)
         for (size_t i = 0; i < sortedMonsters.size(); ++i) {
-          if (i < half) {
+          if (i == 0) {
             sortedMonsters[i]->setMode(Monster::CHASE);
-          } else {
+          } else if (i == sortedMonsters.size() - 1) {
             sortedMonsters[i]->setMode(Monster::AMBUSH);
+          } else {
+            sortedMonsters[i]->setMode(Monster::CHASE);
           }
         }
       }
@@ -170,7 +203,7 @@ void GameController::update() {
     if (inside != pacmanWasInsideTerritory) {
       if (inside) {
         qDebug() << "[GhostTerritory] Pacman ENTERED ghost territory! "
-                    "Ghosts→0.95x, Pacman→1.15x";
+                    "Ghosts→0.9x, Pacman→1.1x";
       } else {
         qDebug() << "[GhostTerritory] Pacman LEFT ghost territory. "
                     "All speeds→1.0x";
@@ -179,8 +212,8 @@ void GameController::update() {
     }
 
     // Apply speed multipliers
-    double ghostMul = inside ? 0.95 : 1.0;
-    double pacMul = inside ? 1.15 : 1.0;
+    double ghostMul = inside ? 0.9 : 1.0;
+    double pacMul   = inside ? 1.1 : 1.0;
     for (Monster *m : monsters) {
       m->setTerritoryMultiplier(ghostMul);
     }

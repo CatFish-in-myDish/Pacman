@@ -1,8 +1,18 @@
+/**
+ * Represents a ghost/monster entity in the game.
+ *
+ * This class handles monster movement, strategy switching (Chase, Ambush, Scatter),
+ * speed management, and special effects like being slowed or territory buffs.
+ *
+ * Time Complexity:
+ * - move(): O(1) assuming the strategy's findNextMove is efficient.
+ * - setMode(): O(1).
+ */
 #include "../include/Monster.h"
 #include <algorithm>
 
+#include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
-#include "../include/DistanceGreedyStrategy.h"
 #include "../include/ScatterStrategy.h"
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
@@ -47,28 +57,28 @@ void Monster::setMode(Mode mode) {
     return;
   }
 
-  // Clean up temporary scatter strategy if we were in SCATTER
+  // Clean up temporary strategy if it's not the original
   if (strategy != originalStrategy) {
     delete strategy;
     strategy = originalStrategy;
   }
 
   switch (mode) {
-  case CHASE:
-    // Keep original algorithm, just increase speed
-    strategy = originalStrategy;
-    speed = 1.35;
-    break;
-  case AMBUSH:
-    // Keep original algorithm, medium speed
-    strategy = originalStrategy;
-    speed = 1.15;
-    break;
-  case SCATTER:
-    // Only mode that replaces strategy (used during lightning)
-    strategy = new ScatterStrategy();
-    speed = 1.0;
-    break;
+    case CHASE:
+      // Nearest monsters: use AstarStrategy  (direct pursuit)
+      strategy = new AStarStrategy();
+      speed = 1.5;
+      break;
+    case AMBUSH:
+      // Farthest monsters: use AggressiveGreedyStrategy (predictive intercept)
+      strategy = new AggressiveGreedyStrategy();
+      speed = 1.25;
+      break;
+    case SCATTER:
+      // Used during lightning
+      strategy = new ScatterStrategy();
+      speed = 1.0;
+      break;
   }
 
   currentMode = mode;

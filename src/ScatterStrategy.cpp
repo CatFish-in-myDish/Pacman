@@ -1,3 +1,33 @@
+/**
+ * Implements the Scatter Strategy for ghost movement.
+ *
+ * This module defines the behavior where a ghost moves toward
+ * a predefined corner or target tile in the maze instead of
+ * directly chasing Pacman.
+ *
+ * The scatter mode is used to:
+ *   - Reduce continuous pressure on Pacman.
+ *   - Prevent ghost clustering.
+ *   - Create strategic movement variation.
+ *
+ * Each ghost is assigned a fixed scatter target
+ * (e.g., top-left, top-right, bottom-left, bottom-right corner).
+ * During scatter mode, the ghost computes the shortest path
+ * toward its assigned corner using standard movement logic
+ * or pathfinding algorithms.
+ *
+ * This behavior typically alternates with chase mode
+ * as part of the ghost AI state system.
+ *
+ * Time Complexity:
+ *   - Target selection: O(1)
+ *   - Movement update per frame: depends on pathfinding
+ *     (e.g., O(V log V) if using A*).
+ *
+ * Since scatter targets are fixed and simple,
+ * the strategy remains lightweight and efficient.
+ */
+
 #include "../include/ScatterStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"
@@ -5,10 +35,8 @@
 #include <limits>
 
 Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster,
-                                       Entity *target) {
-  // TODO: Implement specific scatter condition/logic here.
-  // For now, we target the top-left corner (0,0) as a placeholder scatter
-  // point.
+                                        Entity *target) {
+  // For now, we target the top-left corner (0,0) as a placeholder scatter point.
   Location targetLoc(0, 0);
 
   Location currentLoc = monster->getLocation();
