@@ -1,9 +1,7 @@
-<p align="center">
-  <h1 align="center">Graph-Based Pacman Survival Game</h1>
+<h1 align="center">Graph-Based Pacman Survival Game</h1>
   <p align="center">
-    <strong>A C++ implementation of a Pacman survival game using Qt5 for the UI and graph-based pathfinding algorithms and computational geometry</strong>
+    <strong>A C++ implementation of Pacman powered by graph theory, advanced AI pathfinding, and computational geometry</strong>
   </p>
-</p>
 
 ## Feature Highlights
 
@@ -14,7 +12,7 @@
 - **Multi-Round Progression** — Clear all pellets to advance rounds with cumulative scoring
 - **Classic 28×31 Maze** — Pacman layout with tunnel wrapping
 
-## ✨ Feature Highlights
+## Game Overview
 
 ### Objective
 
@@ -51,12 +49,12 @@ Each of the four ghosts employs a **unique pathfinding strategy**, creating dive
 
 ### The Four Ghosts
 
-| Ghost | Color | Strategy | Personality |
-|-------|-------|----------|-------------|
-| **M1** | Red | A\* Pathfinding | Optimal pursuer — always finds the shortest path |
-| **M2** | Pink | Heuristic Greedy | Manhattan-guided — efficient axis-aligned chaser |
-| **M3** | Cyan | Directional Greedy | Axis-dominant — predictable but fast corridor hunter |
-| **M4** | Orange | Aggressive Greedy | Predictive — targets where Pacman *will* be |
+| Ghost | Color | Start Position | Strategy | Personality |
+|-------|-------|----------------|----------|-------------|
+| **M1** | 🔴 Red | (1, 1) | A\* Pathfinding | Optimal pursuer — always finds the shortest path |
+| **M2** | 🩷 Pink | (26, 1) | Heuristic Greedy | Manhattan-guided — efficient axis-aligned chaser |
+| **M3** | 🩵 Cyan | (1, 29) | Directional Greedy | Axis-dominant — predictable but fast corridor hunter |
+| **M4** | 🟠 Orange | (26, 29) | Aggressive Greedy | Predictive — targets where Pacman *will* be |
 
 ### Strategy Breakdown
 
@@ -129,11 +127,11 @@ Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster, Entity *ta
 
 | Strategy | Optimality | Complexity | Predictability | Danger Level |
 |----------|-----------|------------|----------------|--------------|
-| A\* Pathfinding | ✅ Optimal | O(V log V) | Low | ⭐⭐⭐⭐⭐ |
-| Heuristic Greedy | ❌ Local | O(k) | Medium | ⭐⭐⭐ |
-| Directional Greedy | ❌ Local | O(k) | High | ⭐⭐ |
-| Aggressive Greedy | ❌ Local | O(k) | Low | ⭐⭐⭐⭐ |
-| Distance Greedy | ❌ Local | O(k) | Medium | ⭐⭐⭐ |
+| A\* Pathfinding | Optimal | O(V log V) | Low | ⭐⭐⭐⭐⭐ |
+| Heuristic Greedy | Local | O(k) | Medium | ⭐⭐⭐ |
+| Directional Greedy | Local | O(k) | High | ⭐⭐ |
+| Aggressive Greedy | Local | O(k) | Low | ⭐⭐⭐⭐ |
+| Distance Greedy | Local | O(k) | Medium | ⭐⭐⭐ |
 | Scatter | N/A | O(k) | High | ⭐ |
 
 > *k = number of neighbors (≤ 4 in a grid maze)*
