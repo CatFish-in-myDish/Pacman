@@ -1,13 +1,13 @@
 /**
- * Implements a greedy strategy that prioritizes movement along the major axis
+ * Implements a greedy strategy that prioritises movement along the major axis
  * of distance.
  *
  * This strategy calculates the difference in X and Y coordinates to the target
- * and prioritizes moving along the axis with the larger difference. It assigns
- * scores to neighbors based on this priority to choose the best move.
+ * and prioritises moving along the axis with the larger difference. It assigns
+ * scores to neighbours based on this priority to choose the best move.
  *
  * Time Complexity: O(1) per move, as it evaluates a constant number of
- * neighbors.
+ * neighbours.
  */
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/Entity.h"
@@ -21,10 +21,10 @@ Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
   Location targetLoc = target->getLocation();
 
   Node *currentNode = graph->getNode(currentLoc);
-  const auto &neighbors = currentNode->getNeighbors();
+  const auto &neighbours = currentNode->getNeighbours();
 
-  // If no neighbors available, stay in place
-  if (neighbors.empty()) {
+  // If no neighbours available, stay in place
+  if (neighbours.empty()) {
     return currentLoc;
   }
 
@@ -44,14 +44,14 @@ Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
   // Prioritise movement along the major axis to close distance faster
   bool preferHorizontal = std::abs(dx) >= std::abs(dy);
 
-  // Evaluate each neighbor and choose the best move
+  // Evaluate each neighbour and choose the best move
   Location bestMove = currentLoc;
   double minScore = std::numeric_limits<double>::max();
 
-  for (Node *neighbor : neighbors) {
-    Location nextLoc = neighbor->getLocation();
+  for (Node *neighbour : neighbours) {
+    Location nextLoc = neighbour->getLocation();
 
-    // Calculate distance from this neighbor to target
+    // Calculate distance from this neighbour to target
     int nDx = targetLoc.x - nextLoc.x;
     int nDy = targetLoc.y - nextLoc.y;
 

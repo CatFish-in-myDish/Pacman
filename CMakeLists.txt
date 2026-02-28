@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(PacmanGame)
+project(Pacman)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -47,8 +47,8 @@ set(HEADERS
     include/ScatterStrategy.h
 )
 
-add_executable(PacmanGame ${SOURCES} ${HEADERS})
+add_executable(Pacman ${SOURCES} ${HEADERS})
 
-target_link_libraries(PacmanGame Qt5::Widgets)
+target_link_libraries(Pacman Qt5::Widgets)
 
-target_include_directories(PacmanGame PRIVATE include)
+target_include_directories(Pacman PRIVATE include)

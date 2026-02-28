@@ -14,7 +14,7 @@ distance) The total cost is calculated as: f(n)=g(n)+h(n)
 
  *The maze is treated as a grid where:
    Each cell is a node.
-   Valid neighboring cells represent possible moves.
+   Valid neighbouring cells represent possible moves.
    Walls are treated as blocked nodes.
 
 *The algorithm uses:
@@ -106,7 +106,7 @@ Location AStarStrategy::findNextMove(Graph *graph, Entity *monster,
     }
     closedSet.insert(currentLoc);
 
-    // Expand neighbors
+    // Expand neighbours
     Node *currentNode = graph->getNode(currentLoc);
     if (!currentNode) {
       continue;
@@ -114,10 +114,10 @@ Location AStarStrategy::findNextMove(Graph *graph, Entity *monster,
 
     int currentG = gCost[currentLoc];
 
-    for (Node *neighbor : currentNode->getNeighbors()) {
-      Location neighborLoc = neighbor->getLocation();
+    for (Node *neighbour : currentNode->getNeighbours()) {
+      Location neighbourLoc = neighbour->getLocation();
 
-      if (closedSet.count(neighborLoc)) {
+      if (closedSet.count(neighbourLoc)) {
         continue;
       }
 
@@ -125,12 +125,12 @@ Location AStarStrategy::findNextMove(Graph *graph, Entity *monster,
       int tentativeG = currentG + 1;
 
       // Only update if this path is better than any previously found
-      auto it = gCost.find(neighborLoc);
+      auto it = gCost.find(neighbourLoc);
       if (it == gCost.end() || tentativeG < it->second) {
-        gCost[neighborLoc] = tentativeG;
-        parent[neighborLoc] = currentLoc;
-        int f = tentativeG + heuristic(neighborLoc, goalLoc);
-        openSet.push({f, neighborLoc});
+        gCost[neighbourLoc] = tentativeG;
+        parent[neighbourLoc] = currentLoc;
+        int f = tentativeG + heuristic(neighbourLoc, goalLoc);
+        openSet.push({f, neighbourLoc});
       }
     }
   }

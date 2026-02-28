@@ -14,7 +14,7 @@ private:
   std::unordered_map<Location, Node *> nodes;
 
   void initialiseGrid();
-  void addNeighbor(Node *current, int nx, int ny);
+  void addNeighbour(Node *current, int nx, int ny);
 
 public:
   Graph();

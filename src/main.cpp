@@ -1,7 +1,7 @@
 /**
  * Entry point of the Pacman application.
  *
- * Initializes the Qt application and the main window.
+ * Initialises the Qt application and the main window.
  *
  * Time Complexity: O(1) startup.
  */

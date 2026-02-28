@@ -100,10 +100,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     startAngle = 270;
 
   // drawPie uses 1/16th of a degree
-  // We want the mouth to center on the direction.
+  // We want the mouth to centre on the direction.
   // e.g. Right (0): Mouth from 30 to 330 (Viewed as 30 start, -300 span? Or 30
   // start + 300 span) Qt Angles: 3 o'clock is 0. Positive is CCW. Mouth Opening
-  // 30 means +/- 15 degrees from center? Or 30 degrees total wedge? Let's say
+  // 30 means +/- 15 degrees from centre? Or 30 degrees total wedge? Let's say
   // Total Wedge is 'mouthOpen * 2'. Start = DirectionAngle + mouthOpen Span =
   // 360 - 2 * mouthOpen
 
@@ -120,7 +120,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int mx = mLoc.x * TILE_SIZE;
     int my = mLoc.y * TILE_SIZE;
 
-    // Set color
+    // Set colour
     if (name == "M1 (Dist)")
       painter.setBrush(Qt::red);
     else if (name == "M2 (Heur)")

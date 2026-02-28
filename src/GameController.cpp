@@ -5,7 +5,7 @@
  * between Pacman, ghosts, the maze, scoring system, and game states.
  *
  * The main responsibilities of this module include:
- *   Initializing the maze and all game entities (Pacman and ghosts).
+ *   Initialising the maze and all game entities (Pacman and ghosts).
  *   Running the main game loop and handling frame-by-frame updates.
  *   Processing player input and updating Pacman’s movement.
  *   Triggering ghost movement strategies (e.g., A* pathfinding).
@@ -20,13 +20,13 @@
  *   5. Render updated state.
  *
  * Game states such as Start, Running, Pause, and Game Over
- * are managed centrally to maintain consistent gameplay behavior.
+ * are managed centrally to maintain consistent gameplay behaviour.
  *
  * Time Complexity:
  *   The controller runs once per frame and updates all entities.
  *   If there are G ghosts and V grid cells, the per-frame complexity
  *   is approximately O(G + V) (excluding individual AI complexity).
- *   Overall performance is optimized for real-time execution.
+ *   Overall performance is optimised for real-time execution.
  */
 
 #include "../include/GameController.h"
@@ -91,7 +91,7 @@ void GameController::initGame(bool resetScore) {
     }
   }
 
-  // Start Pacman in center (row 14, col 14)
+  // Start Pacman in centre (row 14, col 14)
   pacman = new Pacman(Location(14, 14));
 
   // Start Monsters in corners/house areas
@@ -152,7 +152,7 @@ void GameController::update() {
         m->setMode(Monster::SCATTER);
       }
     } else {
-      // Normal behavior: Dynamic Role Assignment
+      // Normal behaviour: Dynamic Role Assignment
       std::vector<Monster *> sortedMonsters = monsters;
       Location pacLoc = pacman->getLocation();
 
@@ -174,7 +174,7 @@ void GameController::update() {
       if (!sortedMonsters.empty()) {
         // Closest → Chase (fast, direct pursuit)
         // Farthest → Ambush (medium speed, predictive intercept)
-        // Middle → Chase (default standard behavior)
+        // Middle → Chase (default standard behaviour)
         for (size_t i = 0; i < sortedMonsters.size(); ++i) {
           if (i == 0) {
             sortedMonsters[i]->setMode(Monster::CHASE);

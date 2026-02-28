@@ -1,13 +1,13 @@
 /**
- * Implements a standard greedy strategy that minimizes Euclidean distance to
+ * Implements a standard greedy strategy that minimises Euclidean distance to
  * the target.
  *
- * This strategy simply calculates the Euclidean distance from each neighbor to
- * the target's current location and chooses the neighbor that offers the
+ * This strategy simply calculates the Euclidean distance from each neighbour to
+ * the target's current location and chooses the neighbour that offers the
  * minimum distance.
  *
  * Time Complexity: O(1) per move, as it evaluates a constant number of
- * neighbors.
+ * neighbours.
  */
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/Entity.h"
@@ -21,17 +21,17 @@ Location DistanceGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
   Location targetLoc = target->getLocation();
 
   Node *currentNode = graph->getNode(currentLoc);
-  const auto &neighbors = currentNode->getNeighbors();
+  const auto &neighbours = currentNode->getNeighbours();
 
   Location bestMove = currentLoc;
   double minDistance = std::numeric_limits<double>::max();
 
-  for (Node *neighbor : neighbors) {
-    Location neighborLoc = neighbor->getLocation();
+  for (Node *neighbour : neighbours) {
+    Location neighbourLoc = neighbour->getLocation();
 
     // Calculate Euclidean distance
-    int dx = neighborLoc.x - targetLoc.x;
-    int dy = neighborLoc.y - targetLoc.y;
+    int dx = neighbourLoc.x - targetLoc.x;
+    int dy = neighbourLoc.y - targetLoc.y;
 
     // Consider toroidal wrapping for distance calculation
     if (abs(dx) > Graph::WIDTH / 2) {
@@ -45,7 +45,7 @@ Location DistanceGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
 
     if (distance < minDistance) {
       minDistance = distance;
-      bestMove = neighborLoc;
+      bestMove = neighbourLoc;
     }
   }
 
