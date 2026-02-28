@@ -1,10 +1,11 @@
 /**
  * Implements a greedy strategy using Manhattan distance.
  *
- * This strategy evaluates neighbors based on their Manhattan distance to the target
- * and chooses the one with the smallest distance.
+ * This strategy evaluates neighbours based on their Manhattan distance to the
+ * target and chooses the one with the smallest distance.
  *
- * Time Complexity: O(1) per move, as it evaluates a constant number of neighbors.
+ * Time Complexity: O(1) per move, as it evaluates a constant number of
+ * neighbours.
  */
 #include "../include/HeuristicGreedyStrategy.h"
 #include "../include/Entity.h"
@@ -18,17 +19,17 @@ Location HeuristicGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
   Location targetLoc = target->getLocation();
 
   Node *currentNode = graph->getNode(currentLoc);
-  const auto &neighbors = currentNode->getNeighbors();
+  const auto &neighbours = currentNode->getNeighbours();
 
   Location bestMove = currentLoc;
   int minDistance = std::numeric_limits<int>::max();
 
-  for (Node *neighbor : neighbors) {
-    Location neighborLoc = neighbor->getLocation();
+  for (Node *neighbour : neighbours) {
+    Location neighbourLoc = neighbour->getLocation();
 
     // Calculate Manhattan distance
-    int dx = abs(neighborLoc.x - targetLoc.x);
-    int dy = abs(neighborLoc.y - targetLoc.y);
+    int dx = abs(neighbourLoc.x - targetLoc.x);
+    int dy = abs(neighbourLoc.y - targetLoc.y);
 
     // Consider toroidal wrapping
     if (dx > Graph::WIDTH / 2) {
@@ -42,7 +43,7 @@ Location HeuristicGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
 
     if (distance < minDistance) {
       minDistance = distance;
-      bestMove = neighborLoc;
+      bestMove = neighbourLoc;
     }
   }
 

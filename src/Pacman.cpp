@@ -1,8 +1,8 @@
 /**
  * Represents the player-controlled Pacman entity.
  *
- * Handles Pacman's specific state, such as speed, move accumulation for smooth movement,
- * and direction control.
+ * Handles Pacman's specific state, such as speed, move accumulation for smooth
+ * movement, and direction control.
  *
  * Time Complexity: All methods are O(1).
  */

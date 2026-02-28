@@ -7,13 +7,13 @@
 class Node {
 private:
   Location location;
-  std::vector<Node *> neighbors;
+  std::vector<Node *> neighbours;
 
 public:
   Node(const Location &loc);
 
-  void addNeighbor(Node *neighbor);
-  const std::vector<Node *> &getNeighbors() const;
+  void addNeighbour(Node *neighbour);
+  const std::vector<Node *> &getNeighbours() const;
   Location getLocation() const;
 };
 

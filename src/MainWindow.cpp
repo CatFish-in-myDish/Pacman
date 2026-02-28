@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   statusLabel = new QLabel(
       "Time Survived: 0.0s | Use Arrow Keys to Start | R to Restart");
   statusLabel->setStyleSheet("QLabel { font-size: 14px; padding: 10px; "
-                             "background-color: #333; color: white; }");
+                             "background-colour: #333; colour: white; }");
   statusLabel->setAlignment(Qt::AlignCenter);
   layout->addWidget(statusLabel);
 

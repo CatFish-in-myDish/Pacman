@@ -1,7 +1,7 @@
 /**
  * Implements the Scatter Strategy for ghost movement.
  *
- * This module defines the behavior where a ghost moves toward
+ * This module defines the behaviour where a ghost moves toward
  * a predefined corner or target tile in the maze instead of
  * directly chasing Pacman.
  *
@@ -16,7 +16,7 @@
  * toward its assigned corner using standard movement logic
  * or pathfinding algorithms.
  *
- * This behavior typically alternates with chase mode
+ * This behaviour typically alternates with chase mode
  * as part of the ghost AI state system.
  *
  * Time Complexity:
@@ -35,23 +35,24 @@
 #include <limits>
 
 Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster,
-                                        Entity *target) {
-  // For now, we target the top-left corner (0,0) as a placeholder scatter point.
+                                       Entity *target) {
+  // For now, we target the top-left corner (0,0) as a placeholder scatter
+  // point.
   Location targetLoc(0, 0);
 
   Location currentLoc = monster->getLocation();
   Node *currentNode = graph->getNode(currentLoc);
-  const auto &neighbors = currentNode->getNeighbors();
+  const auto &neighbours = currentNode->getNeighbours();
 
   Location bestMove = currentLoc;
   double minDistance = std::numeric_limits<double>::max();
 
-  for (Node *neighbor : neighbors) {
-    Location neighborLoc = neighbor->getLocation();
+  for (Node *neighbour : neighbours) {
+    Location neighbourLoc = neighbour->getLocation();
 
     // Calculate distance to scatter target (0,0)
-    int dx = neighborLoc.x - targetLoc.x;
-    int dy = neighborLoc.y - targetLoc.y;
+    int dx = neighbourLoc.x - targetLoc.x;
+    int dy = neighbourLoc.y - targetLoc.y;
 
     // Consider toroidal wrapping (standard shortest path on torus)
     if (abs(dx) > Graph::WIDTH / 2) {
@@ -65,7 +66,7 @@ Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster,
 
     if (distance < minDistance) {
       minDistance = distance;
-      bestMove = neighborLoc;
+      bestMove = neighbourLoc;
     }
   }
 

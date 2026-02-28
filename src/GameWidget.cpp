@@ -1,8 +1,8 @@
 /**
  * Handles the rendering of the game state using Qt's QPainter.
  *
- * This class draws the maze, Pacman, monsters, pellets, and other visual elements.
- * It also handles keyboard input for controlling Pacman.
+ * This class draws the maze, Pacman, monsters, pellets, and other visual
+ * elements. It also handles keyboard input for controlling Pacman.
  *
  */
 #include "../include/GameWidget.h"
@@ -100,10 +100,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     startAngle = 270;
 
   // drawPie uses 1/16th of a degree
-  // We want the mouth to center on the direction.
+  // We want the mouth to centre on the direction.
   // e.g. Right (0): Mouth from 30 to 330 (Viewed as 30 start, -300 span? Or 30
   // start + 300 span) Qt Angles: 3 o'clock is 0. Positive is CCW. Mouth Opening
-  // 30 means +/- 15 degrees from center? Or 30 degrees total wedge? Let's say
+  // 30 means +/- 15 degrees from centre? Or 30 degrees total wedge? Let's say
   // Total Wedge is 'mouthOpen * 2'. Start = DirectionAngle + mouthOpen Span =
   // 360 - 2 * mouthOpen
 
@@ -120,7 +120,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int mx = mLoc.x * TILE_SIZE;
     int my = mLoc.y * TILE_SIZE;
 
-    // Set color
+    // Set colour
     if (name == "M1 (Dist)")
       painter.setBrush(Qt::red);
     else if (name == "M2 (Heur)")
@@ -179,20 +179,20 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
   // 5. Draw Lightning Bolt
   if (controller->isLightningActive()) {
-      auto arc = controller->getLightningArc();
-      int x1 = arc.first.x * TILE_SIZE + TILE_SIZE / 2;
-      int y1 = arc.first.y * TILE_SIZE + TILE_SIZE / 2;
-      int x2 = arc.second.x * TILE_SIZE + TILE_SIZE / 2;
-      int y2 = arc.second.y * TILE_SIZE + TILE_SIZE / 2;
+    auto arc = controller->getLightningArc();
+    int x1 = arc.first.x * TILE_SIZE + TILE_SIZE / 2;
+    int y1 = arc.first.y * TILE_SIZE + TILE_SIZE / 2;
+    int x2 = arc.second.x * TILE_SIZE + TILE_SIZE / 2;
+    int y2 = arc.second.y * TILE_SIZE + TILE_SIZE / 2;
 
-      QPen boltPen(QColor(100, 200, 255), 4);
-      boltPen.setJoinStyle(Qt::RoundJoin);
-      painter.setPen(boltPen);
-      painter.drawLine(x1, y1, x2, y2);
+    QPen boltPen(QColor(100, 200, 255), 4);
+    boltPen.setJoinStyle(Qt::RoundJoin);
+    painter.setPen(boltPen);
+    painter.drawLine(x1, y1, x2, y2);
 
-      // Inner core
-      painter.setPen(QPen(Qt::white, 2));
-      painter.drawLine(x1, y1, x2, y2);
+    // Inner core
+    painter.setPen(QPen(Qt::white, 2));
+    painter.drawLine(x1, y1, x2, y2);
   }
 
   // HUD: Score & Round

@@ -1,11 +1,13 @@
 /**
- * Implements an aggressive greedy strategy that targets a predicted future location of the target.
+ * Implements an aggressive greedy strategy that targets a predicted future
+ * location of the target.
  *
- * This strategy attempts to intercept the target by predicting its position 2 steps ahead based on
- * its current direction. It then greedily chooses the neighbor that minimizes the distance to this
- * predicted location.
+ * This strategy attempts to intercept the target by predicting its position 2
+ * steps ahead based on its current direction. It then greedily chooses the
+ * neighbour that minimises the distance to this predicted location.
  *
- * Time Complexity: O(1) per move, as it only evaluates a constant number of neighbors (at most 4).
+ * Time Complexity: O(1) per move, as it only evaluates a constant number of
+ * neighbours (at most 4).
  */
 #include "../include/AggressiveGreedyStrategy.h"
 #include "../include/Entity.h"
@@ -35,19 +37,19 @@ Location AggressiveGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
     predictedLoc = Location(predX, predY);
   }
 
-  // Find neighbor closest to predicted location
+  // Find neighbour closest to predicted location
   Node *currentNode = graph->getNode(currentLoc);
-  const auto &neighbors = currentNode->getNeighbors();
+  const auto &neighbours = currentNode->getNeighbours();
 
   Location bestMove = currentLoc;
   double minDistance = std::numeric_limits<double>::max();
 
-  for (Node *neighbor : neighbors) {
-    Location neighborLoc = neighbor->getLocation();
+  for (Node *neighbour : neighbours) {
+    Location neighbourLoc = neighbour->getLocation();
 
     // Calculate distance to predicted location
-    int dx = neighborLoc.x - predictedLoc.x;
-    int dy = neighborLoc.y - predictedLoc.y;
+    int dx = neighbourLoc.x - predictedLoc.x;
+    int dy = neighbourLoc.y - predictedLoc.y;
 
     // Consider toroidal wrapping
     if (abs(dx) > Graph::WIDTH / 2) {
@@ -61,7 +63,7 @@ Location AggressiveGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
 
     if (distance < minDistance) {
       minDistance = distance;
-      bestMove = neighborLoc;
+      bestMove = neighbourLoc;
     }
   }
 

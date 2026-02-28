@@ -1,8 +1,9 @@
 /**
  * Represents a ghost/monster entity in the game.
  *
- * This class handles monster movement, strategy switching (Chase, Ambush, Scatter),
- * speed management, and special effects like being slowed or territory buffs.
+ * This class handles monster movement, strategy switching (Chase, Ambush,
+ * Scatter), speed management, and special effects like being slowed or
+ * territory buffs.
  *
  * Time Complexity:
  * - move(): O(1) assuming the strategy's findNextMove is efficient.
@@ -64,21 +65,21 @@ void Monster::setMode(Mode mode) {
   }
 
   switch (mode) {
-    case CHASE:
-      // Nearest monsters: use AstarStrategy  (direct pursuit)
-      strategy = new AStarStrategy();
-      speed = 1.5;
-      break;
-    case AMBUSH:
-      // Farthest monsters: use AggressiveGreedyStrategy (predictive intercept)
-      strategy = new AggressiveGreedyStrategy();
-      speed = 1.25;
-      break;
-    case SCATTER:
-      // Used during lightning
-      strategy = new ScatterStrategy();
-      speed = 1.0;
-      break;
+  case CHASE:
+    // Nearest monsters: use AstarStrategy (direct pursuit)
+    strategy = new AStarStrategy();
+    speed = 1.5;
+    break;
+  case AMBUSH:
+    // Farthest monsters: use AggressiveGreedyStrategy (predictive intercept)
+    strategy = new AggressiveGreedyStrategy();
+    speed = 1.25;
+    break;
+  case SCATTER:
+    // Used during lightning
+    strategy = new ScatterStrategy();
+    speed = 1.0;
+    break;
   }
 
   currentMode = mode;
