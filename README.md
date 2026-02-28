@@ -14,7 +14,7 @@
 - **Multi-Round Progression** — Clear all pellets to advance rounds with cumulative scoring
 - **Classic 28×31 Maze** — Pacman layout with tunnel wrapping
 
-## Game Overview
+## ✨ Feature Highlights
 
 ### Objective
 

@@ -3,7 +3,7 @@
 
 #include "GreedyStrategy.h"
 
-// Monster 1: Pure Distance Greedy - minimizes Euclidean distance
+// Monster 1: Pure Distance Greedy - minimises Euclidean distance
 class DistanceGreedyStrategy : public GreedyStrategy {
 public:
   Location findNextMove(Graph *graph, Entity *monster, Entity *target) override;

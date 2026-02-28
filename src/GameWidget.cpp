@@ -47,11 +47,11 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   painter.setPen(Qt::NoPen);
 
   for (int x = 0; x < Graph::WIDTH; x++) {
-      for (int y = 0; y < Graph::HEIGHT; y++) {
-          if (Graph::isWall(x, y)) {
-              painter.drawRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-          }
+    for (int y = 0; y < Graph::HEIGHT; y++) {
+      if (Graph::isWall(x, y)) {
+        painter.drawRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       }
+    }
   }
 
   // 2.5 Draw Pellets (small white dots)
@@ -60,9 +60,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   const auto &pellets = controller->getPellets();
   int pelletRadius = TILE_SIZE / 8;
   for (const Location &loc : pellets) {
-      int cx = loc.x * TILE_SIZE + TILE_SIZE / 2;
-      int cy = loc.y * TILE_SIZE + TILE_SIZE / 2;
-      painter.drawEllipse(cx - pelletRadius, cy - pelletRadius, pelletRadius * 2, pelletRadius * 2);
+    int cx = loc.x * TILE_SIZE + TILE_SIZE / 2;
+    int cy = loc.y * TILE_SIZE + TILE_SIZE / 2;
+    painter.drawEllipse(cx - pelletRadius, cy - pelletRadius, pelletRadius * 2,
+                        pelletRadius * 2);
   }
 
   // 3. Draw Pacman
@@ -71,11 +72,15 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   Location pDir = p->getLastDirection();
 
   // Animation logic: Mouth opens/closes every ~300ms
-  // Use current time or a simple static counter if available, or just system clock
-  // Since we don't have a frame counter, we can use the system clock
+  // Use current time or a simple static counter if available, or just system
+  // clock Since we don't have a frame counter, we can use the system clock
   auto now = std::chrono::steady_clock::now();
-  auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-  double mouthOpen = 30.0 * (0.5 + 0.5 * std::sin(ms * 0.015)); // Oscillate between 0 and 30 degrees
+  auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                now.time_since_epoch())
+                .count();
+  double mouthOpen =
+      30.0 *
+      (0.5 + 0.5 * std::sin(ms * 0.015)); // Oscillate between 0 and 30 degrees
 
   painter.setBrush(Qt::yellow);
   painter.setPen(Qt::NoPen);
@@ -85,25 +90,27 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
   // Rotation Logic
   int startAngle = 0;
-  if (pDir.x == 1) startAngle = 0;
-  else if (pDir.x == -1) startAngle = 180;
-  else if (pDir.y == -1) startAngle = 90;
-  else if (pDir.y == 1) startAngle = 270;
+  if (pDir.x == 1)
+    startAngle = 0;
+  else if (pDir.x == -1)
+    startAngle = 180;
+  else if (pDir.y == -1)
+    startAngle = 90;
+  else if (pDir.y == 1)
+    startAngle = 270;
 
   // drawPie uses 1/16th of a degree
   // We want the mouth to center on the direction.
-  // e.g. Right (0): Mouth from 30 to 330 (Viewed as 30 start, -300 span? Or 30 start + 300 span)
-  // Qt Angles: 3 o'clock is 0. Positive is CCW.
-  // Mouth Opening 30 means +/- 15 degrees from center? Or 30 degrees total wedge?
-  // Let's say Total Wedge is 'mouthOpen * 2'.
-  // Start = DirectionAngle + mouthOpen
-  // Span = 360 - 2 * mouthOpen
+  // e.g. Right (0): Mouth from 30 to 330 (Viewed as 30 start, -300 span? Or 30
+  // start + 300 span) Qt Angles: 3 o'clock is 0. Positive is CCW. Mouth Opening
+  // 30 means +/- 15 degrees from center? Or 30 degrees total wedge? Let's say
+  // Total Wedge is 'mouthOpen * 2'. Start = DirectionAngle + mouthOpen Span =
+  // 360 - 2 * mouthOpen
 
   int qtStartAngle = (startAngle + (int)mouthOpen) * 16;
   int qtSpanAngle = (360 - 2 * (int)mouthOpen) * 16;
 
   painter.drawPie(px, py, TILE_SIZE, TILE_SIZE, qtStartAngle, qtSpanAngle);
-
 
   // 4. Draw Monsters
   const auto &monsters = controller->getMonsters();
@@ -114,11 +121,16 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int my = mLoc.y * TILE_SIZE;
 
     // Set color
-    if (name == "M1 (Dist)") painter.setBrush(Qt::red);
-    else if (name == "M2 (Heur)") painter.setBrush(QColor(255, 184, 255)); // Pink
-    else if (name == "M3 (Dir)") painter.setBrush(Qt::cyan);
-    else if (name == "M4 (Aggr)") painter.setBrush(QColor(255, 184, 82)); // Orange
-    else painter.setBrush(Qt::green);
+    if (name == "M1 (Dist)")
+      painter.setBrush(Qt::red);
+    else if (name == "M2 (Heur)")
+      painter.setBrush(QColor(255, 184, 255)); // Pink
+    else if (name == "M3 (Dir)")
+      painter.setBrush(Qt::cyan);
+    else if (name == "M4 (Aggr)")
+      painter.setBrush(QColor(255, 184, 82)); // Orange
+    else
+      painter.setBrush(Qt::green);
 
     // Draw Ghost Body (Circle top, Rect bottom, Wavy feet)
     QPainterPath path;
@@ -144,10 +156,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
     // Visual indicator for SLOWED state
     if (monster->isSlowed()) {
-        painter.setPen(QPen(Qt::white, 2));
-        painter.setBrush(Qt::NoBrush);
-        painter.drawEllipse(mx - 2, my - 2, TILE_SIZE + 4, TILE_SIZE + 4);
-        painter.setPen(Qt::NoPen);
+      painter.setPen(QPen(Qt::white, 2));
+      painter.setBrush(Qt::NoBrush);
+      painter.drawEllipse(mx - 2, my - 2, TILE_SIZE + 4, TILE_SIZE + 4);
+      painter.setPen(Qt::NoPen);
     }
 
     // Eyes (White) - Fixed looking leftish for now
@@ -161,7 +173,8 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     painter.setBrush(Qt::blue);
     int pupilSize = eyeSize / 2;
     painter.drawEllipse(mx + 4 + 2, eyeY + 2, pupilSize, pupilSize);
-    painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize + 2, eyeY + 2, pupilSize, pupilSize);
+    painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize + 2, eyeY + 2, pupilSize,
+                        pupilSize);
   }
 
   // 5. Draw Lightning Bolt

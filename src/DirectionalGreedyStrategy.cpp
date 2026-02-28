@@ -39,7 +39,7 @@ Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
   }
 
   // Determine which axis has larger distance (the "major axis")
-  // Prioritize movement along the major axis to close distance faster
+  // Prioritise movement along the major axis to close distance faster
   bool preferHorizontal = std::abs(dx) >= std::abs(dy);
 
   // Evaluate each neighbor and choose the best move
@@ -62,12 +62,13 @@ Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster,
     }
 
     // Score calculation: heavily weight the major axis distance
-    // This makes the monster prioritize closing the gap on the larger difference
+    // This makes the monster prioritise closing the gap on the larger
+    // difference
     double score;
     if (preferHorizontal) {
-      score = std::abs(nDx) * 1000 + std::abs(nDy); // Prioritize X axis
+      score = std::abs(nDx) * 1000 + std::abs(nDy); // Prioritise X axis
     } else {
-      score = std::abs(nDy) * 1000 + std::abs(nDx); // Prioritize Y axis
+      score = std::abs(nDy) * 1000 + std::abs(nDx); // Prioritise Y axis
     }
 
     if (score < minScore) {

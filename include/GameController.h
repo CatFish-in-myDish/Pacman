@@ -1,14 +1,14 @@
 #ifndef GAMECONTROLLER_H
 #define GAMECONTROLLER_H
 
-#include "Graph.h"
 #include "GhostTerritory.h"
+#include "Graph.h"
 #include "Monster.h"
 #include "Pacman.h"
 #include <QString>
 #include <chrono>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 class GameController {
 private:
@@ -32,8 +32,9 @@ private:
   int lightningTimer;
   Location lightningStart;
   Location lightningEnd;
-  
-  std::pair<Monster*, Monster*> findClosestPair(const std::vector<Monster*>& monsters);
+
+  std::pair<Monster *, Monster *>
+  findClosestPair(const std::vector<Monster *> &monsters);
 
   void movePacman();
   void moveMonsters();
@@ -52,14 +53,17 @@ public:
 
   Pacman *getPacman() const;
   const std::vector<Monster *> &getMonsters() const;
-  const std::unordered_set<Location> &getPellets() const; // Locations of remaining pellets
+  const std::unordered_set<Location> &
+  getPellets() const; // Locations of remaining pellets
   int getScore() const;
   bool isGameWon() const;
   bool isGameOver() const;
   double getSurvivedTime() const;
 
   bool isLightningActive() const { return lightningActive; }
-  std::pair<Location, Location> getLightningArc() const { return {lightningStart, lightningEnd}; }
+  std::pair<Location, Location> getLightningArc() const {
+    return {lightningStart, lightningEnd};
+  }
 };
 
 #endif

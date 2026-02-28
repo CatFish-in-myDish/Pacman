@@ -8,11 +8,7 @@
 
 class Monster : public Entity {
 public:
-  enum Mode {
-    CHASE,
-    AMBUSH,
-    SCATTER
-  };
+  enum Mode { CHASE, AMBUSH, SCATTER };
 
   Monster(const Location &loc, GreedyStrategy *strat,
           const std::string &monsterName);
@@ -39,6 +35,5 @@ private:
   double moveAccumulator;
   double territoryMultiplier;
   int slowTicks;
-
 };
 #endif
