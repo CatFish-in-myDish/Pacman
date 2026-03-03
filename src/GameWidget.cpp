@@ -122,15 +122,17 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
     // Set colour
     if (name == "M1 (Dist)")
-      painter.setBrush(Qt::red);
+        painter.setBrush(QColor(255, 80, 80));// Bright Red
     else if (name == "M2 (Heur)")
-      painter.setBrush(QColor(255, 184, 255)); // Pink
+        painter.setBrush(QColor(255, 182, 255));// Light Magenta
     else if (name == "M3 (Dir)")
-      painter.setBrush(Qt::cyan);
+        painter.setBrush(QColor(102, 255, 255));// Light Cyan
     else if (name == "M4 (Aggr)")
-      painter.setBrush(QColor(255, 184, 82)); // Orange
+        painter.setBrush(QColor(255, 200, 120));// Light Orange
+    else if (name == "M5 (Center)")
+        painter.setBrush(QColor(186, 255, 201));// Light Mint Green
     else
-      painter.setBrush(Qt::green);
+        painter.setBrush(QColor(255, 255, 153));// Soft Neon Yellow
 
     // Draw Ghost Body (Circle top, Rect bottom, Wavy feet)
     QPainterPath path;
