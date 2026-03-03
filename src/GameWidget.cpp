@@ -15,12 +15,9 @@
 GameWidget::GameWidget(QWidget *parent) : QWidget(parent) {
   controller = new GameController();
 
-  // Set fixed size
   setFixedSize(WIDTH, HEIGHT);
   setFocusPolicy(Qt::StrongFocus);
 
-  // Set up game timer (250ms = 4 updates/second)
-  // Slower speed makes monsters easier to evade
   gameTimer = new QTimer(this);
   connect(gameTimer, &QTimer::timeout, this, &GameWidget::gameLoop);
   gameTimer->start(250);
@@ -30,7 +27,7 @@ GameWidget::~GameWidget() { delete controller; }
 
 void GameWidget::gameLoop() {
   controller->update();
-  update(); // Trigger repaint
+  update();
 }
 
 void GameWidget::paintEvent(QPaintEvent *event) {
@@ -43,18 +40,34 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   painter.fillRect(0, 0, WIDTH, HEIGHT, Qt::black);
 
   // 2. Draw Maze (Walls)
-  painter.setBrush(QColor(33, 33, 222)); // Wall Blue
+  painter.setBrush(QColor(33, 33, 222));
   painter.setPen(Qt::NoPen);
-
   for (int x = 0; x < Graph::WIDTH; x++) {
     for (int y = 0; y < Graph::HEIGHT; y++) {
       if (Graph::isWall(x, y)) {
-        painter.drawRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        int px = x * TILE_SIZE;
+        int py = y * TILE_SIZE;
+        int r = TILE_SIZE / 3;
+
+        painter.drawRoundedRect(px, py, TILE_SIZE, TILE_SIZE, r, r);
+
+        if (Graph::isWall(x, y - 1)) {
+           painter.drawRect(px, py, TILE_SIZE, r);
+        }
+        if (Graph::isWall(x, y + 1)) {
+           painter.drawRect(px, py + TILE_SIZE - r, TILE_SIZE, r);
+        }
+        if (Graph::isWall(x - 1, y)) {
+           painter.drawRect(px, py, r, TILE_SIZE);
+        }
+        if (Graph::isWall(x + 1, y)) {
+           painter.drawRect(px + TILE_SIZE - r, py, r, TILE_SIZE);
+        }
       }
     }
   }
 
-  // 2.5 Draw Pellets (small white dots)
+  // 2.5 Draw Pellets
   painter.setBrush(Qt::white);
   painter.setPen(Qt::NoPen);
   const auto &pellets = controller->getPellets();
@@ -62,8 +75,8 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   for (const Location &loc : pellets) {
     int cx = loc.x * TILE_SIZE + TILE_SIZE / 2;
     int cy = loc.y * TILE_SIZE + TILE_SIZE / 2;
-    painter.drawEllipse(cx - pelletRadius, cy - pelletRadius, pelletRadius * 2,
-                        pelletRadius * 2);
+    painter.drawEllipse(cx - pelletRadius, cy - pelletRadius,
+                        pelletRadius * 2, pelletRadius * 2);
   }
 
   // 3. Draw Pacman
@@ -71,16 +84,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   Location pLoc = p->getLocation();
   Location pDir = p->getLastDirection();
 
-  // Animation logic: Mouth opens/closes every ~300ms
-  // Use current time or a simple static counter if available, or just system
-  // clock Since we don't have a frame counter, we can use the system clock
   auto now = std::chrono::steady_clock::now();
-  auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                now.time_since_epoch())
-                .count();
-  double mouthOpen =
-      30.0 *
-      (0.5 + 0.5 * std::sin(ms * 0.015)); // Oscillate between 0 and 30 degrees
+  auto ms  = std::chrono::duration_cast<std::chrono::milliseconds>(
+                 now.time_since_epoch()).count();
+  double mouthOpen = 30.0 * (0.5 + 0.5 * std::sin(ms * 0.015));
 
   painter.setBrush(Qt::yellow);
   painter.setPen(Qt::NoPen);
@@ -88,102 +95,98 @@ void GameWidget::paintEvent(QPaintEvent *event) {
   int px = pLoc.x * TILE_SIZE;
   int py = pLoc.y * TILE_SIZE;
 
-  // Rotation Logic
   int startAngle = 0;
-  if (pDir.x == 1)
-    startAngle = 0;
-  else if (pDir.x == -1)
-    startAngle = 180;
-  else if (pDir.y == -1)
-    startAngle = 90;
-  else if (pDir.y == 1)
-    startAngle = 270;
+  if      (pDir.x ==  1) startAngle = 0;
+  else if (pDir.x == -1) startAngle = 180;
+  else if (pDir.y == -1) startAngle = 90;
+  else if (pDir.y ==  1) startAngle = 270;
 
-  // drawPie uses 1/16th of a degree
-  // We want the mouth to centre on the direction.
-  // e.g. Right (0): Mouth from 30 to 330 (Viewed as 30 start, -300 span? Or 30
-  // start + 300 span) Qt Angles: 3 o'clock is 0. Positive is CCW. Mouth Opening
-  // 30 means +/- 15 degrees from centre? Or 30 degrees total wedge? Let's say
-  // Total Wedge is 'mouthOpen * 2'. Start = DirectionAngle + mouthOpen Span =
-  // 360 - 2 * mouthOpen
-
-  int qtStartAngle = (startAngle + (int)mouthOpen) * 16;
-  int qtSpanAngle = (360 - 2 * (int)mouthOpen) * 16;
-
-  painter.drawPie(px, py, TILE_SIZE, TILE_SIZE, qtStartAngle, qtSpanAngle);
+  painter.drawPie(px, py, TILE_SIZE, TILE_SIZE,
+                  (startAngle + (int)mouthOpen) * 16,
+                  (360 - 2 * (int)mouthOpen) * 16);
 
   // 4. Draw Monsters
   const auto &monsters = controller->getMonsters();
   for (Monster *monster : monsters) {
-    Location mLoc = monster->getLocation();
+    Location mLoc  = monster->getLocation();
     std::string name = monster->getName();
     int mx = mLoc.x * TILE_SIZE;
     int my = mLoc.y * TILE_SIZE;
 
-    // Set colour
-    if (name == "M1 (Dist)")
-        painter.setBrush(QColor(255, 80, 80));// Bright Red
-    else if (name == "M2 (Heur)")
-        painter.setBrush(QColor(255, 182, 255));// Light Magenta
-    else if (name == "M3 (Dir)")
-        painter.setBrush(QColor(102, 255, 255));// Light Cyan
-    else if (name == "M4 (Aggr)")
-      painter.setBrush(QColor(255, 184, 82)); // Orange
-    else if (name == "M5 (Pinch)")
-      painter.setBrush(QColor(186, 255, 201)); // Mint Green
-    else
-      painter.setBrush(QColor(255, 255, 153)); // Soft Neon Yellow
+    // ── Pick ghost body colour ────────────────────────────────────────────
+    QColor ghostColor;
+    if      (name == "M1 (Dist)")  ghostColor = QColor(255,  80,  80);  // Bright Red
+    else if (name == "M2 (Heur)")  ghostColor = QColor(255, 182, 255);  // Light Magenta
+    else if (name == "M3 (Dir)")   ghostColor = QColor(102, 255, 255);  // Light Cyan
+    else if (name == "M4 (Aggr)")  ghostColor = QColor(255, 184,  82);  // Orange
+    else if (name == "M5 (Pinch)") ghostColor = QColor(186, 255, 201);  // Mint Green
+    else                           ghostColor = QColor(255, 255, 153);  // Soft Neon Yellow
 
-    // Draw Ghost Body (Circle top, Rect bottom, Wavy feet)
-    QPainterPath path;
+    painter.setPen(Qt::NoPen);
 
-    // Head (Top Half Circle)
-    path.moveTo(mx, my + TILE_SIZE / 2);
-    path.arcTo(mx, my, TILE_SIZE, TILE_SIZE, 180, 180);
+    // ── Ghost body ────────────────────────────────────────────────────────
+    // Classic Pac-Man shape:
+    //   • Rounded dome (top half-circle arc)
+    //   • Straight sides
+    //   • Three wavy bumps along the bottom skirt
+    // ─────────────────────────────────────────────────────────────────────
+    double bw = TILE_SIZE / 3.0;
+    QPainterPath bodyPath;
 
-    // Feet (Wavy)
-    // 3 small bumps
-    double footW = TILE_SIZE / 3.0;
-    // Right side down
-    path.lineTo(mx + TILE_SIZE, my + TILE_SIZE);
+    // Dome: start at left edge of dome midpoint, sweep 180° CW to right edge
+    bodyPath.moveTo(mx, my + TILE_SIZE / 2);
+    bodyPath.arcTo(mx, my, TILE_SIZE, TILE_SIZE, 180, 180);
 
-    // Bottom bumps (Right to Left)
-    path.lineTo(mx + 2 * footW, my + TILE_SIZE - 4);
-    path.lineTo(mx + 1 * footW, my + TILE_SIZE);
-    path.lineTo(mx, my + TILE_SIZE - 4);
+    // Right side straight down to bottom-right corner
+    bodyPath.lineTo(mx + TILE_SIZE, my + TILE_SIZE);
 
-    path.closeSubpath();
+    // Three wavy bumps, drawn right-to-left:
+    //   alternating upward bump arc then downward valley arc
+    bodyPath.arcTo(mx + 2 * bw, my + TILE_SIZE - bw, bw, bw,   0, -180); // right bump
+    bodyPath.arcTo(mx + 1 * bw, my + TILE_SIZE - bw, bw, bw,   0,  180); // middle valley
+    bodyPath.arcTo(mx,          my + TILE_SIZE - bw, bw, bw,   0, -180); // left bump
 
-    painter.drawPath(path);
+    bodyPath.lineTo(mx, my + TILE_SIZE / 2);
+    bodyPath.closeSubpath();
 
-    // Visual indicator for SLOWED state
+    painter.setBrush(ghostColor);
+    painter.fillPath(bodyPath, ghostColor);
+
+    // ── Eyes: large white sockets + vivid blue pupils ─────────────────────
+    int eyeOuterW =  TILE_SIZE / 3;
+    int eyeOuterH = (int)(TILE_SIZE * 0.38);
+    int eyeY      =  my + TILE_SIZE / 6;
+    int leftEyeX  =  mx + TILE_SIZE / 6;
+    int rightEyeX =  mx + TILE_SIZE - TILE_SIZE / 6 - eyeOuterW;
+
+    painter.setBrush(Qt::white);
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(leftEyeX,  eyeY, eyeOuterW, eyeOuterH);
+    painter.drawEllipse(rightEyeX, eyeY, eyeOuterW, eyeOuterH);
+
+    int pupilW    = eyeOuterW / 2;
+    int pupilH    = eyeOuterH / 2;
+    int pupilOffX = eyeOuterW / 4;
+    int pupilOffY = eyeOuterH / 4;
+
+    painter.setBrush(QColor(0, 80, 255));
+    painter.drawEllipse(leftEyeX  + pupilOffX, eyeY + pupilOffY, pupilW, pupilH);
+    painter.drawEllipse(rightEyeX + pupilOffX, eyeY + pupilOffY, pupilW, pupilH);
+
+    // ── Slowed indicator ring ─────────────────────────────────────────────
     if (monster->isSlowed()) {
       painter.setPen(QPen(Qt::white, 2));
       painter.setBrush(Qt::NoBrush);
       painter.drawEllipse(mx - 2, my - 2, TILE_SIZE + 4, TILE_SIZE + 4);
       painter.setPen(Qt::NoPen);
     }
-
-    // Eyes (White) - Fixed looking leftish for now
-    painter.setBrush(Qt::white);
-    int eyeSize = TILE_SIZE / 3;
-    int eyeY = my + TILE_SIZE / 4;
-    painter.drawEllipse(mx + 4, eyeY, eyeSize, eyeSize);
-    painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize, eyeY, eyeSize, eyeSize);
-
-    // Pupils (Blue)
-    painter.setBrush(Qt::blue);
-    int pupilSize = eyeSize / 2;
-    painter.drawEllipse(mx + 4 + 2, eyeY + 2, pupilSize, pupilSize);
-    painter.drawEllipse(mx + TILE_SIZE - 4 - eyeSize + 2, eyeY + 2, pupilSize,
-                        pupilSize);
   }
 
   // 5. Draw Lightning Bolt
   if (controller->isLightningActive()) {
     auto arc = controller->getLightningArc();
-    int x1 = arc.first.x * TILE_SIZE + TILE_SIZE / 2;
-    int y1 = arc.first.y * TILE_SIZE + TILE_SIZE / 2;
+    int x1 = arc.first.x  * TILE_SIZE + TILE_SIZE / 2;
+    int y1 = arc.first.y  * TILE_SIZE + TILE_SIZE / 2;
     int x2 = arc.second.x * TILE_SIZE + TILE_SIZE / 2;
     int y2 = arc.second.y * TILE_SIZE + TILE_SIZE / 2;
 
@@ -191,19 +194,15 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     boltPen.setJoinStyle(Qt::RoundJoin);
     painter.setPen(boltPen);
     painter.drawLine(x1, y1, x2, y2);
-
-    // Inner core
     painter.setPen(QPen(Qt::white, 2));
     painter.drawLine(x1, y1, x2, y2);
   }
 
-  // HUD: Score & Round
+  // HUD
   painter.setPen(Qt::white);
   painter.setFont(QFont("Arial", 14, QFont::Bold));
-  QString scoreText = QString("Score: %1").arg(controller->getScore());
-  painter.drawText(8, 20, scoreText);
-  QString roundText = QString("Round: %1").arg(controller->getRound());
-  painter.drawText(120, 20, roundText);
+  painter.drawText(8,   20, QString("Score: %1").arg(controller->getScore()));
+  painter.drawText(120, 20, QString("Round: %1").arg(controller->getRound()));
 
   // Win / Game Over overlay
   if (controller->isGameWon()) {
@@ -225,30 +224,15 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
 void GameWidget::keyPressEvent(QKeyEvent *event) {
   QString key;
-
   switch (event->key()) {
-  case Qt::Key_Up:
-    key = "UP";
-    break;
-  case Qt::Key_Down:
-    key = "DOWN";
-    break;
-  case Qt::Key_Left:
-    key = "LEFT";
-    break;
-  case Qt::Key_Right:
-    key = "RIGHT";
-    break;
-  case Qt::Key_R:
-    key = "R";
-    break;
-  case Qt::Key_Z:
-    key = "Z";
-    break;
-  default:
-    return;
+  case Qt::Key_Up:    key = "UP";    break;
+  case Qt::Key_Down:  key = "DOWN";  break;
+  case Qt::Key_Left:  key = "LEFT";  break;
+  case Qt::Key_Right: key = "RIGHT"; break;
+  case Qt::Key_R:     key = "R";     break;
+  case Qt::Key_Z:     key = "Z";     break;
+  default: return;
   }
-
   controller->handleInput(key);
 }
 

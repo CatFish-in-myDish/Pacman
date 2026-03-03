@@ -32,7 +32,6 @@
 #include "../include/GameController.h"
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
-#include "../include/CenterTerritorialGreedyStrategy.h"
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
