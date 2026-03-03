@@ -91,17 +91,17 @@ void GameController::initGame(bool resetScore) {
     }
   }
 
-  // Start Pacman in centre (row 14, col 14)
-  pacman = new Pacman(Location(14, 14));
+  // Start Pacman in centre (row 28, col 28) — scaled 2× from (14,14)
+  pacman = new Pacman(Location(28, 28));
 
-  // Start Monsters in corners/house areas
+  // Start Monsters in corners/house areas — scaled 2× from original positions
   monsters.push_back(
-      new Monster(Location(1, 1), new AStarStrategy(), "M1 (A*)"));
+      new Monster(Location(2, 2), new AStarStrategy(), "M1 (A*)"));
   monsters.push_back(
-      new Monster(Location(26, 1), new HeuristicGreedyStrategy(), "M2 (Heur)"));
-  monsters.push_back(new Monster(Location(1, 29),
+      new Monster(Location(52, 2), new HeuristicGreedyStrategy(), "M2 (Heur)"));
+  monsters.push_back(new Monster(Location(2, 58),
                                  new DirectionalGreedyStrategy(), "M3 (Dir)"));
-  monsters.push_back(new Monster(Location(26, 29),
+  monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
 
   // Remove pellets that are under initial entities (Pacman and Monsters)

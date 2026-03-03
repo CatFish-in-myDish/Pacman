@@ -7,8 +7,8 @@
 
 class Graph {
 public:
-  static const int WIDTH = 28;
-  static const int HEIGHT = 31;
+  static const int WIDTH = 56;
+  static const int HEIGHT = 62;
 
 private:
   std::unordered_map<Location, Node *> nodes;
