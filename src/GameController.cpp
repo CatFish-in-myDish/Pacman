@@ -185,7 +185,7 @@ void GameController::update() {
           } else if (i == sortedMonsters.size() - 1) {
             sortedMonsters[i]->setMode(Monster::AMBUSH);
           } else {
-            sortedMonsters[i]->setMode(Monster::CHASE);
+            sortedMonsters[i]->setMode(Monster::NORMAL);
           }
         }
       }
@@ -351,7 +351,7 @@ void GameController::handleInput(const QString &key) {
         closest.second->applySlow(20);
 
         lightningActive = true;
-        lightningTimer = 8; // Show for 8 ticks (approx 2 sec)
+        lightningTimer = 20; // Scatter mode and visual bolt matches slow duration
         lightningStart = closest.first->getLocation();
         lightningEnd = closest.second->getLocation();
       }

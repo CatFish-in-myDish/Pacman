@@ -19,7 +19,7 @@
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
                  const std::string &monsterName)
     : Entity(loc), strategy(strat), originalStrategy(strat), name(monsterName),
-      currentMode(CHASE), speed(1.0), moveAccumulator(0.0), slowTicks(0),
+      currentMode(NORMAL), speed(1.0), moveAccumulator(0.0), slowTicks(0),
       territoryMultiplier(1.0) {}
 
 Monster::~Monster() {
@@ -65,6 +65,10 @@ void Monster::setMode(Mode mode) {
   }
 
   switch (mode) {
+  case NORMAL:
+    // Normal behaviour uses the original strategy logic mapped during initGame
+    speed = 1.0;
+    break;
   case CHASE:
     // Nearest monsters: use AstarStrategy (direct pursuit)
     strategy = new AStarStrategy();
