@@ -36,6 +36,7 @@
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
+#include "../include/PinchGreedyStrategy.h"
 #include <QDebug>
 #include <algorithm>
 #include <cmath>
@@ -104,9 +105,8 @@ void GameController::initGame(bool resetScore) {
                                  new DirectionalGreedyStrategy(), "M3 (Dir)"));
   monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
-  monsters.push_back(
-      new Monster(Location(27, 10),
-                  new CenterTerritorialGreedyStrategy(), "M5 (Center)"));
+  monsters.push_back(new Monster(Location(28, 58),
+                                 new PinchGreedyStrategy(monsters), "M5 (Pinch)"));
 
   // Remove pellets that are under initial entities (Pacman and Monsters)
   pellets.erase(pacman->getLocation());
