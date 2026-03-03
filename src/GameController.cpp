@@ -32,6 +32,7 @@
 #include "../include/GameController.h"
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
+#include "../include/CenterTerritorialGreedyStrategy.h"
 #include "../include/DirectionalGreedyStrategy.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
@@ -103,6 +104,9 @@ void GameController::initGame(bool resetScore) {
                                  new DirectionalGreedyStrategy(), "M3 (Dir)"));
   monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
+  monsters.push_back(
+      new Monster(Location(27, 10),
+                  new CenterTerritorialGreedyStrategy(), "M5 (Center)"));
 
   // Remove pellets that are under initial entities (Pacman and Monsters)
   pellets.erase(pacman->getLocation());
