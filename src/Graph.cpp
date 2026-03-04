@@ -1,13 +1,39 @@
 /**
- * Represents the game map as a graph of interconnected nodes.
+ * Grid-based graph representation of the Pac-Man maze with toroidal tunnels
  *
- * This class initialises the grid map, creating nodes for pathable tiles and
- * connecting them to their neighbours. It supports toroidal wrapping (tunnels)
- * and wall checking.
+ * Models the game map as an undirected graph where each walkable tile (path) is a Node.
+ * Nodes are only created for pathable tiles (MAP[y][x] == 1). Neighbours are connected
+ * in four directions (up/down/left/right) + explicit toroidal wrapping for left↔right
+ * tunnels (classic Pac-Man side tunnels). Top↔bottom wrapping is also implemented
+ * (though rarely used in classic layout).
+ *
+ * Key features:
+ *   - Static const int MAP[HEIGHT][WIDTH] defines the maze layout (0=wall, 1=path)
+ *   - 2× upscaled version of classic Pac-Man maze (~28×31 → 56×62 tiles)
+ *     → allows smoother sub-tile movement, larger sprites, or higher-res rendering
+ *     while preserving original topology and symmetry
+ *   - Toroidal wrapping only connects actual path nodes (no ghost-only areas connected)
+ *   - isWall(x,y) checks bounds + MAP value (used by AI & collision)
+ *   - getNode(x,y) or getNode(Location) → O(1) average-case lookup via std::map or unordered_map
+ *
+ * Objective:
+ *   - Provide efficient spatial query & neighbour traversal for pathfinding
+ *   - Support ghost AI (APSP precompute, greedy moves, ambush, pinch, random hybrid)
+ *   - Enable tunnel wrapping identical to classic Pac-Man behaviour
+ *   - Scale cleanly to higher resolution while keeping logic simple
  *
  * Time Complexity:
- * - initialiseGrid(): O(W * H), where W and H are the dimensions of the map.
- * - getNode(), isWall(): O(1).
+ *   - Construction / initialiseGrid(): O(W × H + V × 4) ≈ O(W × H)
+ *     • V = number of path tiles (~30–40% of total tiles)
+ *     • Creating nodes + connecting 4-dir neighbours + tunnel links
+ *   - getNode(Location):               O(log V) if std::map, O(1) avg if unordered_map
+ *   - isWall(x,y):                     O(1)
+ *   - addNeighbour / get neighbours:   O(1) per call
+ *
+ * Space Complexity:
+ *   • O(V) for nodes map + each Node's neighbour list (avg ~2–3 edges per node)
+ *   • MAP array:                       O(W × H) = 56 × 62 = ~3,472 ints (~14 KB)
+ *   • Acceptable even on low-end hardware; scales linearly with map size
  */
 #include "../include/Graph.h"
 

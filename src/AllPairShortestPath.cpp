@@ -1,9 +1,39 @@
 /**
- * Implements a Cooperative Ambush strategy using Dynamic Programming.
- * 
- * Instead of chasing Pacman directly, this strategy targets a tile ahead
- * of Pacman's current direction. It uses a precomputed All-Pairs Shortest Path
- * (APSP) table to instantly find the optimal move to that ambush point.
+ * Cooperative Ambush AI strategy for ghosts/monsters using precomputed All-Pairs Shortest Paths (APSP)
+ *
+ * This module implements an ambush-style ghost AI for a Pac-Man-like game.
+ * Instead of greedily chasing Pac-Man, each ghost predicts a future position
+ * ("ambush point") several tiles ahead in Pac-Man's current moving direction
+ * and moves optimally toward that point using a precomputed distance table.
+ *
+ * Strategy highlights:
+ *   - Precomputes shortest path distances from **every non-wall tile to every other non-wall tile**
+ *     using BFS from each starting position (multi-source style APSP).
+ *   - At runtime, ghosts instantly look up the best next move that reduces distance
+ *     to the predicted ambush location.
+ *   - Falls back to chasing Pac-Man's current position if the predicted point is invalid
+ *     (wall, out of bounds, or unreachable).
+ *
+ * Objective:
+ *   - Increase catch probability by **intercepting** rather than tail-chasing
+ *   - Exploit Pac-Man's predictable movement when moving in straight lines
+ *   - Achieve near-optimal pathing in open areas with very low per-frame cost
+ *
+ * Time Complexity:
+ *   Precomputation (done once, lazily on first call):
+ *     • O(V × (V + E))   where V = number of walkable tiles, E = number of edges
+ *     • In a typical maze: V ≈ 20–30% of total tiles (e.g. ~200–400 walkable tiles)
+ *     • Total precomputation cost: roughly O(V²) in practice for grid graphs
+ *
+ *   Runtime (per ghost, per frame):
+ *     • O(degree) = O(1) to O(4)  — just checking 2–4 neighbors
+ *     • Distance lookups are O(1) average case (unordered_map)
+ *
+ * Space Complexity:
+ *   • O(V²)  — distance table: unordered_map<Location, unordered_map<Location, int>>
+ *   • For ~300 walkable tiles → ~90,000–100,000 entries (~400–800 KB)
+ *   • Acceptable for most modern games; can be optimized to int16_t or Floyd-Warshall matrix if needed
+ *
  */
 #include "../include/AllPairShortestPath.h"
 #include "../include/Entity.h"
@@ -17,7 +47,7 @@ Location AllPairShortestPath::findNextMove(Graph *graph, Entity *monster,
                                            Entity *target) {
   // --- PART 1: DP PRECOMPUTATION (Run once) ---
   static std::unordered_map<Location, std::unordered_map<Location, int>> distTable;
-  
+
   if (distTable.empty()) {
     for (int x = 0; x < Graph::WIDTH; ++x) {
       for (int y = 0; y < Graph::HEIGHT; ++y) {
@@ -48,10 +78,10 @@ Location AllPairShortestPath::findNextMove(Graph *graph, Entity *monster,
   // --- PART 2: AMBUSH TARGET SELECTION ---
   Location targetLoc = target->getLocation();
   Location targetDir = target->getLastDirection();
-  
+
   // Predict Pacman's future position (The "Ambush" point)
   Location ambushPoint(targetLoc.x + targetDir.x * 4, targetLoc.y + targetDir.y * 4);
-  
+
   // Boundary check and snapping
   if (ambushPoint.x < 0) ambushPoint.x = 0;
   if (ambushPoint.x >= Graph::WIDTH) ambushPoint.x = Graph::WIDTH - 1;
@@ -62,11 +92,11 @@ Location AllPairShortestPath::findNextMove(Graph *graph, Entity *monster,
   if (Graph::isWall(ambushPoint.x, ambushPoint.y) || distTable.find(ambushPoint) == distTable.end()) {
     ambushPoint = targetLoc;
   }
-  
+
   // --- PART 3: OPTIMAL MOVE SELECTION ---
   Location currentLoc = monster->getLocation();
   Node *currentNode = graph->getNode(currentLoc);
-  
+
   if (currentLoc == ambushPoint) return currentLoc;
 
   const auto &neighbours = currentNode->getNeighbours();
