@@ -11,7 +11,7 @@ class Monster : public Entity {
 public:
   enum Mode { NORMAL, CHASE, AMBUSH, SCATTER, FRIGHTENED };
 
-  static const int MAX_HISTORY = 50;
+  static const int MAX_HISTORY = 15;
 
   Monster(const Location &loc, GreedyStrategy *strat,
           const std::string &monsterName);
