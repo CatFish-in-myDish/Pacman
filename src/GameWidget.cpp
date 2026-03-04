@@ -120,6 +120,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     else if (name == "M3 (Dir)")   ghostColor = QColor(102, 255, 255);  // Light Cyan
     else if (name == "M4 (Aggr)")  ghostColor = QColor(255, 184,  82);  // Orange
     else if (name == "M5 (Pinch)") ghostColor = QColor(186, 255, 201);  // Mint Green
+    else if (name == "M6 (Random)") ghostColor = QColor(255, 128,   0); // Dark Orange
     else                           ghostColor = QColor(255, 255, 153);  // Soft Neon Yellow
 
     painter.setPen(Qt::NoPen);

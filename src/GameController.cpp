@@ -36,6 +36,7 @@
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
 #include "../include/PinchGreedyStrategy.h"
+#include "../include/RandomStrategy.h"
 #include <QDebug>
 #include <algorithm>
 #include <cmath>
@@ -106,6 +107,8 @@ void GameController::initGame(bool resetScore) {
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
   monsters.push_back(new Monster(Location(28, 58),
                                  new PinchGreedyStrategy(monsters), "M5 (Pinch)"));
+  monsters.push_back(new Monster(Location(28, 2),
+                                 new RandomStrategy(monsters), "M6 (Random)"));
 
   // Remove pellets that are under initial entities (Pacman and Monsters)
   pellets.erase(pacman->getLocation());
@@ -156,7 +159,15 @@ void GameController::update() {
       }
     } else {
       // Normal behaviour: Dynamic Role Assignment
-      std::vector<Monster *> sortedMonsters = monsters;
+      std::vector<Monster *> sortedMonsters;
+      for (Monster *m : monsters) {
+        if (m->getName() != "M6 (Random)") {
+          sortedMonsters.push_back(m);
+        } else {
+          // Keep M6 in normal mode so it uses RandomStrategy
+          m->setMode(Monster::NORMAL);
+        }
+      }
       Location pacLoc = pacman->getLocation();
 
       std::sort(sortedMonsters.begin(), sortedMonsters.end(),

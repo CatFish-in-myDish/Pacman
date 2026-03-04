@@ -26,6 +26,7 @@ set(SOURCES
     src/Pacman.cpp
     src/PinchGreedyStrategy.cpp
     src/ScatterStrategy.cpp
+    src/RandomStrategy.cpp
 )
 
 set(HEADERS
@@ -47,6 +48,7 @@ set(HEADERS
     include/Pacman.h
     include/PinchGreedyStrategy.h
     include/ScatterStrategy.h
+    include/RandomStrategy.h
 )
 
 add_executable(Pacman ${SOURCES} ${HEADERS})
