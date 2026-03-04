@@ -218,10 +218,10 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
   // 5.5 Draw Power Pellets (larger, blinking)
   const auto &powerPellets = controller->getPowerPellets();
-  int powerRadius = TILE_SIZE / 3;
+  int powerRadius = TILE_SIZE * 0.4;
   bool blink = ((ms / 250) % 2 == 0);
   if (blink) {
-    painter.setBrush(QColor(255, 184, 82)); // Orange
+    painter.setBrush(Qt::red); // Red
     painter.setPen(Qt::NoPen);
     for (const Location &loc : powerPellets) {
       int cx = loc.x * TILE_SIZE + TILE_SIZE / 2;

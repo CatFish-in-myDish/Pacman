@@ -128,12 +128,13 @@ void GameController::initGame(bool resetScore) {
   lightningActive = false;
   lightningTimer = 0;
 
-  // Seed 4 power pellets near the corners
+  // Seed power pellets near the corners and some additional locations
   powerPellets.clear();
   // Validate positions are path tiles; use nearby path tiles if corners are
   // walls
   Location powerLocs[] = {Location(2, 2), Location(50, 2), Location(2, 56),
-                          Location(50, 58)};
+                          Location(50, 58), Location(25, 15), Location(25, 45), 
+                          Location(15, 30), Location(40, 30)};
   for (const Location &pl : powerLocs) {
     if (!Graph::isWall(pl.x, pl.y)) {
       powerPellets.insert(pl);
