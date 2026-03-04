@@ -5,7 +5,7 @@
 
 ## Feature Highlights
 
-- **5 Distinct AI Strategies** — A\* Pathfinding, Manhattan Heuristic, Axis-Weighted Directional, Predictive Pursuit, and Euclidean Greedy
+- **5 Distinct AI Strategies** — A\* Pathfinding, Manhattan Heuristic, APSP Ambush, Predictive Pursuit, and Euclidean Greedy
 - **Chain Lightning Ability** — Spend score to slow ghosts using a closest-pair divide & conquer algorithm
 - **Ghost Territory System** — QuickHull convex hull detects encirclement and dynamically adjusts speeds
 - **Dynamic Role Assignment** — Ghosts switch between Chase, Ambush, and Scatter modes every tick
@@ -53,7 +53,7 @@ Each of the four ghosts employs a **unique pathfinding strategy**, creating dive
 |--------|--------|----------------|----------------------|------------------------------------------------------|
 | **M1** | Red    | (1, 1)         | A\* Pathfinding      | Optimal pursuer — always finds the shortest path     |
 | **M2** | Pink   | (26, 1)        | Heuristic Greedy     | Manhattan-guided — efficient axis-aligned chaser     |
-| **M3** | Cyan   | (1, 29)        | Directional Greedy   | Axis-dominant — predictable but fast corridor hunter |
+| **M3** | Cyan   | (1, 29)        | APSP Ambush          | Predictive Hunter — uses precomputed DP paths        |
 | **M4** | Orange | (26, 29)       | Aggressive Greedy    | Predictive — targets where Pacman *will* be          |
 
 ### Strategy Breakdown
@@ -85,18 +85,18 @@ Location HeuristicGreedyStrategy::findNextMove(Graph *graph, Entity *monster, En
 - Simple yet effective for corridor-heavy mazes
 - Handles toroidal wrapping for accurate distance calculation
 
-#### Directional Greedy (Cyan Ghost)
+#### APSP Ambush (Cyan Ghost)
 
-Prioritises closing distance along the **major axis** first, creating predictable axis-aligned movement.
+Predicts Pacman's future position and uses a **precomputed All-Pairs Shortest Path (APSP)** table to intercept him optimally.
 
 ```cpp
-// Weighted scoring: major_axis_distance × 1000 + minor_axis_distance
-Location DirectionalGreedyStrategy::findNextMove(Graph *graph, Entity *monster, Entity *target);
+// Target 4 tiles ahead, O(1) optimal lookup in DP table
+Location AllPairShortestPath::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
-- Identifies major axis (larger of |dx| vs |dy|)
-- 1000× multiplier ensures dominant axis is resolved first
-- Produces highly predictable but effective corridor pursuit
+- Calculates APSP table via BFS from every tile (once at startup)
+- Predicts intersection points 4 tiles ahead of Pacman
+- Guarantees the absolute shortest path to the predicted ambush point
 
 #### Aggressive Greedy (Orange Ghost)
 
@@ -141,7 +141,7 @@ Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster, Entity *ta
 |--------------------|------------|------------|----------------|--------------|
 | A\* Pathfinding    | Optimal    | O(V log V) | Low            | 5/5          |
 | Heuristic Greedy   | Local      | O(k)       | Medium         | 3/5          |
-| Directional Greedy | Local      | O(k)       | High           | 2/5          |
+| APSP Ambush        | Optimal    | O(1) lookup| Low            | 4/5          |
 | Aggressive Greedy  | Local      | O(k)       | Low            | 4/5          |
 | Distance Greedy    | Local      | O(k)       | Medium         | 3/5          |
 | Scatter            | N/A        | O(k)       | High           | 1/5          |
