@@ -193,10 +193,10 @@ void GameController::update() {
       // Normal behaviour: Dynamic Role Assignment
       std::vector<Monster *> sortedMonsters;
       for (Monster *m : monsters) {
-        if (m->getName() != "M6 (Random)") {
+        if (m->getName() != "M6 (Random)" && m->getName() != "M5 (Pinch)") {
           sortedMonsters.push_back(m);
         } else {
-          // Keep M6 in normal mode so it uses RandomStrategy
+          // Keep M6 and M5 in normal mode so they use their default strategies
           m->setMode(Monster::NORMAL);
         }
       }
