@@ -104,8 +104,8 @@ void GameController::initGame(bool resetScore) {
                                  new DirectionalGreedyStrategy(), "M3 (Dir)"));
   monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
-  monsters.push_back(new Monster(Location(28, 58),
-                                 new PinchGreedyStrategy(monsters), "M5 (Pinch)"));
+  monsters.push_back(new Monster(
+      Location(28, 58), new PinchGreedyStrategy(monsters), "M5 (Pinch)"));
 
   // Remove pellets that are under initial entities (Pacman and Monsters)
   pellets.erase(pacman->getLocation());
@@ -127,6 +127,21 @@ void GameController::initGame(bool resetScore) {
   survivedTime = 0.0;
   lightningActive = false;
   lightningTimer = 0;
+
+  // Seed 4 power pellets near the corners
+  powerPellets.clear();
+  // Validate positions are path tiles; use nearby path tiles if corners are
+  // walls
+  Location powerLocs[] = {Location(2, 2), Location(50, 2), Location(2, 56),
+                          Location(50, 58)};
+  for (const Location &pl : powerLocs) {
+    if (!Graph::isWall(pl.x, pl.y)) {
+      powerPellets.insert(pl);
+      pellets.erase(pl); // Remove regular pellet at power pellet location
+    }
+  }
+  frightenedModeActive = false;
+  frightenedTimer = 0;
 }
 
 void GameController::startGame() {
@@ -147,9 +162,25 @@ void GameController::update() {
     return;
   }
 
+  // Frightened mode timer
+  if (frightenedModeActive) {
+    frightenedTimer--;
+    if (frightenedTimer <= 0) {
+      frightenedModeActive = false;
+      // Restore all monsters to NORMAL (individual timers also expire in
+      // Monster::move, but this ensures consistency)
+      for (Monster *m : monsters) {
+        if (m->isFrightened()) {
+          m->setMode(Monster::NORMAL);
+        }
+      }
+    }
+  }
+
   // Dynamic Ghost Aggression: Assign roles based on distance
+  // Skip role assignment while monsters are frightened
   // If Lightning is active, force SCATTER on all ghosts
-  if (pacman) {
+  if (pacman && !frightenedModeActive) {
     if (lightningActive) {
       for (Monster *m : monsters) {
         m->setMode(Monster::SCATTER);
@@ -177,7 +208,7 @@ void GameController::update() {
       if (!sortedMonsters.empty()) {
         // Closest → Chase (fast, direct pursuit)
         // Farthest → Ambush (medium speed, predictive intercept)
-        // Middle → Chase (default standard behaviour)
+        // Middle → Normal (default standard behaviour)
         for (size_t i = 0; i < sortedMonsters.size(); ++i) {
           if (i == 0) {
             sortedMonsters[i]->setMode(Monster::CHASE);
@@ -202,15 +233,8 @@ void GameController::update() {
 
     bool inside = ghostTerritory->isPacmanInside();
 
-    // Log state change
+    // State change
     if (inside != pacmanWasInsideTerritory) {
-      if (inside) {
-        qDebug() << "[GhostTerritory] Pacman ENTERED ghost territory! "
-                    "Ghosts→0.9x, Pacman→1.1x";
-      } else {
-        qDebug() << "[GhostTerritory] Pacman LEFT ghost territory. "
-                    "All speeds→1.0x";
-      }
       pacmanWasInsideTerritory = inside;
     }
 
@@ -290,7 +314,24 @@ void GameController::movePacman() {
       // Pellet consumed - increment score
       score += 10;
       // Win if no pellets remain
-      if (pellets.empty()) {
+      if (pellets.empty() && powerPellets.empty()) {
+        gameWon = true;
+        running = false;
+        winTime = std::chrono::steady_clock::now();
+      }
+    }
+
+    // Check for power pellet
+    if (powerPellets.erase(newLoc) > 0) {
+      score += 50;
+      frightenedModeActive = true;
+      frightenedTimer = FRIGHTENED_DURATION;
+      for (Monster *m : monsters) {
+        m->applyFrightened(FRIGHTENED_DURATION);
+      }
+
+      // Check win after power pellet too
+      if (pellets.empty() && powerPellets.empty()) {
         gameWon = true;
         running = false;
         winTime = std::chrono::steady_clock::now();
@@ -308,9 +349,17 @@ void GameController::moveMonsters() {
 void GameController::checkCollisions() {
   for (Monster *monster : monsters) {
     if (monster->getLocation() == pacman->getLocation()) {
-      gameOver = true;
-      running = false;
-      break;
+      if (monster->isFrightened()) {
+        // "Eat" the ghost: respawn at spawn point + bonus
+        score += 200;
+        monster->setLocation(monster->getSpawnLocation());
+        monster->clearHistory();
+        monster->setMode(Monster::NORMAL);
+      } else {
+        gameOver = true;
+        running = false;
+        break;
+      }
     }
   }
 }
@@ -350,7 +399,8 @@ void GameController::handleInput(const QString &key) {
         closest.second->applySlow(20);
 
         lightningActive = true;
-        lightningTimer = 20; // Scatter mode and visual bolt matches slow duration
+        lightningTimer =
+            20; // Scatter mode and visual bolt matches slow duration
         lightningStart = closest.first->getLocation();
         lightningEnd = closest.second->getLocation();
       }
@@ -377,6 +427,12 @@ int GameController::getRound() const { return round; }
 bool GameController::isGameOver() const { return gameOver; }
 
 double GameController::getSurvivedTime() const { return survivedTime; }
+
+const std::unordered_set<Location> &GameController::getPowerPellets() const {
+  return powerPellets;
+}
+
+bool GameController::isFrightenedActive() const { return frightenedModeActive; }
 double getDistance(const Location &l1, const Location &l2) {
   long long dx = l1.x - l2.x;
   long long dy = l1.y - l2.y;

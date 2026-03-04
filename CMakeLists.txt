@@ -11,6 +11,7 @@ set(CMAKE_AUTOMOC ON)
 set(SOURCES
     src/AggressiveGreedyStrategy.cpp
     src/AStarStrategy.cpp
+    src/BacktrackStrategy.cpp
     src/DirectionalGreedyStrategy.cpp
     src/DistanceGreedyStrategy.cpp
     src/Entity.cpp
@@ -31,6 +32,7 @@ set(SOURCES
 set(HEADERS
     include/AggressiveGreedyStrategy.h
     include/AStarStrategy.h
+    include/BacktrackStrategy.h
     include/DirectionalGreedyStrategy.h
     include/DistanceGreedyStrategy.h
     include/Entity.h

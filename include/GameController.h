@@ -33,6 +33,12 @@ private:
   Location lightningStart;
   Location lightningEnd;
 
+  // Power Pellet / Frightened State
+  std::unordered_set<Location> powerPellets;
+  bool frightenedModeActive;
+  int frightenedTimer;
+  static const int FRIGHTENED_DURATION = 60;
+
   std::pair<Monster *, Monster *>
   findClosestPair(const std::vector<Monster *> &monsters);
 
@@ -64,6 +70,9 @@ public:
   std::pair<Location, Location> getLightningArc() const {
     return {lightningStart, lightningEnd};
   }
+
+  const std::unordered_set<Location> &getPowerPellets() const;
+  bool isFrightenedActive() const;
 };
 
 #endif
