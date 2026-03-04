@@ -32,7 +32,7 @@
 #include "../include/GameController.h"
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
-#include "../include/DirectionalGreedyStrategy.h"
+#include "../include/AllPairShortestPath.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
 #include "../include/PinchGreedyStrategy.h"
@@ -102,7 +102,7 @@ void GameController::initGame(bool resetScore) {
   monsters.push_back(
       new Monster(Location(52, 2), new HeuristicGreedyStrategy(), "M2 (Heur)"));
   monsters.push_back(new Monster(Location(2, 58),
-                                 new DirectionalGreedyStrategy(), "M3 (Dir)"));
+                                 new AllPairShortestPath(), "M3 (APSP)"));
   monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
   monsters.push_back(new Monster(Location(28, 58),
@@ -183,7 +183,7 @@ void GameController::update() {
 
   // Dynamic Ghost Aggression: Assign roles based on distance
   // Skip role assignment while monsters are frightened
-  // If Lightning is active, force SCATTER on all ghosts
+  // If Lightning is active, force FRIGHTENED_DURATIONSCATTER on all ghosts
   if (pacman && !frightenedModeActive) {
     if (lightningActive) {
       for (Monster *m : monsters) {
@@ -234,7 +234,7 @@ void GameController::update() {
     }
   }
 
-  // ── Ghost Territory: recompute convex hull and apply speed modifiers ──
+  // ── Ghost Territory: recompute FRIGHTENED_DURATIONconvex hull and apply speed modifiers ──
   if (pacman && monsters.size() >= 3) {
     std::vector<Location> ghostPositions;
     ghostPositions.reserve(monsters.size());

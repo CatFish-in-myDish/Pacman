@@ -11,14 +11,14 @@ RandomStrategy::RandomStrategy(const std::vector<Monster *> &monstersList)
     : monsters(monstersList) {
   aggressiveStrategy = new AggressiveGreedyStrategy();
   distanceStrategy = new DistanceGreedyStrategy();
-  directionalStrategy = new DirectionalGreedyStrategy();
+  allPairShortestPath = new AllPairShortestPath();
   std::srand(std::time(nullptr)); // Seed random number generator
 }
 
 RandomStrategy::~RandomStrategy() {
   delete aggressiveStrategy;
   delete distanceStrategy;
-  delete directionalStrategy;
+  delete allPairShortestPath;
 }
 
 Location RandomStrategy::findNextMove(Graph *graph, Entity *monster,
@@ -30,7 +30,7 @@ Location RandomStrategy::findNextMove(Graph *graph, Entity *monster,
   } else if (choice == 1) {
     return distanceStrategy->findNextMove(graph, monster, target);
   } else if (choice == 2) {
-    return directionalStrategy->findNextMove(graph, monster, target);
+    return allPairShortestPath->findNextMove(graph, monster, target);
   } else {
     // Run away from other ghosts
     Location currentLoc = monster->getLocation();
