@@ -2,25 +2,27 @@
  * Represents a ghost/monster entity in the game.
  *
  * This class handles monster movement, strategy switching (Chase, Ambush,
- * Scatter), speed management, and special effects like being slowed or
- * territory buffs.
+ * Scatter, Frightened), speed management, path history for backtracking,
+ * and special effects like being slowed or territory buffs.
  *
  * Time Complexity:
  * - move(): O(1) assuming the strategy's findNextMove is efficient.
  * - setMode(): O(1).
+ * - recordPosition() / popLastPosition(): O(1).
  */
 #include "../include/Monster.h"
 #include <algorithm>
 
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
+#include "../include/BacktrackStrategy.h"
 #include "../include/ScatterStrategy.h"
 
 Monster::Monster(const Location &loc, GreedyStrategy *strat,
                  const std::string &monsterName)
     : Entity(loc), strategy(strat), originalStrategy(strat), name(monsterName),
       currentMode(NORMAL), speed(1.0), moveAccumulator(0.0), slowTicks(0),
-      territoryMultiplier(1.0) {}
+      territoryMultiplier(1.0), frightenedTicks(0), spawnLocation(loc) {}
 
 Monster::~Monster() {
   if (strategy != originalStrategy) {
@@ -30,6 +32,16 @@ Monster::~Monster() {
 }
 
 void Monster::move(Graph *graph, Entity *target) {
+  // Handle frightened timer expiry
+  if (currentMode == FRIGHTENED) {
+    if (frightenedTicks > 0) {
+      frightenedTicks--;
+    }
+    if (frightenedTicks <= 0) {
+      setMode(NORMAL);
+    }
+  }
+
   // Cap effective speed at 1.5
   double effectiveSpeed = std::min(speed * territoryMultiplier, 1.5);
   moveAccumulator += effectiveSpeed;
@@ -42,6 +54,12 @@ void Monster::move(Graph *graph, Entity *target) {
   }
 
   while (moveAccumulator >= 1.0) {
+    // Record position before moving (only when NOT frightened,
+    // so we don't record retreat path)
+    if (currentMode != FRIGHTENED) {
+      recordPosition();
+    }
+
     Location nextLoc = strategy->findNextMove(graph, this, target);
     setLocation(nextLoc);
     moveAccumulator -= 1.0;
@@ -84,6 +102,11 @@ void Monster::setMode(Mode mode) {
     strategy = new ScatterStrategy();
     speed = 1.0;
     break;
+  case FRIGHTENED:
+    // Backtracking: retrace path history, then flee
+    strategy = new BacktrackStrategy();
+    speed = 0.75;
+    break;
   }
 
   currentMode = mode;
@@ -94,3 +117,34 @@ Monster::Mode Monster::getMode() const { return currentMode; }
 void Monster::setTerritoryMultiplier(double m) { territoryMultiplier = m; }
 
 double Monster::getTerritoryMultiplier() const { return territoryMultiplier; }
+
+// ── Backtracking / Frightened mode ──────────────────────────────────────
+
+void Monster::recordPosition() {
+  pathHistory.push_back(location);
+  if (static_cast<int>(pathHistory.size()) > MAX_HISTORY) {
+    pathHistory.pop_front();
+  }
+}
+
+Location Monster::popLastPosition() {
+  if (pathHistory.empty()) {
+    return location;
+  }
+  Location last = pathHistory.back();
+  pathHistory.pop_back();
+  return last;
+}
+
+bool Monster::hasHistory() const { return !pathHistory.empty(); }
+
+void Monster::clearHistory() { pathHistory.clear(); }
+
+void Monster::applyFrightened(int ticks) {
+  frightenedTicks = ticks;
+  setMode(FRIGHTENED);
+}
+
+bool Monster::isFrightened() const { return currentMode == FRIGHTENED; }
+
+Location Monster::getSpawnLocation() const { return spawnLocation; }
