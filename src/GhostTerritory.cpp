@@ -1,34 +1,33 @@
-/**
- * Implements the "Ghost Territory" mechanic using Computational Geometry.
- *
- * This module dynamically forms a territory around all ghosts by computing
- * the Convex Hull of their current positions using the QuickHull algorithm.
- * The convex hull represents the smallest convex polygon that encloses
- * all ghost positions.
- *
- * After constructing the hull, the system checks whether Pacman lies
- * inside this convex polygon using orientation and cross-product tests.
- * If Pacman is inside the hull, it indicates that he is surrounded
- * or trapped within the ghost territory.
- *
- * Core Concepts Used:
- *   - QuickHull Algorithm for Convex Hull construction.
- *   - Cross Product to determine point orientation.
- *   - Point-in-Convex-Polygon test for containment check.
- *
- * Time Complexity:
- *   - quickHull(): Average O(N log N), Worst Case O(N²),
- *                  where N is the number of ghosts.
- *   - isInsideConvexPolygon(): O(K),
- *                  where K is the number of hull vertices.
- *
- * Since the number of ghosts is small in gameplay,
- * this computation remains efficient for real-time execution.
- */
+/*
+Implements the "Ghost Territory" mechanic using Computational Geometry.
+
+This module dynamically forms a territory around all ghosts by computing
+the Convex Hull of their current positions using the QuickHull algorithm.
+The convex hull represents the smallest convex polygon that encloses
+all ghost positions.
+
+After constructing the hull, the system checks whether Pacman lies
+inside this convex polygon using orientation and cross-product tests.
+If Pacman is inside the hull, it indicates that he is surrounded
+or trapped within the ghost territory.
+
+Core Concepts Used:
+  - QuickHull Algorithm for Convex Hull construction.
+  - Cross Product to determine point orientation.
+  - Point-in-Convex-Polygon test for containment check.
+
+Time Complexity:
+  - quickHull(): Average O(N log N), Worst Case O(N²),
+                 where N is the number of ghosts.
+  - isInsideConvexPolygon(): O(K),
+                 where K is the number of hull vertices.
+
+Since the number of ghosts is small in gameplay,
+this computation remains efficient for real-time execution.
+*/
 
 #include "../include/GhostTerritory.h"
 #include <algorithm>
-#include <cmath>
 #include <set>
 
 GhostTerritory::GhostTerritory() : pacmanInside(false) {}

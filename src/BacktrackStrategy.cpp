@@ -1,54 +1,44 @@
-/**
- * Frightened-mode movement strategy for ghosts using path backtracking +
- Euclidean flee
- *
- * This module implements the classic "frightened" ghost behaviour seen in many
- Pacman variants.
- * When a ghost enters FRIGHTENED mode (usually after Pacman eats a power
- pellet), it should
- * appear panicked and behave less aggressively.
- *
- * Core behaviour:
- *   1. While there is recorded movement history → retrace steps in **reverse
- order** (LIFO)
- *      → effectively "running back the way it came"
- *   2. Once history is exhausted → switch to pure flee mode:
- *      - Choose the neighbour that maximises **Euclidean distance** from
- Pacman's current position
- *      - Includes basic toroidal (wrap-around) distance handling for mazes with
- tunnel warping
- *
- * This creates the characteristic "scared wobbling back-and-forth" motion when
- frightened,
- * followed by purposeful fleeing once the ghost has retraced its recent path.
- *
- * Objective:
- *   - Simulate frightened / avoidant behaviour without complex pathfinding
- *   - Reuse existing path history (assumed to be maintained by the Monster
- class)
- *   - Provide visually convincing panic movement with very low computational
- cost
- *   - Maintain reasonable escape behaviour in open spaces or after history is
- depleted
- *
- * Time Complexity:
- *   - When retracing history:         O(1)     — single pop operation from
- deque/stack
- *   - When fleeing (history empty):   O(1)     — fixed number of neighbours
- (≤4)
- *                                              - distance calculations are
- constant-time
- *   Overall per-frame cost:           O(1)     — extremely cheap, ideal for
- real-time
- *
- * Space Complexity:
- *   - Dominated by the path history stored in Monster class (not in this
- strategy)
- *   - Typical history size: 8–30 positions (depending on implementation)
- *   - This class itself uses negligible extra memory
+/*
+Frightened-mode movement strategy for ghosts using path backtracking + Euclidean
+flee
 
- *
- */
+This module implements the classic "frightened" ghost behaviour seen in many
+Pacman variants. When a ghost enters FRIGHTENED mode (usually after Pacman eats
+a power pellet), it should appear panicked and behave less aggressively.
+
+Core behaviour:
+  1. While there is recorded movement history → retrace steps in **reverse
+ order** (LIFO) → effectively "running back the way it came"
+  2. Once history is exhausted → switch to pure flee mode:
+    - Choose the neighbour that maximises **Euclidean distance** from Pacman's
+current position
+    - Includes basic toroidal (wrap-around) distance handling for mazes with
+tunnel warping
+
+This creates the characteristic "scared wobbling back-and-forth" motion when
+frightened, followed by purposeful fleeing once the ghost has retraced its
+recent path.
+
+Objective:
+  - Simulate frightened / avoidant behaviour without complex pathfinding
+  - Reuse existing path history (assumed to be maintained by the Monster class)
+  - Provide visually convincing panic movement with very low computational cost
+  - Maintain reasonable escape behaviour in open spaces or after history is
+depleted
+
+Time Complexity:
+  - When retracing history:         O(1) — single pop operation from
+deque/stack
+  - When fleeing (history empty):   O(1) — fixed number of neighbours (≤4)
+distance calculations are constant-time
+  Overall per-frame cost:           O(1) — extremely cheap, ideal for real-time
+
+Space Complexity:
+  - Dominated by the path history stored in Monster class (not in this strategy)
+  - Typical history size: 8–30 positions (depending on implementation)
+  - This class itself uses negligible extra memory
+*/
+
 #include "../include/BacktrackStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"

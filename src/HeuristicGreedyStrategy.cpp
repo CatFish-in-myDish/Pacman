@@ -1,12 +1,13 @@
-/**
- * Implements a greedy strategy using Manhattan distance.
- *
- * This strategy evaluates neighbours based on their Manhattan distance to the
- * target and chooses the one with the smallest distance.
- *
- * Time Complexity: O(1) per move, as it evaluates a constant number of
- * neighbours.
- */
+/*
+Implements a greedy strategy using Manhattan distance.
+
+This strategy evaluates neighbours based on their Manhattan distance to the
+target and chooses the one with the smallest distance.
+
+Time Complexity: O(1) per move, as it evaluates a constant number of
+neighbours.
+*/
+
 #include "../include/HeuristicGreedyStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"

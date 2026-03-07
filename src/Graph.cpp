@@ -1,46 +1,46 @@
-/**
- * Grid-based graph representation of the Pacman maze with toroidal tunnels
- *
- * Models the game map as an undirected graph where each walkable tile (path) is
- * a Node. Nodes are only created for pathable tiles (MAP[y][x] == 1).
- * Neighbours are connected in four directions (up/down/left/right) + explicit
- * toroidal wrapping for left↔right tunnels (classic Pacman side tunnels).
- * Top↔bottom wrapping is also implemented (though rarely used in classic
- * layout).
- *
- * Key features:
- *   - Static const int MAP[HEIGHT][WIDTH] defines the maze layout (0=wall,
- * 1=path)
- *   - 2× upscaled version of classic Pacman maze (~28×31 → 56×62 tiles)
- *     → allows smoother sub-tile movement, larger sprites, or higher-res
- * rendering while preserving original topology and symmetry
- *   - Toroidal wrapping only connects actual path nodes (no ghost-only areas
- * connected)
- *   - isWall(x,y) checks bounds + MAP value (used by AI & collision)
- *   - getNode(x,y) or getNode(Location) → O(1) average-case lookup via std::map
- * or unordered_map
- *
- * Objective:
- *   - Provide efficient spatial query & neighbour traversal for pathfinding
- *   - Support ghost AI (APSP precompute, greedy moves, ambush, pinch, random
- * hybrid)
- *   - Enable tunnel wrapping identical to classic Pacman behaviour
- *   - Scale cleanly to higher resolution while keeping logic simple
- *
- * Time Complexity:
- *   - Construction / initialiseGrid(): O(W × H + V × 4) ≈ O(W × H)
- *     • V = number of path tiles (~30–40% of total tiles)
- *     • Creating nodes + connecting 4-dir neighbours + tunnel links
- *   - getNode(Location):               O(log V) if std::map, O(1) avg if
- * unordered_map
- *   - isWall(x,y):                     O(1)
- *   - addNeighbour / get neighbours:   O(1) per call
- *
- * Space Complexity:
- *   • O(V) for nodes map + each Node's neighbour list (avg ~2–3 edges per node)
- *   • MAP array:                       O(W × H) = 56 × 62 = ~3,472 ints (~14
- * KB) • Acceptable even on low-end hardware; scales linearly with map size
- */
+/*
+Grid-based graph representation of the Pacman maze with toroidal tunnels
+
+Models the game map as an undirected graph where each walkable tile (path) is
+a Node. Nodes are only created for pathable tiles (MAP[y][x] == 1).
+Neighbours are connected in four directions (up/down/left/right) + explicit
+toroidal wrapping for left↔right tunnels (classic Pacman side tunnels).
+Top↔bottom wrapping is also implemented (though rarely used in classic
+layout).
+
+Key features:
+  - Static const int MAP[HEIGHT][WIDTH] defines the maze layout (0 = wall,
+1 = path)
+  - 2× upscaled version of classic Pacman maze (~28×31 → 56×62 tiles)
+    → allows smoother sub-tile movement, larger sprites, or higher-res
+rendering while preserving original topology and symmetry
+  - Toroidal wrapping only connects actual path nodes (no ghost-only areas
+connected)
+  - isWall(x,y) checks bounds + MAP value (used by AI & collision)
+  - getNode(x,y) or getNode(Location) → O(1) average-case lookup via unordered_map
+
+Objective:
+  - Provide efficient spatial query & neighbour traversal for pathfinding
+  - Support ghost AI (APSP precompute, greedy moves, ambush, pinch, random
+hybrid)
+  - Enable tunnel wrapping identical to classic Pacman behaviour
+  - Scale cleanly to higher resolution while keeping logic simple
+
+Time Complexity:
+  - Construction / initialiseGrid(): O(W × H + V × 4) ≈ O(W × H)
+    • V = number of path tiles (~30–40% of total tiles)
+    • Creating nodes + connecting 4-dir neighbours + tunnel links
+  - getNode(Location):               O(1) avg if
+unordered_map
+  - isWall(x,y):                     O(1)
+  - addNeighbour / get neighbours:   O(1) per call
+
+Space Complexity:
+  • O(V) for nodes map + each Node's neighbour list (avg ~2–3 edges per node)
+  • MAP array:                       O(W × H) = 56 × 62 = ~3,472 ints (~14
+KB)
+*/
+
 #include "../include/Graph.h"
 
 Graph::Graph() { initialiseGrid(); }
@@ -53,7 +53,7 @@ Graph::~Graph() {
   nodes.clear();
 }
 
-// 1 = Path, 0 = Wall, 2 = Ghost House Gate (Treat as wall for now, or path?)
+// 1 = Path, 0 = Wall, 2 = Ghost House Gate
 // Pacman Maze 56x62 (2× upscaled from classic 28x31)
 static const int MAP[Graph::HEIGHT][Graph::WIDTH] = {
     {0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,

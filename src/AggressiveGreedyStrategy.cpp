@@ -1,14 +1,15 @@
-/**
- * Implements an aggressive greedy strategy that targets a predicted future
- * location of the target.
- *
- * This strategy attempts to intercept the target by predicting its position 2
- * steps ahead based on its current direction. It then greedily chooses the
- * neighbour that minimises the distance to this predicted location.
- *
- * Time Complexity: O(1) per move, as it only evaluates a constant number of
- * neighbours (at most 4).
- */
+/*
+Implements an aggressive greedy strategy that targets a predicted future
+location of the target.
+
+This strategy attempts to intercept the target by predicting its position 2
+steps ahead based on its current direction. It then greedily chooses the
+neighbour that minimises the distance to this predicted location.
+
+Time Complexity: O(1) per move, as it only evaluates a constant number of
+neighbours (at most 4).
+*/
+
 #include "../include/AggressiveGreedyStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"

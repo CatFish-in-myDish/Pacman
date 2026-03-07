@@ -1,14 +1,15 @@
-/**
- * Implements a standard greedy strategy that minimises Euclidean distance to
- * the target.
- *
- * This strategy simply calculates the Euclidean distance from each neighbour to
- * the target's current location and chooses the neighbour that offers the
- * minimum distance.
- *
- * Time Complexity: O(1) per move, as it evaluates a constant number of
- * neighbours.
- */
+/*
+Implements a standard greedy strategy that minimises Euclidean distance to
+the target.
+
+This strategy simply calculates the Euclidean distance from each neighbour to
+the target's current location and chooses the neighbour that offers the
+minimum distance.
+
+Time Complexity: O(1) per move, as it evaluates a constant number of
+neighbours.
+*/
+
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"

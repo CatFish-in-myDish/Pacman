@@ -1,11 +1,12 @@
-/**
- * Represents the player-controlled Pacman entity.
- *
- * Handles Pacman's specific state, such as speed, move accumulation for smooth
- * movement, and direction control.
- *
- * Time Complexity: All methods are O(1).
- */
+/*
+Represents the player-controlled Pacman entity.
+
+Handles Pacman's specific state, such as speed, move accumulation for smooth
+movement, and direction control.
+
+Time Complexity: All methods are O(1).
+*/
+
 #include "../include/Pacman.h"
 
 Pacman::Pacman(const Location &loc)

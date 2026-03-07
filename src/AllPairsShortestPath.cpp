@@ -1,48 +1,47 @@
-/**
- * Cooperative Ambush AI strategy for ghosts/monsters using precomputed
- * All-Pairs Shortest Paths (APSP)
- *
- * This module implements an ambush-style ghost AI for a Pacman-like game.
- * Instead of greedily chasing Pacman, each ghost predicts a future position
- * ("ambush point") several tiles ahead in Pacman's current moving direction
- * and moves optimally toward that point using a precomputed distance table.
- *
- * Strategy highlights:
- *   - Precomputes shortest path distances from **every non-wall tile to every
- * other non-wall tile** using BFS from each starting position (multi-source
- * style APSP).
- *   - At runtime, ghosts instantly look up the best next move that reduces
- * distance to the predicted ambush location.
- *   - Falls back to chasing Pacman's current position if the predicted point
- * is invalid (wall, out of bounds, or unreachable).
- *
- * Objective:
- *   - Increase catch probability by **intercepting** rather than tail-chasing
- *   - Exploit Pacman's predictable movement when moving in straight lines
- *   - Achieve near-optimal pathing in open areas with very low per-frame cost
- *
- * Time Complexity:
- *   Precomputation (done once, lazily on first call):
- *     • O(V × (V + E))   where V = number of walkable tiles, E = number of
- * edges • In a typical maze: V ≈ 20–30% of total tiles (e.g. ~200–400 walkable
- * tiles) • Total precomputation cost: roughly O(V²) in practice for grid graphs
- *
- *   Runtime (per ghost, per frame):
- *     • O(degree) = O(1) to O(4)  — just checking 2–4 neighbours
- *     • Distance lookups are O(1) average case (unordered_map)
- *
- * Space Complexity:
- *   • O(V²)  — distance table: unordered_map<Location, unordered_map<Location,
- * int>> • For ~300 walkable tiles → ~90,000–100,000 entries (~400–800 KB) •
- * Acceptable for most modern games; can be optimised to int16_t or
- * Floyd-Warshall matrix if needed
- *
- */
+/*
+Cooperative Ambush AI strategy for ghosts/monsters using precomputed All-Pairs
+Shortest Paths (APSP)
+
+This module implements an ambush-style ghost AI for Pacman. Instead of greedily
+chasing Pacman, each ghost predicts a future position ("ambush point") several
+tiles ahead in Pacman's current moving direction and moves optimally toward that
+point using a precomputed distance table.
+
+Strategy highlights:
+  - Precomputes shortest path distances from **every non-wall tile to every
+other non-wall tile** using BFS from each starting position (multi-source
+style APSP).
+  - At runtime, ghosts instantly look up the best next move that reduces
+distance to the predicted ambush location.
+  - Falls back to chasing Pacman's current position if the predicted point
+is invalid (wall, out of bounds, or unreachable).
+
+Objective:
+  - Increase catch probability by **intercepting** rather than tail-chasing
+  - Exploit Pacman's predictable movement when moving in straight lines
+  - Achieve near-optimal pathing in open areas with very low per-frame cost
+
+Time Complexity:
+  Precomputation (done once, lazily on first call):
+    • O(V × (V + E)) where V = number of walkable tiles, E = number of edges
+    • In a typical maze: V ≈ 20–30% of total tiles (e.g., ~200–400 walkable
+tiles)
+    • Total precomputation cost: roughly O(V²) in practice for grid graphs
+
+  Runtime (per ghost, per frame):
+    • O(degree) = O(1) to O(4) — just checking 2–4 neighbours
+    • Distance lookups are O(1) average case (unordered_map)
+
+Space Complexity:
+  • O(V²) — distance table: unordered_map<Location, unordered_map<Location,
+int>>
+  • For ~300 walkable tiles → ~90,000–100,000 entries (~400–800 KB)
+*/
+
 #include "../include/AllPairsShortestPath.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"
 #include "../include/Node.h"
-#include <cmath>
 #include <queue>
 #include <unordered_map>
 

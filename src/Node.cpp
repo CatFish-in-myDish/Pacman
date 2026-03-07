@@ -1,10 +1,11 @@
-/**
- * Represents a single node (tile) in the game graph.
- *
- * Each node holds its location and a list of adjacent neighbours (edges).
- *
- * Time Complexity: All methods are O(1).
- */
+/*
+Represents a single node (tile) in the game graph.
+
+Each node holds its location and a list of adjacent neighbours (edges).
+
+Time Complexity: All methods are O(1).
+*/
+
 #include "../include/Node.h"
 
 Node::Node(const Location &loc) : location(loc) {}

@@ -1,34 +1,30 @@
-/**
- * Implements the A* pathfinding algorithm to find the optimal path to the
-target.
- * This file implements the A* (A-Star) pathfinding algorithm for the Smart
-Ghost in the Pacman game.
- * The goal of this module is to enable intelligent and optimal movement of the
-ghost toward Pacman by
- * computing the shortest path in the maze.
+/*
+Implements the A* pathfinding algorithm to find the optimal path to the target.
+This file implements the A* (A-Star) pathfinding algorithm for the Smart Ghost
+in the Pacman game. The goal of this module is to enable intelligent and optimal
+movement of the ghost toward Pacman by computing the shortest path in the maze.
 
- * Unlike a greedy approach that simply moves in the direction of Pacman, A*
-evaluates both: g(n) → actual cost from the ghost’s position to the current node
-      h(n) → estimated cost from the current node to Pacman (using Manhattan
-distance) The total cost is calculated as: f(n)=g(n)+h(n)
+Unlike a greedy approach that simply moves in the direction of Pacman, A*
+evaluates both: g(n) → actual cost from the ghost's position to the current node
+h(n) → estimated cost from the current node to Pacman (using Manhattan distance)
+The total cost is calculated as: f(n) = g(n) + h(n)
 
- *The maze is treated as a grid where:
-   Each cell is a node.
-   Valid neighbouring cells represent possible moves.
-   Walls are treated as blocked nodes.
+The maze is treated as a grid where:
+Each cell is a node.
+Valid neighbouring cells represent possible moves.
+Walls are treated as blocked nodes.
 
-*The algorithm uses:
-  A priority queue (open list) to select the node with the lowest f-cost.
-  A closed list to avoid revisiting explored nodes.
-  Parent tracking to reconstruct the shortest path once Pacman’s position is
-reached.
+The algorithm uses:
+A priority queue (open list) to select the node with the lowest f-cost.
+A closed list to avoid revisiting explored nodes.
+Parent tracking to reconstruct the shortest path once Pacman's position is
+ched.
 
- * Time Complexity: O(E log V), where V is the number of vertices (nodes) and E
-is the number
- * of edges in the graph. In the worst case for a grid, this can be proportional
-to the number
- * of cells (N * M).
- */
+Time Complexity: O(E log V), where V is the number of vertices (nodes) and E is
+the number of edges in the graph. In the worst case for a grid, this can be
+proportional to the number of cells (N * M).
+*/
+
 #include "../include/AStarStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"

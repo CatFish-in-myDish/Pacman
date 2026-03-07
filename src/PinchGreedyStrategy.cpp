@@ -1,50 +1,50 @@
-/**
- * Cooperative "pincer / pinch" movement strategy for multiple ghosts
- *
- * Implements a team-based ghost AI tactic that attempts to **trap / surround
- * Pacman** by coordinating with other ghosts in a simplified way.
- *
- * Core idea — "Pinch" or "Pincer" movement:
- *   1. Identify the **closest other ghost** to Pacman (among all living
- * monsters)
- *   2. Compute the point that is **exactly opposite** to that ghost with
- * respect to Pacman → i.e. Pacman is the midpoint between the closest ghost
- * and the computed target point
- *   3. Greedily move toward that opposite point using **Euclidean distance**
- * (with toroidal wrapping)
- *   4. If no other ghost exists → simply chase Pacman directly
- *
- * This creates a basic flanking / squeezing behaviour:
- *   - One ghost is already close → the current ghost tries to approach from the
- * other side
- *   - When multiple ghosts use this strategy → they naturally tend to spread
- * out around Pacman
- *
- * Objective:
- *   - Increase catch probability through **coordinated encirclement** rather
- * than all chasing the same tail
- *   - Simulate simple team cooperation without heavy communication or path
- * coordination
- *   - Remain computationally cheap while still producing
- * better-than-independent chasing in many situations
- *
- * Time Complexity:
- *   Per frame (per ghost using this strategy):
- *     • Finding closest ghost:      O(N)     where N = number of ghosts
- * (usually 3–4) • Choosing best neighbour:    O(1)     (≤4 neighbours) •
- * Distance calculations:      constant-time Overall: O(N)     — very fast for
- * typical ghost counts
- *
- * Space Complexity:
- *   • O(1) extra per instance (only stores reference to the monster list)
- *   • Relies on external std::vector<Monster*> passed at construction
- *
- */
+/*
+Cooperative "pincer / pinch" movement strategy for multiple ghosts
+
+Implements a team-based ghost AI tactic that attempts to **trap / surround
+Pacman** by coordinating with other ghosts in a simplified way.
+
+Core idea — "Pinch" or "Pincer" movement:
+  1. Identify the **closest other ghost** to Pacman (among all living
+monsters)
+  2. Compute the point that is **exactly opposite** to that ghost with
+respect to Pacman → i.e. Pacman is the midpoint between the closest ghost
+and the computed target point
+  3. Greedily move toward that opposite point using **Euclidean distance**
+(with toroidal wrapping)
+  4. If no other ghost exists → simply chase Pacman directly
+
+This creates a basic flanking / squeezing behaviour:
+  - One ghost is already close → the current ghost tries to approach from the
+other side
+  - When multiple ghosts use this strategy → they naturally tend to spread
+out around Pacman
+
+Objective:
+  - Increase catch probability through **coordinated encirclement** rather
+than all chasing the same tail
+  - Simulate simple team cooperation without heavy communication or path
+coordination
+  - Remain computationally cheap while still producing
+better-than-independent chasing in many situations
+
+Time Complexity:
+  Per frame (per ghost using this strategy):
+    • Finding closest ghost:      O(N)     where N = number of ghosts
+(usually 3–4)
+    • Choosing best neighbour:    O(1)     (≤4 neighbours)
+    • Distance calculations:      constant-time
+    Overall: O(N) — very fast for typical ghost counts
+
+Space Complexity:
+  • O(1) extra per instance (only stores reference to the monster list)
+  • Relies on external std::vector<Monster*> passed at construction
+*/
+
 #include "../include/PinchGreedyStrategy.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"
 #include "../include/Monster.h"
-#include <algorithm>
 #include <cmath>
 #include <limits>
 
