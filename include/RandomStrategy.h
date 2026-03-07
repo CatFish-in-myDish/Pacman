@@ -4,7 +4,7 @@
 #include "GreedyStrategy.h"
 #include "AggressiveGreedyStrategy.h"
 #include "DistanceGreedyStrategy.h"
-#include "AllPairShortestPath.h"
+#include "AllPairsShortestPath.h"
 #include <vector>
 
 class Entity;
@@ -15,7 +15,7 @@ private:
   std::vector<Monster *> monsters;
   AggressiveGreedyStrategy *aggressiveStrategy;
   DistanceGreedyStrategy *distanceStrategy;
-  AllPairShortestPath *allPairShortestPath;
+  AllPairsShortestPath *allPairsShortestPath;
 
 public:
   RandomStrategy(const std::vector<Monster *> &monstersList);

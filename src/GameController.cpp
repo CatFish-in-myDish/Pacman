@@ -32,7 +32,7 @@
 #include "../include/GameController.h"
 #include "../include/AStarStrategy.h"
 #include "../include/AggressiveGreedyStrategy.h"
-#include "../include/AllPairShortestPath.h"
+#include "../include/AllPairsShortestPath.h"
 #include "../include/DistanceGreedyStrategy.h"
 #include "../include/HeuristicGreedyStrategy.h"
 #include "../include/PinchGreedyStrategy.h"
@@ -102,7 +102,7 @@ void GameController::initGame(bool resetScore) {
   monsters.push_back(
       new Monster(Location(52, 2), new HeuristicGreedyStrategy(), "M2 (Heur)"));
   monsters.push_back(new Monster(Location(2, 58),
-                                 new AllPairShortestPath(), "M3 (APSP)"));
+                                 new AllPairsShortestPath(), "M3 (APSP)"));
   monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
   monsters.push_back(new Monster(Location(28, 58),
@@ -136,7 +136,7 @@ void GameController::initGame(bool resetScore) {
   // Validate positions are path tiles; use nearby path tiles if corners are
   // walls
   Location powerLocs[] = {Location(2, 2), Location(50, 2), Location(2, 56),
-                          Location(50, 58), Location(25, 15), Location(25, 45), 
+                          Location(50, 58), Location(25, 15), Location(25, 45),
                           Location(15, 30), Location(40, 30)};
   for (const Location &pl : powerLocs) {
     if (!Graph::isWall(pl.x, pl.y)) {

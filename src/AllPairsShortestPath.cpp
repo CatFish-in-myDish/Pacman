@@ -35,7 +35,7 @@
  *   • Acceptable for most modern games; can be optimized to int16_t or Floyd-Warshall matrix if needed
  *
  */
-#include "../include/AllPairShortestPath.h"
+#include "../include/AllPairsShortestPath.h"
 #include "../include/Entity.h"
 #include "../include/Graph.h"
 #include "../include/Node.h"
@@ -43,7 +43,7 @@
 #include <queue>
 #include <unordered_map>
 
-Location AllPairShortestPath::findNextMove(Graph *graph, Entity *monster,
+Location AllPairsShortestPath::findNextMove(Graph *graph, Entity *monster,
                                            Entity *target) {
   // --- PART 1: DP PRECOMPUTATION (Run once) ---
   static std::unordered_map<Location, std::unordered_map<Location, int>> distTable;

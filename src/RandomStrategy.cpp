@@ -30,7 +30,7 @@
  *
  * Space Complexity:
  *   • O(1) per instance (only owns pointers to sub-strategies)
- *   • Sub-strategies (AggressiveGreedyStrategy, DistanceGreedyStrategy, AllPairShortestPath)
+ *   • Sub-strategies (AggressiveGreedyStrategy, DistanceGreedyStrategy, AllPairsShortestPath)
  *     have their own memory footprint (especially APSP's O(V²) distance table)
  *
  */
@@ -48,14 +48,14 @@ RandomStrategy::RandomStrategy(const std::vector<Monster *> &monstersList)
     : monsters(monstersList) {
   aggressiveStrategy = new AggressiveGreedyStrategy();
   distanceStrategy = new DistanceGreedyStrategy();
-  allPairShortestPath = new AllPairShortestPath();
+  allPairsShortestPath = new AllPairsShortestPath();
   std::srand(std::time(nullptr)); // Seed random number generator
 }
 
 RandomStrategy::~RandomStrategy() {
   delete aggressiveStrategy;
   delete distanceStrategy;
-  delete allPairShortestPath;
+  delete allPairsShortestPath;
 }
 
 Location RandomStrategy::findNextMove(Graph *graph, Entity *monster,
@@ -67,7 +67,7 @@ Location RandomStrategy::findNextMove(Graph *graph, Entity *monster,
   } else if (choice == 1) {
     return distanceStrategy->findNextMove(graph, monster, target);
   } else if (choice == 2) {
-    return allPairShortestPath->findNextMove(graph, monster, target);
+    return allPairsShortestPath->findNextMove(graph, monster, target);
   } else {
     // Run away from other ghosts
     Location currentLoc = monster->getLocation();

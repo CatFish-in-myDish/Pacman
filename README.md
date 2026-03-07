@@ -98,7 +98,7 @@ Predicts Pacman's future position and uses a **precomputed All-Pairs Shortest Pa
 
 ```cpp
 // Target 4 tiles ahead, O(1) optimal lookup in DP table
-Location AllPairShortestPath::findNextMove(Graph *graph, Entity *monster, Entity *target);
+Location AllPairsShortestPath::findNextMove(Graph *graph, Entity *monster, Entity *target);
 ```
 
 - Calculates APSP table via BFS from every tile (once at startup)

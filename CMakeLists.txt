@@ -10,7 +10,7 @@ set(CMAKE_AUTOMOC ON)
 
 set(SOURCES
     src/AggressiveGreedyStrategy.cpp
-    src/AllPairShortestPath.cpp
+    src/AllPairsShortestPath.cpp
     src/AStarStrategy.cpp
     src/BacktrackStrategy.cpp
     src/DistanceGreedyStrategy.cpp
@@ -32,7 +32,7 @@ set(SOURCES
 
 set(HEADERS
     include/AggressiveGreedyStrategy.h
-    include/AllPairShortestPath.h
+    include/AllPairsShortestPath.h
     include/AStarStrategy.h
     include/BacktrackStrategy.h
     include/DistanceGreedyStrategy.h
