@@ -332,7 +332,7 @@ This project requires **C++17**, **CMake** (v3.10+), and **Qt5** (Widgets module
 ```bash
 mkdir build && cd build
 cmake ..
-make
+make -j$(nproc)
 ./Pacman
 ```
 
