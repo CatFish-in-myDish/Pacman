@@ -12,8 +12,7 @@ private:
 
 public:
   PinchGreedyStrategy(const std::vector<Monster *> &monsters);
-  Location findNextMove(Graph *graph, Entity *monster,
-                        Entity *target) override;
+  Location findNextMove(Graph *graph, Entity *monster, Entity *target) override;
 };
 
 #endif

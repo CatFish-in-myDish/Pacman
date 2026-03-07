@@ -1,10 +1,10 @@
 #ifndef RANDOMSTRATEGY_H
 #define RANDOMSTRATEGY_H
 
-#include "GreedyStrategy.h"
 #include "AggressiveGreedyStrategy.h"
-#include "DistanceGreedyStrategy.h"
 #include "AllPairsShortestPath.h"
+#include "DistanceGreedyStrategy.h"
+#include "GreedyStrategy.h"
 #include <vector>
 
 class Entity;

@@ -120,13 +120,20 @@ void GameWidget::paintEvent(QPaintEvent *event) {
 
     // ── Pick ghost body colour ────────────────────────────────────────────
     QColor ghostColour;
-    if      (name == "M1 (Dist)")   ghostColour = QColor(255,  80,  80);  // Bright Red
-    else if (name == "M2 (Heur)")   ghostColour = QColor(255, 182, 255);  // Light Magenta
-    else if (name == "M3 (Dir)")    ghostColour = QColor(102, 255, 255);  // Light Cyan
-    else if (name == "M4 (Aggr)")   ghostColour = QColor(255, 184,  82);  // Orange
-    else if (name == "M5 (Pinch)")  ghostColour = QColor(186, 255, 201);  // Mint Green
-    else if (name == "M6 (Random)") ghostColour = QColor(255, 128,   0);  // Dark Orange
-    else                            ghostColour = QColor(255, 255, 153);  // Soft Neon Yellow
+    if (name == "M1 (Dist)")
+      ghostColour = QColor(255, 80, 80); // Bright Red
+    else if (name == "M2 (Heur)")
+      ghostColour = QColor(255, 182, 255); // Light Magenta
+    else if (name == "M3 (Dir)")
+      ghostColour = QColor(102, 255, 255); // Light Cyan
+    else if (name == "M4 (Aggr)")
+      ghostColour = QColor(255, 184, 82); // Orange
+    else if (name == "M5 (Pinch)")
+      ghostColour = QColor(186, 255, 201); // Mint Green
+    else if (name == "M6 (Random)")
+      ghostColour = QColor(255, 128, 0); // Dark Orange
+    else
+      ghostColour = QColor(255, 255, 153); // Soft Neon Yellow
 
     painter.setPen(Qt::NoPen);
 

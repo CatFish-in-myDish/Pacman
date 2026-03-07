@@ -1,37 +1,44 @@
 /**
  * Hybrid randomized ghost AI strategy that mixes multiple behaviours
  *
- * This class implements a **non-deterministic / personality-varied** ghost movement
- * strategy by randomly selecting one of four different behaviours each time a move
- * is requested. It serves as a simple way to create ghosts that feel less predictable
- * and more "alive" compared to purely deterministic chasers.
+ * This class implements a **non-deterministic / personality-varied** ghost
+ * movement strategy by randomly selecting one of four different behaviours each
+ * time a move is requested. It serves as a simple way to create ghosts that
+ * feel less predictable and more "alive" compared to purely deterministic
+ * chasers.
  *
  * Behaviours (chosen uniformly at random with equal probability ~25% each):
- *   0. **Aggressive greedy**     → direct greedy chase toward Pac-Man's current position
- *   1. **Distance greedy**       → moves to neighbour that minimises Euclidean distance to Pac-Man
- *   2. **All-pairs shortest path** → optimal path-based ambush / intercept movement
- *                                      (uses precomputed APSP table)
- *   3. **Avoid other ghosts**    → tries to maximise total Euclidean distance from **all other ghosts**
- *                                      (flee / spread-out behaviour when surrounded)
+ *   0. **Aggressive greedy**     → direct greedy chase toward Pac-Man's current
+ * position
+ *   1. **Distance greedy**       → moves to neighbour that minimises Euclidean
+ * distance to Pac-Man
+ *   2. **All-pairs shortest path** → optimal path-based ambush / intercept
+ * movement (uses precomputed APSP table)
+ *   3. **Avoid other ghosts**    → tries to maximise total Euclidean distance
+ * from **all other ghosts** (flee / spread-out behaviour when surrounded)
  *
  * Objective:
  *   - Break pattern repetition that pure deterministic strategies can produce
- *   - Create emergent, unpredictable group behaviour when multiple ghosts use this strategy
+ *   - Create emergent, unpredictable group behaviour when multiple ghosts use
+ * this strategy
  *   - Simulate "personality" or "mood swings" without complex state machines
- *   - Combine strengths of cheap greedy methods with occasional optimal-path decisions
+ *   - Combine strengths of cheap greedy methods with occasional optimal-path
+ * decisions
  *
  * Time Complexity:
  *   Per call to findNextMove():
  *     • Random choice:                O(1)
  *     • Aggressive / Distance greedy: O(1)  (constant neighbours)
- *     • All-pairs shortest path:      O(1)  (lookup-based, assuming precomputed table)
- *     • Avoid-others mode:            O(D × G) ≈ O(1)   where D ≤ 4 (neighbours), G = number of other ghosts (usually 2–3)
- *   Overall worst-case:               O(G)  — still extremely fast
+ *     • All-pairs shortest path:      O(1)  (lookup-based, assuming precomputed
+ * table) • Avoid-others mode:            O(D × G) ≈ O(1)   where D ≤ 4
+ * (neighbours), G = number of other ghosts (usually 2–3) Overall worst-case:
+ * O(G)  — still extremely fast
  *
  * Space Complexity:
  *   • O(1) per instance (only owns pointers to sub-strategies)
- *   • Sub-strategies (AggressiveGreedyStrategy, DistanceGreedyStrategy, AllPairsShortestPath)
- *     have their own memory footprint (especially APSP's O(V²) distance table)
+ *   • Sub-strategies (AggressiveGreedyStrategy, DistanceGreedyStrategy,
+ * AllPairsShortestPath) have their own memory footprint (especially APSP's
+ * O(V²) distance table)
  *
  */
 
@@ -39,9 +46,9 @@
 #include "../include/Entity.h"
 #include "../include/Graph.h"
 #include "../include/Monster.h"
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
-#include <cmath>
 #include <limits>
 
 RandomStrategy::RandomStrategy(const std::vector<Monster *> &monstersList)
@@ -82,15 +89,18 @@ Location RandomStrategy::findNextMove(Graph *graph, Entity *monster,
       double currentDistanceSum = 0.0;
 
       for (Monster *other : monsters) {
-        if (other == monster) continue;
+        if (other == monster)
+          continue;
 
         Location otherLoc = other->getLocation();
         int dx = neighbourLoc.x - otherLoc.x;
         int dy = neighbourLoc.y - otherLoc.y;
 
         // Toroidal wrap
-        if (std::abs(dx) > Graph::WIDTH / 2) dx = Graph::WIDTH - std::abs(dx);
-        if (std::abs(dy) > Graph::HEIGHT / 2) dy = Graph::HEIGHT - std::abs(dy);
+        if (std::abs(dx) > Graph::WIDTH / 2)
+          dx = Graph::WIDTH - std::abs(dx);
+        if (std::abs(dy) > Graph::HEIGHT / 2)
+          dy = Graph::HEIGHT - std::abs(dy);
 
         currentDistanceSum += std::sqrt(dx * dx + dy * dy);
       }

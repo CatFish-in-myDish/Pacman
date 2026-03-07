@@ -101,14 +101,14 @@ void GameController::initGame(bool resetScore) {
       new Monster(Location(2, 2), new AStarStrategy(), "M1 (A*)"));
   monsters.push_back(
       new Monster(Location(52, 2), new HeuristicGreedyStrategy(), "M2 (Heur)"));
-  monsters.push_back(new Monster(Location(2, 58),
-                                 new AllPairsShortestPath(), "M3 (APSP)"));
+  monsters.push_back(
+      new Monster(Location(2, 58), new AllPairsShortestPath(), "M3 (APSP)"));
   monsters.push_back(new Monster(Location(52, 58),
                                  new AggressiveGreedyStrategy(), "M4 (Aggr)"));
-  monsters.push_back(new Monster(Location(28, 58),
-                                 new PinchGreedyStrategy(monsters), "M5 (Pinch)"));
-  monsters.push_back(new Monster(Location(28, 2),
-                                 new RandomStrategy(monsters), "M6 (Random)"));
+  monsters.push_back(new Monster(
+      Location(28, 58), new PinchGreedyStrategy(monsters), "M5 (Pinch)"));
+  monsters.push_back(new Monster(Location(28, 2), new RandomStrategy(monsters),
+                                 "M6 (Random)"));
 
   // Remove pellets that are under initial entities (Pacman and Monsters)
   pellets.erase(pacman->getLocation());
@@ -135,7 +135,7 @@ void GameController::initGame(bool resetScore) {
   powerPellets.clear();
   // Validate positions are path tiles; use nearby path tiles if corners are
   // walls
-  Location powerLocs[] = {Location(2, 2), Location(50, 2), Location(2, 56),
+  Location powerLocs[] = {Location(2, 2),   Location(50, 2),  Location(2, 56),
                           Location(50, 58), Location(25, 15), Location(25, 45),
                           Location(15, 30), Location(40, 30)};
   for (const Location &pl : powerLocs) {
@@ -234,7 +234,8 @@ void GameController::update() {
     }
   }
 
-  // ── Ghost Territory: recompute FRIGHTENED_DURATIONconvex hull and apply speed modifiers ──
+  // ── Ghost Territory: recompute FRIGHTENED_DURATIONconvex hull and apply
+  // speed modifiers ──
   if (pacman && monsters.size() >= 3) {
     std::vector<Location> ghostPositions;
     ghostPositions.reserve(monsters.size());
