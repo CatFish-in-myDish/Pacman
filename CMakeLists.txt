@@ -13,6 +13,7 @@ set(SOURCES
     src/AllPairsShortestPath.cpp
     src/AStarStrategy.cpp
     src/BacktrackStrategy.cpp
+    src/DirectionalGreedyStrategy.cpp
     src/DistanceGreedyStrategy.cpp
     src/Entity.cpp
     src/GameController.cpp
@@ -35,6 +36,7 @@ set(HEADERS
     include/AllPairsShortestPath.h
     include/AStarStrategy.h
     include/BacktrackStrategy.h
+    include/DirectionalGreedyStrategy.h
     include/DistanceGreedyStrategy.h
     include/Entity.h
     include/GameController.h
