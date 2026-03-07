@@ -26,13 +26,13 @@
  *     • Total precomputation cost: roughly O(V²) in practice for grid graphs
  *
  *   Runtime (per ghost, per frame):
- *     • O(degree) = O(1) to O(4)  — just checking 2–4 neighbors
+ *     • O(degree) = O(1) to O(4)  — just checking 2–4 neighbours
  *     • Distance lookups are O(1) average case (unordered_map)
  *
  * Space Complexity:
  *   • O(V²)  — distance table: unordered_map<Location, unordered_map<Location, int>>
  *   • For ~300 walkable tiles → ~90,000–100,000 entries (~400–800 KB)
- *   • Acceptable for most modern games; can be optimized to int16_t or Floyd-Warshall matrix if needed
+ *   • Acceptable for most modern games; can be optimised to int16_t or Floyd-Warshall matrix if needed
  *
  */
 #include "../include/AllPairsShortestPath.h"
@@ -62,8 +62,8 @@ Location AllPairsShortestPath::findNextMove(Graph *graph, Entity *monster,
             Node* node = graph->getNode(curr);
             if (!node) continue;
 
-            for (Node* neighbor : node->getNeighbours()) {
-              Location next = neighbor->getLocation();
+            for (Node* neighbour : node->getNeighbours()) {
+              Location next = neighbour->getLocation();
               if (distTable[start].find(next) == distTable[start].end()) {
                 distTable[start][next] = d + 1;
                 q.push({next, d + 1});

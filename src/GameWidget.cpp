@@ -119,14 +119,14 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     int my = mLoc.y * TILE_SIZE;
 
     // ── Pick ghost body colour ────────────────────────────────────────────
-    QColor ghostColor;
-    if      (name == "M1 (Dist)")  ghostColor = QColor(255,  80,  80);  // Bright Red
-    else if (name == "M2 (Heur)")  ghostColor = QColor(255, 182, 255);  // Light Magenta
-    else if (name == "M3 (Dir)")   ghostColor = QColor(102, 255, 255);  // Light Cyan
-    else if (name == "M4 (Aggr)")  ghostColor = QColor(255, 184,  82);  // Orange
-    else if (name == "M5 (Pinch)") ghostColor = QColor(186, 255, 201);  // Mint Green
-    else if (name == "M6 (Random)") ghostColor = QColor(255, 128,   0); // Dark Orange
-    else                           ghostColor = QColor(255, 255, 153);  // Soft Neon Yellow
+    QColor ghostColour;
+    if      (name == "M1 (Dist)")   ghostColour = QColor(255,  80,  80);  // Bright Red
+    else if (name == "M2 (Heur)")   ghostColour = QColor(255, 182, 255);  // Light Magenta
+    else if (name == "M3 (Dir)")    ghostColour = QColor(102, 255, 255);  // Light Cyan
+    else if (name == "M4 (Aggr)")   ghostColour = QColor(255, 184,  82);  // Orange
+    else if (name == "M5 (Pinch)")  ghostColour = QColor(186, 255, 201);  // Mint Green
+    else if (name == "M6 (Random)") ghostColour = QColor(255, 128,   0);  // Dark Orange
+    else                            ghostColour = QColor(255, 255, 153);  // Soft Neon Yellow
 
     painter.setPen(Qt::NoPen);
 
@@ -157,8 +157,8 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     bodyPath.lineTo(mx, my + TILE_SIZE / 2);
     bodyPath.closeSubpath();
 
-    painter.setBrush(ghostColor);
-    painter.fillPath(bodyPath, ghostColor);
+    painter.setBrush(ghostColour);
+    painter.fillPath(bodyPath, ghostColour);
 
     // ── Eyes: large white sockets + vivid blue pupils ─────────────────────
     int eyeOuterW = TILE_SIZE / 3;
