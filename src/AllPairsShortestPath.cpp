@@ -2,9 +2,9 @@
  * Cooperative Ambush AI strategy for ghosts/monsters using precomputed
  * All-Pairs Shortest Paths (APSP)
  *
- * This module implements an ambush-style ghost AI for a Pac-Man-like game.
- * Instead of greedily chasing Pac-Man, each ghost predicts a future position
- * ("ambush point") several tiles ahead in Pac-Man's current moving direction
+ * This module implements an ambush-style ghost AI for a Pacman-like game.
+ * Instead of greedily chasing Pacman, each ghost predicts a future position
+ * ("ambush point") several tiles ahead in Pacman's current moving direction
  * and moves optimally toward that point using a precomputed distance table.
  *
  * Strategy highlights:
@@ -13,12 +13,12 @@
  * style APSP).
  *   - At runtime, ghosts instantly look up the best next move that reduces
  * distance to the predicted ambush location.
- *   - Falls back to chasing Pac-Man's current position if the predicted point
+ *   - Falls back to chasing Pacman's current position if the predicted point
  * is invalid (wall, out of bounds, or unreachable).
  *
  * Objective:
  *   - Increase catch probability by **intercepting** rather than tail-chasing
- *   - Exploit Pac-Man's predictable movement when moving in straight lines
+ *   - Exploit Pacman's predictable movement when moving in straight lines
  *   - Achieve near-optimal pathing in open areas with very low per-frame cost
  *
  * Time Complexity:

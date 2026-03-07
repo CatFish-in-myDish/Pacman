@@ -138,7 +138,7 @@ void GameWidget::paintEvent(QPaintEvent *event) {
     painter.setPen(Qt::NoPen);
 
     // ── Ghost body ────────────────────────────────────────────────────────
-    // Classic Pac-Man shape:
+    // Classic Pacman shape:
     //   • Rounded dome (top half-circle arc)
     //   • Straight sides
     //   • Three wavy bumps along the bottom skirt

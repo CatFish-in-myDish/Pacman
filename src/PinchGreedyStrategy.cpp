@@ -2,23 +2,23 @@
  * Cooperative "pincer / pinch" movement strategy for multiple ghosts
  *
  * Implements a team-based ghost AI tactic that attempts to **trap / surround
- * Pac-Man** by coordinating with other ghosts in a simplified way.
+ * Pacman** by coordinating with other ghosts in a simplified way.
  *
  * Core idea — "Pinch" or "Pincer" movement:
- *   1. Identify the **closest other ghost** to Pac-Man (among all living
+ *   1. Identify the **closest other ghost** to Pacman (among all living
  * monsters)
  *   2. Compute the point that is **exactly opposite** to that ghost with
- * respect to Pac-Man → i.e. Pac-Man is the midpoint between the closest ghost
+ * respect to Pacman → i.e. Pacman is the midpoint between the closest ghost
  * and the computed target point
  *   3. Greedily move toward that opposite point using **Euclidean distance**
  * (with toroidal wrapping)
- *   4. If no other ghost exists → simply chase Pac-Man directly
+ *   4. If no other ghost exists → simply chase Pacman directly
  *
  * This creates a basic flanking / squeezing behaviour:
  *   - One ghost is already close → the current ghost tries to approach from the
  * other side
  *   - When multiple ghosts use this strategy → they naturally tend to spread
- * out around Pac-Man
+ * out around Pacman
  *
  * Objective:
  *   - Increase catch probability through **coordinated encirclement** rather

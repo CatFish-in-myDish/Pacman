@@ -3,8 +3,8 @@
  Euclidean flee
  *
  * This module implements the classic "frightened" ghost behaviour seen in many
- Pac-Man variants.
- * When a ghost enters FRIGHTENED mode (usually after Pac-Man eats a power
+ Pacman variants.
+ * When a ghost enters FRIGHTENED mode (usually after Pacman eats a power
  pellet), it should
  * appear panicked and behave less aggressively.
  *
@@ -14,7 +14,7 @@
  *      → effectively "running back the way it came"
  *   2. Once history is exhausted → switch to pure flee mode:
  *      - Choose the neighbour that maximises **Euclidean distance** from
- Pac-Man's current position
+ Pacman's current position
  *      - Includes basic toroidal (wrap-around) distance handling for mazes with
  tunnel warping
  *

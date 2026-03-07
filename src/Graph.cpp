@@ -1,17 +1,17 @@
 /**
- * Grid-based graph representation of the Pac-Man maze with toroidal tunnels
+ * Grid-based graph representation of the Pacman maze with toroidal tunnels
  *
  * Models the game map as an undirected graph where each walkable tile (path) is
  * a Node. Nodes are only created for pathable tiles (MAP[y][x] == 1).
  * Neighbours are connected in four directions (up/down/left/right) + explicit
- * toroidal wrapping for left↔right tunnels (classic Pac-Man side tunnels).
+ * toroidal wrapping for left↔right tunnels (classic Pacman side tunnels).
  * Top↔bottom wrapping is also implemented (though rarely used in classic
  * layout).
  *
  * Key features:
  *   - Static const int MAP[HEIGHT][WIDTH] defines the maze layout (0=wall,
  * 1=path)
- *   - 2× upscaled version of classic Pac-Man maze (~28×31 → 56×62 tiles)
+ *   - 2× upscaled version of classic Pacman maze (~28×31 → 56×62 tiles)
  *     → allows smoother sub-tile movement, larger sprites, or higher-res
  * rendering while preserving original topology and symmetry
  *   - Toroidal wrapping only connects actual path nodes (no ghost-only areas
@@ -24,7 +24,7 @@
  *   - Provide efficient spatial query & neighbour traversal for pathfinding
  *   - Support ghost AI (APSP precompute, greedy moves, ambush, pinch, random
  * hybrid)
- *   - Enable tunnel wrapping identical to classic Pac-Man behaviour
+ *   - Enable tunnel wrapping identical to classic Pacman behaviour
  *   - Scale cleanly to higher resolution while keeping logic simple
  *
  * Time Complexity:

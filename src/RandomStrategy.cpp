@@ -8,10 +8,10 @@
  * chasers.
  *
  * Behaviours (chosen uniformly at random with equal probability ~25% each):
- *   0. **Aggressive greedy**     → direct greedy chase toward Pac-Man's current
+ *   0. **Aggressive greedy**     → direct greedy chase toward Pacman's current
  * position
  *   1. **Distance greedy**       → moves to neighbour that minimises Euclidean
- * distance to Pac-Man
+ * distance to Pacman
  *   2. **All-pairs shortest path** → optimal path-based ambush / intercept
  * movement (uses precomputed APSP table)
  *   3. **Avoid other ghosts**    → tries to maximise total Euclidean distance
