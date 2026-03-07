@@ -202,7 +202,7 @@ Location ScatterStrategy::findNextMove(Graph *graph, Entity *monster, Entity *ta
 
 | Strategy               | Optimality | Complexity  | Predictability |
 |------------------------|------------|-------------|----------------|
-| A\* Pathfinding        | Optimal    | O(V log V)  | Low            |
+| A\* Pathfinding        | Optimal    | O(E log V)  | Low            |
 | Heuristic Greedy       | Local      | O(k)        | Medium         |
 | APSP Ambush            | Optimal    | O(1) lookup | Low            |
 | Aggressive Greedy      | Local      | O(k)        | Low            |
@@ -297,7 +297,7 @@ The maze implements **toroidal wrapping** — opposite edges of the map are conn
 
 | Algorithm                   | Used For                              | Time Complexity             | Space Complexity |
 |-----------------------------|---------------------------------------|-----------------------------|------------------|
-| **A\* Pathfinding**         | Red ghost pathfinding                 | O(V log V)                  | O(V)             |
+| **A\* Pathfinding**         | Red ghost pathfinding                 | O(E log V)                  | O(V)             |
 | **Manhattan Distance**      | Heuristic greedy evaluation           | O(1)                        | O(1)             |
 | **Euclidean Distance**      | Distance/Aggressive greedy, territory | O(1)                        | O(1)             |
 | **All-Pairs Shortest Path** | APSP ambush & random strategy         | O(V²) precomp / O(1) lookup | O(V²)            |

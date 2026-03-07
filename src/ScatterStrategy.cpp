@@ -22,7 +22,7 @@ as part of the ghost AI state system.
 Time Complexity:
   - Target selection: O(1)
   - Movement update per frame: depends on pathfinding
-    (e.g., O(V log V) if using A*).
+    (e.g., O(E log V) if using A*).
 
 Since scatter targets are fixed and simple,
 the strategy remains lightweight and efficient.
