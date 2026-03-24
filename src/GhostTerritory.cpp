@@ -2,7 +2,7 @@
 Implements the "Ghost Territory" mechanic using Computational Geometry.
 
 This module dynamically forms a territory around all ghosts by computing
-the Convex Hull of their current positions using the QuickHull algorithm.
+the Convex Hull of their current positions using the Quickhull algorithm.
 The convex hull represents the smallest convex polygon that encloses
 all ghost positions.
 
@@ -12,12 +12,12 @@ If Pacman is inside the hull, it indicates that he is surrounded
 or trapped within the ghost territory.
 
 Core Concepts Used:
-  - QuickHull Algorithm for Convex Hull construction.
+  - Quickhull Algorithm for Convex Hull construction.
   - Cross Product to determine point orientation.
   - Point-in-Convex-Polygon test for containment check.
 
 Time Complexity:
-  - quickHull(): Average O(N log N), Worst Case O(N²),
+  - quickhull(): Average O(N log N), Worst Case O(N²),
                  where N is the number of ghosts.
   - isInsideConvexPolygon(): O(K),
                  where K is the number of hull vertices.
@@ -32,16 +32,16 @@ this computation remains efficient for real-time execution.
 
 GhostTerritory::GhostTerritory() : pacmanInside(false) {}
 
-// ─── Cross product of vectors (O→A) × (O→B) ────────────────────────────────
+// ─── Cross product of vectors (O→A) x (O→B) ────────────────────────────────
 long long GhostTerritory::cross(const Location &O, const Location &A,
                                 const Location &B) {
   return (long long)(A.x - O.x) * (B.y - O.y) -
          (long long)(A.y - O.y) * (B.x - O.x);
 }
 
-// ─── QuickHull — Divide & Conquer ──────────────────────────────────────────
+// ─── Quickhull — Divide & Conquer ──────────────────────────────────────────
 std::vector<Location>
-GhostTerritory::quickHull(const std::vector<Location> &points) {
+GhostTerritory::quickhull(const std::vector<Location> &points) {
   // Need at least 3 distinct, non-collinear points for a hull polygon.
   if (points.size() < 3) {
     return {};
@@ -86,11 +86,11 @@ GhostTerritory::quickHull(const std::vector<Location> &points) {
   std::vector<Location> hullResult;
   hullResult.push_back(A);
 
-  quickHullRecurse(upper, A, B, hullResult);
+  quickhullRecurse(upper, A, B, hullResult);
 
   hullResult.push_back(B);
 
-  quickHullRecurse(lower, B, A, hullResult);
+  quickhullRecurse(lower, B, A, hullResult);
 
   // If all points were collinear, the hull degenerates
   if (hullResult.size() < 3) {
@@ -100,8 +100,8 @@ GhostTerritory::quickHull(const std::vector<Location> &points) {
   return hullResult;
 }
 
-// ─── Recursive QuickHull helper ─────────────────────────────────────────────
-void GhostTerritory::quickHullRecurse(const std::vector<Location> &points,
+// ─── Recursive Quickhull helper ─────────────────────────────────────────────
+void GhostTerritory::quickhullRecurse(const std::vector<Location> &points,
                                       const Location &A, const Location &B,
                                       std::vector<Location> &hullOut) {
   if (points.empty()) {
@@ -139,9 +139,9 @@ void GhostTerritory::quickHullRecurse(const std::vector<Location> &points,
   }
 
   // Recurse on A→C side, then add C, then recurse on C→B side
-  quickHullRecurse(set1, A, C, hullOut);
+  quickhullRecurse(set1, A, C, hullOut);
   hullOut.push_back(C);
-  quickHullRecurse(set2, C, B, hullOut);
+  quickhullRecurse(set2, C, B, hullOut);
 }
 
 // ─── Point-in-convex-polygon (cross-product method) ─────────────────────────
@@ -178,7 +178,7 @@ bool GhostTerritory::isInsideConvexPolygon(const std::vector<Location> &polygon,
 // ─── Public API ─────────────────────────────────────────────────────────────
 void GhostTerritory::update(const std::vector<Location> &ghostPositions,
                             const Location &pacmanPos) {
-  hull = quickHull(ghostPositions);
+  hull = quickhull(ghostPositions);
 
   if (hull.size() < 3) {
     pacmanInside = false;

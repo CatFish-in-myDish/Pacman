@@ -4,7 +4,7 @@
 #include "Location.h"
 #include <vector>
 
-// Computes the Convex Hull of ghost positions using QuickHull (Divide &
+// Computes the Convex Hull of ghost positions using Quickhull (Divide &
 // Conquer) and checks whether Pacman lies inside the "Ghost Territory."
 class GhostTerritory {
 public:
@@ -25,12 +25,12 @@ private:
   std::vector<Location> hull;
   bool pacmanInside;
 
-  // QuickHull algorithm — Divide & Conquer, O(N log N) average.
-  static std::vector<Location> quickHull(const std::vector<Location> &points);
+  // Quickhull algorithm — Divide & Conquer, O(N log N) average.
+  static std::vector<Location> quickhull(const std::vector<Location> &points);
 
   // Recursive helper: finds points above line (A→B) and builds that side of
   // hull.
-  static void quickHullRecurse(const std::vector<Location> &points,
+  static void quickhullRecurse(const std::vector<Location> &points,
                                const Location &A, const Location &B,
                                std::vector<Location> &hullOut);
 

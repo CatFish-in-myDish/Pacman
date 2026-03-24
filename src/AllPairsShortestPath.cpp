@@ -8,8 +8,8 @@ tiles ahead in Pacman's current moving direction and moves optimally toward that
 point using a precomputed distance table.
 
 Strategy highlights:
-  - Precomputes shortest path distances from **every non-wall tile to every
-other non-wall tile** using BFS from each starting position (multi-source
+  - Precomputes shortest path distances from every non-wall tile to every
+other non-wall tile using BFS from each starting position (multi-source
 style APSP).
   - At runtime, ghosts instantly look up the best next move that reduces
 distance to the predicted ambush location.
@@ -17,13 +17,13 @@ distance to the predicted ambush location.
 is invalid (wall, out of bounds, or unreachable).
 
 Objective:
-  - Increase catch probability by **intercepting** rather than tail-chasing
+  - Increase catch probability by intercepting rather than tail-chasing
   - Exploit Pacman's predictable movement when moving in straight lines
   - Achieve near-optimal pathing in open areas with very low per-frame cost
 
 Time Complexity:
   Precomputation (done once, lazily on first call):
-    • O(V × (V + E)) where V = number of walkable tiles, E = number of edges
+    • O(V x (V + E)) where V = number of walkable tiles, E = number of edges
     • In a typical maze: V ≈ 20–30% of total tiles (e.g., ~200–400 walkable
 tiles)
     • Total precomputation cost: roughly O(V²) in practice for grid graphs

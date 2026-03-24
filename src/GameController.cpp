@@ -93,10 +93,10 @@ void GameController::initGame(bool resetScore) {
     }
   }
 
-  // Start Pacman in centre (row 28, col 28) — scaled 2× from (14,14)
+  // Start Pacman in centre (row 28, col 28) — scaled 2x from (14,14)
   pacman = new Pacman(Location(28, 28));
 
-  // Start Monsters in corners/house areas — scaled 2× from original positions
+  // Start Monsters in corners/house areas — scaled 2x from original positions
   monsters.push_back(
       new Monster(Location(2, 2), new AStarStrategy(), "M1 (A*)"));
   monsters.push_back(

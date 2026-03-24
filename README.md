@@ -8,7 +8,7 @@
 - **6 Distinct AI Ghosts** — A\* Pathfinding, Manhattan Heuristic, APSP Ambush, Predictive Pursuit, Cooperative Pinch, and Hybrid Random
 - **Power Pellets & Frightened Mode** — Eat power pellets to frighten ghosts; frightened ghosts backtrack and can be eaten for bonus points
 - **Chain Lightning Ability** — Spend score to slow ghosts using a closest-pair divide & conquer algorithm
-- **Ghost Territory System** — QuickHull convex hull detects encirclement and dynamically adjusts speeds
+- **Ghost Territory System** — Quickhull convex hull detects encirclement and dynamically adjusts speeds
 - **Dynamic Role Assignment** — Ghosts switch between Chase, Normal, Ambush, and Scatter modes every tick
 - **Ghost Eating** — Catch frightened ghosts for 200 bonus points; eaten ghosts respawn at their start position
 - **Toroidal Map Wrapping** — Opposite maze edges are connected, allowing seamless wrap-around movement
@@ -247,18 +247,18 @@ A powerful offensive ability that punishes clustered ghosts.
 
 ### Ghost Territory System (Convex Hull)
 
-The game computes a **convex hull** around all ghost positions every frame using the **QuickHull** algorithm.
+The game computes a **convex hull** around all ghost positions every frame using the **Quickhull** algorithm.
 
 **When Pacman is inside the ghost hull:**
 
 | Entity | Speed Modifier      |
 |--------|---------------------|
-| Ghosts | Slowed to **0.9×**  |
-| Pacman | Boosted to **1.1×** |
+| Ghosts | Slowed to **0.9x**  |
+| Pacman | Boosted to **1.1x** |
 
 **Algorithm Details:**
-- QuickHull divide & conquer: find leftmost/rightmost → partition upper/lower → recurse
-- Cross-product test for point sidedness: `(A→B) × (A→P)`
+- Quickhull divide & conquer: find leftmost/rightmost → partition upper/lower → recurse
+- Cross-product test for point sidedness: `(A→B) x (A→P)`
 - Point-in-convex-polygon via consistent cross-product winding
 - Requires ≥ 3 unique, non-collinear ghost positions for a valid hull
 - **Complexity:** O(N log N) average
@@ -269,22 +269,22 @@ Ghost roles are re-evaluated **every game tick** based on proximity to Pacman. *
 
 ```
 Sort eligible ghosts (M1–M4) by squared distance to Pacman (toroidal)
-├── Closest        → CHASE mode   (speed: 1.5×)
-├── Middle ghosts  → NORMAL mode  (speed: 1.0×, uses default strategy)
-└── Farthest       → AMBUSH mode  (speed: 1.25×)
+├── Closest        → CHASE mode   (speed: 1.5x)
+├── Middle ghosts  → NORMAL mode  (speed: 1.0x, uses default strategy)
+└── Farthest       → AMBUSH mode  (speed: 1.25x)
 ```
 
 Role assignment is **suspended** during Frightened Mode and overridden during Chain Lightning.
 
 | Mode           | Speed | Behaviour                                         |
 |----------------|-------|---------------------------------------------------|
-| **CHASE**      | 1.5×  | Uses original AI strategy, aggressively pursues   |
-| **NORMAL**     | 1.0×  | Uses original AI strategy, standard pursuit       |
-| **AMBUSH**     | 1.25× | Uses original AI strategy, moderate pursuit       |
-| **SCATTER**    | 1.0×  | Overrides to ScatterStrategy, flees to corner     |
-| **FRIGHTENED** | 1.0×  | Overrides to BacktrackStrategy, then flees Pacman |
+| **CHASE**      | 1.5x  | Uses original AI strategy, aggressively pursues   |
+| **NORMAL**     | 1.0x  | Uses original AI strategy, standard pursuit       |
+| **AMBUSH**     | 1.25x | Uses original AI strategy, moderate pursuit       |
+| **SCATTER**    | 1.0x  | Overrides to ScatterStrategy, flees to corner     |
+| **FRIGHTENED** | 1.0x  | Overrides to BacktrackStrategy, then flees Pacman |
 
-> **Speed Cap:** Effective speed is hard-capped at **1.5×** — `std::min(speed * territoryMultiplier, 1.5)`
+> **Speed Cap:** Effective speed is hard-capped at **1.5x** — `std::min(speed * territoryMultiplier, 1.5)`
 
 ### Toroidal Map Wrapping
 
@@ -303,7 +303,7 @@ The maze implements **toroidal wrapping** — opposite edges of the map are conn
 | **All-Pairs Shortest Path** | APSP ambush & random strategy         | O(V²) precomp / O(1) lookup | O(V²)            |
 | **Cooperative Pinch**       | Flanking target calculation           | O(N)                        | O(1)             |
 | **Path Backtracking**       | Frightened mode ghost movement        | O(1)                        | O(H)             |
-| **QuickHull**               | Ghost territory convex hull           | O(N log N) avg              | O(N)             |
+| **Quickhull**               | Ghost territory convex hull           | O(N log N) avg              | O(N)             |
 | **Point-in-Polygon**        | Testing if Pacman is inside hull      | O(N)                        | O(1)             |
 | **Closest Pair of Points**  | Chain lightning target selection      | O(N log N)                  | O(N)             |
 | **Graph BFS/Adjacency**     | Maze representation & traversal       | O(V + E)                    | O(V + E)         |
